@@ -23,8 +23,11 @@ namespace API.Models
         [Column("phone_number", TypeName = "nvarchar(20)")]
         public string PhoneNumber { get; set; }
 
+        [Column("hiring_date")]
+        public DateTime HiringDate { get; set; }
+
         //kardinalitas
-        public ICollection<Experience>? Bookings { get; set; }
+        public ICollection<Experience>? Experiences { get; set; }
         public Salary? Salary { get; set; }
         public ICollection<Rating>? Ratings { get; set; }
         public Account? Account { get; set; }

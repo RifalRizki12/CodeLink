@@ -6,15 +6,11 @@ namespace API.Models
     public class Skill
     {
         [Column("hard")]
-        public string Hard {  get; set; }
+        public string? Hard {  get; set; }
 
         [Column("soft")]
-        public string Soft { get; set; }
-
-        [Column("categories_guid")]
-        public int? CategoryGuid { get; set; }
+        public string? Soft { get; set; }
 
         public ICollection<ExperienceSkill>? ExperienceSkills { get; set; }
-        public Category? Category { get; set; }
     }
 }

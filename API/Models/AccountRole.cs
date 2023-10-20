@@ -3,7 +3,7 @@ using System.Data;
 
 namespace API.Models
 {
-    [Table("tb_m_account_roles")]
+    [Table("tb_m_accounts_roles")]
     public class AccountRole : BaseEntity
     {
         [Column("account_guid")]

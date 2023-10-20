@@ -9,9 +9,9 @@ namespace API.Models
         public Guid Guid { get; set; } // Properti yang menyimpan GUID unik untuk entitas.
 
         [Column("created_date")] // Menentukan kolom "created_date".
-        public DateTime CreatedDate { get; set; } // Properti yang menyimpan tanggal dan waktu pembuatan entitas.
+        public DateTime? CreatedDate { get; set; } // Properti yang menyimpan tanggal dan waktu pembuatan entitas.
 
         [Column("modified_date")] // Menentukan kolom "modified_date".
-        public DateTime ModifiedDate { get; set; } // Properti yang menyimpan tanggal dan waktu terakhir entitas diubah.
+        public DateTime? ModifiedDate { get; set; } // Properti yang menyimpan tanggal dan waktu terakhir entitas diubah.
     }
 }
