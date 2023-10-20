@@ -6,10 +6,10 @@ namespace API.Models
     public class ExperienceSkill : BaseEntity
     {
         [Column("skills_guid")]
-        public Guid SkillGuid { get; set;}
+        public Guid? SkillGuid { get; set;}
 
         [Column("experiences_guid")]
-        public Guid ExperienceGuid { get; set;}
+        public Guid? ExperienceGuid { get; set;}
         
         [Column("employee_guid")]
         public Guid EmployeeGuid { get; set;}
