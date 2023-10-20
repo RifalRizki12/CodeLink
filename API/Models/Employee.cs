@@ -7,17 +7,12 @@ namespace API.Models
     [Table("tb_m_employees")]
     public class Employee : BaseEntity
     {
-        [Column("nik", TypeName = "nchar(6)")]
-        public string Nik { get; set; }
 
         [Column("first_name", TypeName = "nvarchar(100)")]
         public string FirstName { get; set; }
 
         [Column("last_name", TypeName = "nvarchar(100)")]
         public string? LastName { get; set; }
-
-        [Column("birth_date")]
-        public DateTime BirthDate { get; set; }
 
         [Column("gender")]
         public GenderLevel Gender { get; set; }
@@ -30,6 +25,9 @@ namespace API.Models
 
         //kardinalitas
         public ICollection<Experience>? Bookings { get; set; }
-
+        public Salary? Salary { get; set; }
+        public ICollection<Rating>? Ratings { get; set; }
+        public Account? Account { get; set; }
+        public ICollection<Test>? Tests { get; set; }
     }
 }

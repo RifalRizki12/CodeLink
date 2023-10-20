@@ -10,12 +10,12 @@ namespace API.Models
         [Column ("position", TypeName = "nvarchar(100)")]
         public string Position { get; set; }
         [Column ("company")]
-        public int Company { get; set; }
+        public string Company { get; set; }
         [Column ("employee_guid")]
         public Guid EmployeeGuid { get; set; }
 
         //kardinalitas
         public Employee? Employee { get; set; }
-
+        public ICollection<ExperienceSkill>? ExperienceSkills { get; set;}
     }
 }
