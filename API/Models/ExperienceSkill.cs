@@ -10,9 +10,13 @@ namespace API.Models
 
         [Column("experiences_guid")]
         public int? ExperienceGuid { get; set;}
+        
+        [Column("employee_guid")]
+        public int? EmployeeGuid { get; set;}
 
         //kardinalitas
         public Experience? Experience { get; set;}
         public Skill? Skill { get; set;}
+        public Employee? Employee { get; set;}
     }
 }

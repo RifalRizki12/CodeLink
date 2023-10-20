@@ -5,7 +5,7 @@ namespace API.Models
     [Table("tb_m_test")]
     public class Test : BaseEntity
     {
-        [Column("name")]
+        [Column("name", TypeName = "nvarchar(100)")]
         public string Name { get; set; }
 
         [Column("date")]

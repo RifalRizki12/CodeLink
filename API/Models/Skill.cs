@@ -5,10 +5,10 @@ namespace API.Models
     [Table("tb_m_skills")]
     public class Skill
     {
-        [Column("hard")]
+        [Column("hard", TypeName = "nvarchar(50)")]
         public string? Hard {  get; set; }
 
-        [Column("soft")]
+        [Column("soft", TypeName = "nvarchar(50)")]
         public string? Soft { get; set; }
 
         public ICollection<ExperienceSkill>? ExperienceSkills { get; set; }

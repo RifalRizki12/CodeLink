@@ -20,14 +20,14 @@ namespace API.Models
         [Column("email", TypeName = "nvarchar(100)")]
         public string Email { get; set; }
 
-        [Column("phone_number", TypeName = "nvarchar(20)")]
+        [Column("phone_number", TypeName = "nvarchar(16)")]
         public string PhoneNumber { get; set; }
 
         [Column("hiring_date")]
         public DateTime HiringDate { get; set; }
 
         //kardinalitas
-        public ICollection<Experience>? Experiences { get; set; }
+        public ICollection<ExperienceSkill> ExperienceSkills { get; set; }
         public Salary? Salary { get; set; }
         public ICollection<Rating>? Ratings { get; set; }
         public Account? Account { get; set; }
