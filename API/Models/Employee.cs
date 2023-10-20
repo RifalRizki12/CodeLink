@@ -30,5 +30,6 @@ namespace API.Models
 
         //kardinalitas
         public ICollection<Experience>? Bookings { get; set; }
+
     }
 }

@@ -16,5 +16,6 @@ namespace API.Models
 
         //kardinalitas
         public Employee? Employee { get; set; }
+
     }
 }
