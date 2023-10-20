@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using API.Utilities.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Models
 {
@@ -12,7 +13,7 @@ namespace API.Models
         public int Otp { get; set; }
 
         [Column("status")]
-        public int Status { get; set; }
+        public StatusLevel Status { get; set; }
 
         [Column("is_used")]
         public bool IsUsed { get; set; }
