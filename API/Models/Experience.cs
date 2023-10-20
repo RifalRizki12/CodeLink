@@ -3,7 +3,7 @@
 namespace API.Models
 {
     [Table("tb_m_experiences")]
-    public class Experience
+    public class Experience : BaseEntity
     {
         [Column ("name", TypeName = "nvarchar(100)")]
         public string Name { get; set; }
@@ -12,7 +12,6 @@ namespace API.Models
         [Column ("company", TypeName = "nvarchar(50)")]
         public string Company { get; set; }
         [Column ("employee_guid")]
-        public Guid EmployeeGuid { get; set; }
 
         //kardinalitas
         public ICollection<ExperienceSkill>? ExperienceSkills { get; set;}
