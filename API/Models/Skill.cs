@@ -3,7 +3,7 @@
 namespace API.Models
 {
     [Table("tb_m_skills")]
-    public class Skill
+    public class Skill : BaseEntity
     {
         [Column("hard", TypeName = "nvarchar(50)")]
         public string? Hard {  get; set; }
