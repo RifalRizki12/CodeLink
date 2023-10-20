@@ -114,9 +114,9 @@ namespace API.Controllers
             }
 
             // Cari akun berdasarkan email
-            var account = _accountRepository.GetByEmployeeEmail(request.Email);
+            var accountEmail = _accountRepository.GetByEmployeeEmail(request.Email);
 
-            if (account == null)
+            if (accountEmail == null)
             {
                 return NotFound(new ResponseErrorHandler
                 {
@@ -127,7 +127,7 @@ namespace API.Controllers
             }
 
             // Memeriksa OTP
-            if (account.Otp != request.Otp)
+            if (accountEmail.Otp != request.Otp)
             {
                 return BadRequest(new ResponseErrorHandler
                 {
@@ -138,7 +138,7 @@ namespace API.Controllers
             }
 
             // Memeriksa apakah OTP sudah digunakan
-            if (account.IsUsed)
+            if (accountEmail.IsUsed)
             {
                 return Conflict(new ResponseErrorHandler
                 {
@@ -149,7 +149,7 @@ namespace API.Controllers
             }
 
             // Memeriksa apakah OTP sudah kadaluwarsa
-            if (account.ExpiredTime != null && account.ExpiredTime <= DateTime.UtcNow)
+            if (accountEmail.ExpiredTime != null && accountEmail.ExpiredTime <= DateTime.UtcNow)
             {
                 return BadRequest(new ResponseErrorHandler
                 {
@@ -174,10 +174,10 @@ namespace API.Controllers
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
 
             // Update password di akun sebenarnya di database
-            account.Password = hashedPassword;
-            account.ModifiedDate = DateTime.UtcNow;
-            account.IsUsed = true; // Set IsUsed menjadi true karena OTP sudah digunakan
-            _accountRepository.Update(account);
+            accountEmail.Password = hashedPassword;
+            accountEmail.ModifiedDate = DateTime.UtcNow;
+            accountEmail.IsUsed = true; // Set IsUsed menjadi true karena OTP sudah digunakan
+            _accountRepository.Update(accountEmail);
 
             string responseMessage = "Password has been changed successfully.";
 
