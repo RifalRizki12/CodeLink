@@ -9,7 +9,7 @@ namespace API.Models
         public int BasicSalary {  get; set; }
 
         [Column("overtime_pay")]
-        public int OvertimePay {  get; set; }
+        public int? OvertimePay {  get; set; }
 
         public Employee? Employee { get; set; }
     }

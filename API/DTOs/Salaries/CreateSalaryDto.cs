@@ -1,4 +1,4 @@
-﻿using API.DTOs.Roles;
+﻿using API.DTOs.Salaries;
 using API.Models;
 
 namespace API.DTOs.Salaries

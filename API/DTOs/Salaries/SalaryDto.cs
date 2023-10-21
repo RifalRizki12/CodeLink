@@ -1,5 +1,4 @@
-﻿using API.DTOs.Roles;
-using API.Models;
+﻿using API.Models;
 
 namespace API.DTOs.Salaries
 {
