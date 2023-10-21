@@ -12,11 +12,9 @@ public class SkillValidator : AbstractValidator<SkillDto>
             .NotEmpty();
 
         RuleFor(s => s.Hard)
-            .NotEmpty()
             .MaximumLength(50);
 
         RuleFor(s => s.Soft)
-            .NotEmpty()
             .MaximumLength(50);
 
     }

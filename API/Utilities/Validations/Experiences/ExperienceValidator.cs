@@ -3,23 +3,20 @@ using FluentValidation;
 
 namespace API.Utilities.Validations.Experiences;
 
-public class SkillValidator : AbstractValidator<ExperienceDto>
+public class ExperienceValidator : AbstractValidator<ExperienceDto>
 {
-    public SkillValidator()
+    public ExperienceValidator()
     {
         RuleFor(e => e.Guid)
            .NotNull();
 
         RuleFor(e => e.Name)
-            .NotEmpty()
             .MaximumLength(100);
 
         RuleFor(e => e.Position)
-            .NotEmpty()
             .MaximumLength(50);
 
         RuleFor(e => e.Company)
-            .NotEmpty()
             .MaximumLength(50);
     }
 }

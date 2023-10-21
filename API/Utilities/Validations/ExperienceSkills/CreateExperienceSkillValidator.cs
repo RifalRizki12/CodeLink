@@ -4,20 +4,14 @@ using FluentValidation;
 
 namespace API.Utilities.Validations.ExperienceSkills;
 
-public class ExperienceSkillValidator : AbstractValidator<ExperienceSkillDto>
+public class CreateExperienceSkillValidator : AbstractValidator<CreateExperienceSkillDto>
 {
-    public ExperienceSkillValidator()
+    public CreateExperienceSkillValidator()
     {
-        RuleFor(es => es.Guid)
-             .NotEmpty();
-
-        RuleFor(es => es.SkillGuid)
-            .NotEmpty();
-
-        RuleFor(es => es.ExperienceGuid)
-            .NotEmpty();
-
+       
         RuleFor(es => es.EmployeeGuid)
-            .NotEmpty();
+          .NotEmpty();
+
+
     }
 }
