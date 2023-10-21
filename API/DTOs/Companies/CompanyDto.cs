@@ -8,6 +8,7 @@ namespace API.DTOs.Companies
         public string Name { get; set; }
         public string Address {  get; set; }
         public string? Description { get; set; }
+        public Guid? EmployeeGuid { get; set; }
 
         // Operator eksplisit untuk mengonversi Company ke CompanyDto.
         public static explicit operator CompanyDto(Company company)
@@ -18,6 +19,7 @@ namespace API.DTOs.Companies
                 Name = company.Name,
                 Address = company.Address,
                 Description = company.Description,
+                EmployeeGuid = company.EmployeeGuid,
             };
         }
 
@@ -30,6 +32,7 @@ namespace API.DTOs.Companies
                 Name = companyDto.Name,       // Mengisi properti Name dengan nilai dari CompanyDto.
                 Address = companyDto.Address,
                 Description = companyDto.Description,
+                EmployeeGuid = companyDto.EmployeeGuid,
                 ModifiedDate = DateTime.Now // Mengisi properti ModifiedDate dengan tanggal dan waktu saat ini.
             };
         }

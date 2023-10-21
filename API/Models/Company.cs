@@ -14,6 +14,11 @@ namespace API.Models
         [Column("description")]
         public string? Description { get; set; }
 
+        [Column("employee_guid")]
+        public Guid? EmployeeGuid { get; set; }
+
         public Employee? Employee { get; set; }
+        public ICollection<Employee>? Employees { get; set; }
+
     }
 }

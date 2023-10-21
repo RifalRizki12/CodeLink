@@ -9,9 +9,11 @@ namespace API.DTOs.Employees
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public GenderLevel Gender { get; set; }
-        public DateTime HiringDate { get; set; }
+        public DateTime? HireDate { get; set; }
+        public DateTime? ExpiredDate { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
+        public string Status { get; set; }
 
         // Konversi Eksplisit (Explicit Conversion):
         // Metode ini akan mengonversi EmployeeDto ke Employee secara eksplisit jika diperlukan.
@@ -24,7 +26,9 @@ namespace API.DTOs.Employees
                 FirstName = employee.FirstName,     // Mengonversi Nama Depan dari Employee ke EmployeeDto.
                 LastName = employee.LastName,       // Mengonversi Nama Belakang dari Employee ke EmployeeDto.
                 Gender = employee.Gender,           // Mengonversi Jenis Kelamin dari Employee ke EmployeeDto.
-                HiringDate = employee.HiringDate,   // Mengonversi Tanggal Mulai Bekerja dari Employee ke EmployeeDto.
+                HireDate = employee.HireDate,
+                ExpiredDate = employee.ExpiredDate,
+                Status = employee.Status,
                 Email = employee.Email,             // Mengonversi Email dari Employee ke EmployeeDto.
                 PhoneNumber = employee.PhoneNumber  // Mengonversi Nomor Telepon dari Employee ke EmployeeDto.
             };
@@ -40,7 +44,9 @@ namespace API.DTOs.Employees
                 FirstName = dto.FirstName,      // Mengonversi Nama Depan dari EmployeeDto ke Employee.
                 LastName = dto.LastName,        // Mengonversi Nama Belakang dari EmployeeDto ke Employee.
                 Gender = dto.Gender,            // Mengonversi Jenis Kelamin dari EmployeeDto ke Employee.
-                HiringDate = dto.HiringDate,    // Mengonversi Tanggal Mulai Bekerja dari EmployeeDto ke Employee.
+                HireDate = dto.HireDate,
+                ExpiredDate = dto.ExpiredDate,
+                Status = dto.Status,
                 Email = dto.Email,              // Mengonversi Email dari EmployeeDto ke Employee.
                 PhoneNumber = dto.PhoneNumber,   // Mengonversi Nomor Telepon dari EmployeeDto ke Employee.
                 ModifiedDate = DateTime.Now

@@ -23,8 +23,16 @@ namespace API.Models
         [Column("phone_number", TypeName = "nvarchar(16)")]
         public string PhoneNumber { get; set; }
 
-        [Column("hiring_date")]
-        public DateTime HiringDate { get; set; }
+        [Column("status")]
+        public string Status { get; set; }
+
+        [Column("hire_date")]
+        public DateTime? HireDate { get; set; }
+        [Column("expired_date")]
+        public DateTime? ExpiredDate { get; set; }
+
+        [Column("company_id")]
+        public Guid? CompanyGuid { get; set; }
 
         //kardinalitas
         public ICollection<ExperienceSkill> ExperienceSkills { get; set; }
@@ -33,5 +41,7 @@ namespace API.Models
         public Account? Account { get; set; }
         public ICollection<Test>? Tests { get; set; }
         public Company? Company { get; set; }
+        public ICollection<Company>? Companies { get; set; }
+        
     }
 }

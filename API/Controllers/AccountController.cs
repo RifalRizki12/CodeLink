@@ -21,10 +21,10 @@ namespace API.Controllers
         private readonly IAccountRoleRepository _accountRoleRepository;
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IEmailHandler _emailHandler;
-        private readonly ITokenHandler _tokenHandler;
+        private readonly ITokenHandlers _tokenHandler;
 
         // Konstruktor controller yang menerima IAccountRepository sebagai parameter.
-        public AccountController(IAccountRepository accountRepository, IEmployeeRepository employeeRepository, IEmailHandler emailHandler, IRoleRepository roleRepository, IAccountRoleRepository accountRoleRepository, ITokenHandler tokenHandler)
+        public AccountController(IAccountRepository accountRepository, IEmployeeRepository employeeRepository, IEmailHandler emailHandler, IRoleRepository roleRepository, IAccountRoleRepository accountRoleRepository, ITokenHandlers tokenHandler)
         {
             _accountRepository = accountRepository;
             _employeeRepository = employeeRepository;
@@ -96,10 +96,9 @@ namespace API.Controllers
             }
         }
 
-    }
 
-    // Metode untuk mengirim OTP melalui email dalam kasus lupa kata sandi
-    [HttpPut("forgot-password")]
+        // Metode untuk mengirim OTP melalui email dalam kasus lupa kata sandi
+        [HttpPut("forgot-password")]
         [AllowAnonymous]
         public IActionResult ForgotPassword(string email)
         {

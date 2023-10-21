@@ -7,6 +7,7 @@ namespace API.DTOs.Companies
         public string Name { get; set; }
         public string Address { get; set; }
         public string Description { get; set; }
+        public Guid? EmployeeGuid { get; set; }
 
         // Operator implisit untuk mengonversi CreateCompanyDto ke entitas Role.
         public static implicit operator Company(CreateCompanyDto createDto)
@@ -16,6 +17,7 @@ namespace API.DTOs.Companies
                 Name = createDto.Name, // Mengisi properti Name dengan nilai dari CreateCompanyDto.
                 Address = createDto.Address,
                 Description = createDto.Description,
+                EmployeeGuid = createDto.EmployeeGuid,
                 CreatedDate = DateTime.Now, // Mengisi properti CreatedDate dengan tanggal dan waktu saat ini.
                 ModifiedDate = DateTime.Now // Mengisi properti ModifiedDate dengan tanggal dan waktu saat ini.
             };

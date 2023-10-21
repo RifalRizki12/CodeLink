@@ -91,11 +91,18 @@ namespace API.Data
                 .HasForeignKey(t => t.EmployeeGuid)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // One Employee has One Company
+            // One Employee has Many Company
             modelBuilder.Entity<Employee>()
-                .HasOne(c => c.Company)
+                .HasMany(c => c.Companies)
                 .WithOne(e => e.Employee)
-                .HasForeignKey<Company>(c => c.Guid)
+                .HasForeignKey(c => c.EmployeeGuid)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // One Company has Many Employee
+            modelBuilder.Entity<Company>()
+                .HasMany(e => e.Employees)
+                .WithOne(c => c.Company)
+                .HasForeignKey(e => e.CompanyGuid)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

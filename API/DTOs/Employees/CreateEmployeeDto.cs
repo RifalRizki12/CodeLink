@@ -8,7 +8,9 @@ namespace API.DTOs.Employees
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public GenderLevel Gender { get; set; }
-        public DateTime HiringDate { get; set; }
+        public DateTime? HireDate { get; set; }
+        public DateTime? ExpiredDate { get; set; }
+        public string Status { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
 
@@ -25,7 +27,9 @@ namespace API.DTOs.Employees
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 Gender = dto.Gender,
-                HiringDate = dto.HiringDate,
+                HireDate = dto.HireDate,
+                ExpiredDate = dto.ExpiredDate,
+                Status = dto.Status,
                 Email = dto.Email,
                 PhoneNumber = dto.PhoneNumber,
                 CreatedDate = DateTime.Now,

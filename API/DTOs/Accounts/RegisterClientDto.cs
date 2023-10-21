@@ -8,7 +8,6 @@ namespace API.DTOs.Accounts
         public string FirstName { get; set; }
         public string? LastName { get; set; }
         public GenderLevel Gender { get; set; }
-        public DateTime HiringDate { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string NameCompany { get; set; }
@@ -39,8 +38,8 @@ namespace API.DTOs.Accounts
                 FirstName = registrationDto.FirstName,
                 LastName = registrationDto.LastName,
                 Gender = registrationDto.Gender,
-                HiringDate = registrationDto.HiringDate,
                 Email = registrationDto.Email,
+                Status = "owner",
                 PhoneNumber = registrationDto.PhoneNumber,
                 CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now
