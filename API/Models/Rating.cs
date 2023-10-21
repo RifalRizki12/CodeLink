@@ -5,7 +5,7 @@ namespace API.Models
     [Table("tb_m_ratings")]
     public class Rating : BaseEntity
     {
-        [Column("rating", TypeName = "int(1)")]
+        [Column("rating")]
         public int Rate { get; set; }
 
         [Column("employee_guid")]

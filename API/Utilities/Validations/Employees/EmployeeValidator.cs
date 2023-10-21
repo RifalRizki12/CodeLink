@@ -21,7 +21,7 @@ namespace API.Utilities.Validations.Employees
                 .IsInEnum();   // Properti harus merupakan nilai dari enum yang valid
 
             // Aturan validasi untuk properti 'HiringDate' dalam objek EmployeeDto
-            RuleFor(e => e.HiringDate)
+            RuleFor(e => e.HireDate)
                 .NotEmpty();  // Properti tidak boleh kosong
 
             // Aturan validasi untuk properti 'Email' dalam objek EmployeeDto

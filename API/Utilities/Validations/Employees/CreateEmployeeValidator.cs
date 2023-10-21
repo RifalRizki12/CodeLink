@@ -19,7 +19,7 @@ namespace API.Utilities.Validations.Employees
                 .IsInEnum();   // Properti harus merupakan nilai dari enum yang valid
 
             // Aturan validasi untuk properti 'HiringDate' dalam objek EmployeeDto
-            RuleFor(employee => employee.HiringDate)
+            RuleFor(e => e.HireDate)
                 .NotNull().WithMessage("Hiring Date tidak boleh kosong.")
                 .Must(date => date != DateTime.MinValue).WithMessage("Hiring Date harus diisi.");
 

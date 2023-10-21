@@ -9,6 +9,8 @@ using System.Net;
 
 namespace API.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class CompanyController : ControllerBase
     {
         private readonly ICompanyRepository _companyRepository;
