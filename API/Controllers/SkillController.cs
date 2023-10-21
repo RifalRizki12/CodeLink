@@ -122,7 +122,7 @@ namespace API.Controllers
 
 
                 // Mengembalikan pesan sukses dalam respons OK.
-                return Ok(new ResponseOKHandler<string>("Data Has Been Deleted"));
+                return Ok(new ResponseOKHandler<string>("Data Has Been Updated"));
             }
             catch (ExceptionHandler ex)
             {
