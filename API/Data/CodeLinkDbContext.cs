@@ -18,8 +18,7 @@ namespace API.Data
         public DbSet<Salary> Salaries { get; set; }
         public DbSet<Skill> Skills { get; set; }
         public DbSet<Test> Tests { get; set; }
-
-        //pembutan method overrid untuk atribut uniq
+        public DbSet<Company> Companies { get; set; }
 
         //pembutan method overrid untuk atribut uniq
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -75,7 +74,7 @@ namespace API.Data
             modelBuilder.Entity<Employee>()
                 .HasOne(s => s.Salary)
                 .WithOne(e => e.Employee)
-                .HasForeignKey<Employee>(s => s.Guid)
+                .HasForeignKey<Salary>(s => s.Guid)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // One Employee has Many Rating
@@ -90,6 +89,13 @@ namespace API.Data
                 .HasMany(t => t.Tests)
                 .WithOne(e => e.Employee)
                 .HasForeignKey(t => t.EmployeeGuid)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // One Employee has One Company
+            modelBuilder.Entity<Employee>()
+                .HasOne(c => c.Company)
+                .WithOne(e => e.Employee)
+                .HasForeignKey<Company>(c => c.Guid)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }
