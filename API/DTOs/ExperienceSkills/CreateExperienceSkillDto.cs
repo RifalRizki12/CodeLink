@@ -4,7 +4,6 @@ namespace API.DTOs.ExperienceSkills;
 
 public class CreateExperienceSkillDto
 {
-    public Guid Guid { get; set; }
     public Guid SkillGuid { get; set; }
     public Guid ExperienceGuid { get; set; }
     public Guid EmployeeGuid { get; set; }
@@ -16,7 +15,6 @@ public class CreateExperienceSkillDto
     {
         return new ExperienceSkill
         {
-            Guid = expSkillDto.Guid,
             SkillGuid = expSkillDto.SkillGuid,
             ExperienceGuid = expSkillDto.ExperienceGuid,
             EmployeeGuid = expSkillDto.EmployeeGuid,
