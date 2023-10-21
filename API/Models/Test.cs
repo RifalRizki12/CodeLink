@@ -12,7 +12,7 @@ namespace API.Models
         public DateTime Date { get; set; }
 
         [Column("employee_guid")]
-        public int EmployeeGuid { get; set; }
+        public Guid EmployeeGuid { get; set; }
 
         //kardinalitas
         public Employee? Employee { get; set; }
