@@ -1,6 +1,7 @@
 ﻿using API.Contracts;
 using API.DTOs.Salaries;
 using API.Models;
+using API.Repositories;
 using API.Utilities.Handler;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -157,42 +158,34 @@ namespace API.Controllers
         {
             try
             {
-                // Memanggil metode GetByGuid dari _salaryRepository untuk mendapatkan entitas yang akan dihapus.
-                var existingSalary = _salaryRepository.GetByGuid(guid);
-
-                // Memeriksa apakah entitas yang akan dihapus ada dalam database.
-                if (existingSalary is null)
+                // Mengambil data salary berdasarkan GUID
+                var entity = _salaryRepository.GetByGuid(guid);
+                // Jika data salary tidak ditemukan
+                if (entity is null)
                 {
-                    // Mengembalikan respons Not Found jika Salary tidak ditemukan.
+                    // Mengembalikan respon error dengan kode 404
                     return NotFound(new ResponseErrorHandler
                     {
                         Code = StatusCodes.Status404NotFound,
                         Status = HttpStatusCode.NotFound.ToString(),
-                        Message = "Salary Not Found"
+                        Message = "Data Not Found"
                     });
                 }
 
-                // Memanggil metode Delete dari _salaryRepository untuk menghapus data Salary.
-                var deleted = _salaryRepository.Delete(existingSalary);
+                // Menghapus data salary dari repository
+                _salaryRepository.Delete(entity);
 
-                // Memeriksa apakah penghapusan data berhasil atau gagal.
-                if (!deleted)
-                {
-                    // Mengembalikan respons BadRequest jika gagal menghapus Salary.
-                    return BadRequest("Failed to delete salary");
-                }
-
-                // Mengembalikan kode status 204 (No Content) untuk sukses penghapusan tanpa respons.
-                return NoContent();
+                // Mengembalikan pesan bahwa data telah dihapus dengan kode 200
+                return Ok(new ResponseOKHandler<string>("Data Deleted"));
             }
             catch (ExceptionHandler ex)
             {
-                // Mengembalikan respons server error jika terjadi kesalahan dalam proses.
+                // Jika terjadi error saat penghapusan, mengembalikan respon error dengan kode 500
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
-                    Message = "Failed to delete salary",
+                    Message = "Failed to create data",
                     Error = ex.Message
                 });
             }

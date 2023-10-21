@@ -1,6 +1,7 @@
 ﻿using API.Contracts;
 using API.DTOs.AccountRoles;
 using API.Models;
+using API.Repositories;
 using API.Utilities.Handler;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -188,45 +189,34 @@ namespace API.Controllers
         {
             try
             {
-                // Memanggil metode GetByGuid dari _accountRepository untuk mendapatkan entitas yang akan dihapus.
-                var existingAccount = _accountRepository.GetByGuid(guid);
-
-                // Memeriksa apakah entitas yang akan dihapus ada dalam database.
-                if (existingAccount is null)
+                // Mengambil data accountRole berdasarkan GUID
+                var entity = _accountRepository.GetByGuid(guid);
+                // Jika data accountRole tidak ditemukan
+                if (entity is null)
                 {
+                    // Mengembalikan respon error dengan kode 404
                     return NotFound(new ResponseErrorHandler
                     {
                         Code = StatusCodes.Status404NotFound,
                         Status = HttpStatusCode.NotFound.ToString(),
-                        Message = "Account not found"
+                        Message = "Data Not Found"
                     });
                 }
 
-                // Memanggil metode Delete dari _accountRepository.
-                var deleted = _accountRepository.Delete(existingAccount);
+                // Menghapus data accountRole dari repository
+                _accountRepository.Delete(entity);
 
-                // Memeriksa apakah penghapusan data berhasil atau gagal.
-                if (!deleted)
-                {
-                    return BadRequest(new ResponseErrorHandler
-                    {
-                        Code = StatusCodes.Status400BadRequest,
-                        Status = HttpStatusCode.BadRequest.ToString(),
-                        Message = "Failed to delete account"
-                    });
-                }
-
-                // Mengembalikan kode status 204 (No Content) untuk sukses penghapusan tanpa respons.
-                return NoContent();
+                // Mengembalikan pesan bahwa data telah dihapus dengan kode 200
+                return Ok(new ResponseOKHandler<string>("Data Deleted"));
             }
             catch (ExceptionHandler ex)
             {
-                // Jika terjadi pengecualian saat menghapus data, akan mengembalikan respons kesalahan dengan pesan pengecualian.
+                // Jika terjadi error saat penghapusan, mengembalikan respon error dengan kode 500
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
-                    Message = "Failed to delete account",
+                    Message = "Failed to create data",
                     Error = ex.Message
                 });
             }

@@ -157,42 +157,34 @@ namespace API.Controllers
         {
             try
             {
-                // Memanggil metode GetByGuid dari _roleRepository untuk mendapatkan entitas yang akan dihapus.
-                var existingRole = _roleRepository.GetByGuid(guid);
-
-                // Memeriksa apakah entitas yang akan dihapus ada dalam database.
-                if (existingRole is null)
+                // Mengambil data role berdasarkan GUID
+                var entity = _roleRepository.GetByGuid(guid);
+                // Jika data role tidak ditemukan
+                if (entity is null)
                 {
-                    // Mengembalikan respons Not Found jika Role tidak ditemukan.
+                    // Mengembalikan respon error dengan kode 404
                     return NotFound(new ResponseErrorHandler
                     {
                         Code = StatusCodes.Status404NotFound,
                         Status = HttpStatusCode.NotFound.ToString(),
-                        Message = "Role Not Found"
+                        Message = "Data Not Found"
                     });
                 }
 
-                // Memanggil metode Delete dari _roleRepository untuk menghapus data Role.
-                var deleted = _roleRepository.Delete(existingRole);
+                // Menghapus data role dari repository
+                _roleRepository.Delete(entity);
 
-                // Memeriksa apakah penghapusan data berhasil atau gagal.
-                if (!deleted)
-                {
-                    // Mengembalikan respons BadRequest jika gagal menghapus Role.
-                    return BadRequest("Failed to delete role");
-                }
-
-                // Mengembalikan kode status 204 (No Content) untuk sukses penghapusan tanpa respons.
-                return NoContent();
+                // Mengembalikan pesan bahwa data telah dihapus dengan kode 200
+                return Ok(new ResponseOKHandler<string>("Data Deleted"));
             }
             catch (ExceptionHandler ex)
             {
-                // Mengembalikan respons server error jika terjadi kesalahan dalam proses.
+                // Jika terjadi error saat penghapusan, mengembalikan respon error dengan kode 500
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
-                    Message = "Failed to delete role",
+                    Message = "Failed to create data",
                     Error = ex.Message
                 });
             }
