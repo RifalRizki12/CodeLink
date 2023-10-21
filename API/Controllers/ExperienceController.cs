@@ -121,7 +121,7 @@ namespace API.Controllers
 
 
                 // Mengembalikan pesan sukses dalam respons OK.
-                return Ok(new ResponseOKHandler<string>("Data Has Been Deleted"));
+                return Ok(new ResponseOKHandler<string>("Data Has Been Updated"));
             }
             catch (ExceptionHandler ex)
             {
@@ -153,7 +153,7 @@ namespace API.Controllers
                     {
                         Code = StatusCodes.Status404NotFound,
                         Status = HttpStatusCode.NotFound.ToString(),
-                        Message = "experience Not Found"
+                        Message = "Experience Not Found"
                     });
                 }
 
