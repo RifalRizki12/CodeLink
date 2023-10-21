@@ -1,9 +1,9 @@
-﻿using API.DTOs.Tests;
+﻿using API.DTOs.Interviews;
 using FluentValidation;
 
 namespace API.Utilities.Validations.Test
 {
-    public class CreateTestValidator : AbstractValidator<CreateTestDto>
+    public class CreateTestValidator : AbstractValidator<CreateInterviewDto>
     {
         public CreateTestValidator()
         {

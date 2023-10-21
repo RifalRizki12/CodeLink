@@ -17,7 +17,7 @@ namespace API.Data
         public DbSet<Role> Roles { get; set; }
         public DbSet<Salary> Salaries { get; set; }
         public DbSet<Skill> Skills { get; set; }
-        public DbSet<Test> Tests { get; set; }
+        public DbSet<Interview> Tests { get; set; }
         public DbSet<Company> Companies { get; set; }
 
         //pembutan method overrid untuk atribut uniq

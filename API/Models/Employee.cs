@@ -39,7 +39,7 @@ namespace API.Models
         public Salary? Salary { get; set; }
         public ICollection<Rating>? Ratings { get; set; }
         public Account? Account { get; set; }
-        public ICollection<Test>? Tests { get; set; }
+        public ICollection<Interview>? Tests { get; set; }
         public Company? Company { get; set; }
         public ICollection<Company>? Companies { get; set; }
         
