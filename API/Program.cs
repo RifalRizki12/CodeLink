@@ -18,6 +18,13 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<CodeLinkDbContext>(option => option.UseSqlServer(connectionString));
 
+// Add email service to the container
+builder.Services.AddTransient<IEmailHandler, EmailHandler>(_ => new EmailHandler(
+                                                            builder.Configuration["SmtpService:Host"],
+                                                            int.Parse(builder.Configuration["SmtpService:Port"]),
+                                                            builder.Configuration["SmtpService:FromEmailAddress"]));
+
+
 builder.Services.AddScoped<ITokenHandlers, API.Utilities.Handler.TokenHandler>();
 
 // Add repositories to the container.
@@ -108,6 +115,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                ClockSkew = TimeSpan.Zero
            };
        });
+
+// Add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin();
+        //policy.WithOrigins();
+        policy.AllowAnyHeader();
+        policy.WithMethods("GET", "POST", "DELETE", "PUT");
+    });
+});
 
 var app = builder.Build();
 

@@ -101,6 +101,9 @@ namespace API.Controllers
         [AllowAnonymous]
         public IActionResult ForgotPassword(string email)
         {
+            // Cari akun berdasarkan email
+            var account = _accountRepository.GetByEmployeeEmail(email);
+
             var employees = _employeeRepository.GetAll();
             var accounts = _accountRepository.GetAll();
 
@@ -125,9 +128,6 @@ namespace API.Controllers
                 });
             }
 
-            // Cari akun berdasarkan email
-            var account = _accountRepository.GetByEmployeeEmail(email);
-
             if (account == null)
             {
                 return NotFound(new ResponseErrorHandler
@@ -151,18 +151,16 @@ namespace API.Controllers
 
             _emailHandler.Send("Forgot Password", $"Your OTP is {account.Otp}", email);
 
-            // Melakukan join antara tabel Employee, Education, dan University
-            var accountDetails = from ac in accounts
-                                 join emp in employees on ac.Guid equals emp.Guid
-                                 select new ForgotPasswordDto
-                                 {
-                                     Email = emp.Email,
-                                     Otp = ac.Otp,
-                                     IsUsed = ac.IsUsed,
-                                     ExpiredTime = ac.ExpiredTime,
-                                 };
+            // Buat entitas ForgotPasswordDto untuk respons
+            var accountDetails = new ForgotPasswordDto
+            {
+                Email = email,
+                Otp = account.Otp,
+                IsUsed = account.IsUsed,
+                ExpiredTime = account.ExpiredTime
+            };
 
-            return Ok(new ResponseOKHandler<IEnumerable<ForgotPasswordDto>>(accountDetails));
+            return Ok(new ResponseOKHandler<ForgotPasswordDto>(accountDetails));
         }
 
         // Metode untuk mengganti kata sandi
