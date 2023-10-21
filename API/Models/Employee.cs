@@ -32,5 +32,6 @@ namespace API.Models
         public ICollection<Rating>? Ratings { get; set; }
         public Account? Account { get; set; }
         public ICollection<Test>? Tests { get; set; }
+        public Company? Company { get; set; }
     }
 }

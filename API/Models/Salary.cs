@@ -2,6 +2,7 @@
 
 namespace API.Models
 {
+    [Table("tb_m_salaries")]
     public class Salary : BaseEntity
     {
         [Column("basic_salary")]
