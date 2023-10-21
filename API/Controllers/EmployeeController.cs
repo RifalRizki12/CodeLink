@@ -29,7 +29,6 @@ namespace API.Controllers
         }
 
         [HttpPost("registerClient")]
-        //[AllowAnonymous]
         public IActionResult RegisterClient([FromBody] RegisterClientDto request)
         {
             // Validasi apakah kata sandi dan konfirmasi kata sandi cocok
@@ -47,33 +46,34 @@ namespace API.Controllers
             {
                 try
                 {
-
-                    // Hash password menggunakan bcrypt
-                    string hashedPassword = HashHandler.HashPassword(request.Password);
-
-                    // Konversi RegisterDto ke Employee entity menggunakan operator konversi implisit
-                    Employee newEmployeeEntity = request;
+                    
+                    // Buat entitas Employee yang merupakan pemilik
+                    Employee ownerEmployee = request; // Metode ekspresif yang mengkonversi DTO ke Employee
 
                     // Simpan Employee dalam repository
-                    var resultEmp = _employeeRepository.Create(newEmployeeEntity);
+                    var resultEmp = _employeeRepository.Create(ownerEmployee);
 
-                    // Hubungkan Employee dengan Company
-                    Company newCompanyEntity = request; // Menggunakan operator konversi implisit
-                    newCompanyEntity.Guid = resultEmp.Guid;
-                    var resultEdu = _companyRepository.Create(newCompanyEntity);
+                    // Buat entitas Company dan hubungkan dengan Employee pemilik
+                    Company company = request; // Metode ekspresif yang mengkonversi DTO ke Company
+                    company.EmployeeGuid = resultEmp.Guid; // Hubungkan Company dengan Employee pemilik
+
+                    // Simpan Company dalam repository
+                    var resultEdu = _companyRepository.Create(company);
 
                     // Buat objek Account dari RegisterDto
-                    Account newAccountEntity = request; // Menggunakan operator konversi implisit
-                    newAccountEntity.Password = hashedPassword;
-                    newAccountEntity.Guid = newEmployeeEntity.Guid;
+                    Account account = request; // Metode ekspresif yang mengkonversi DTO ke Account
+                    account.Password = HashHandler.HashPassword(request.Password);
+
+                    // Hubungkan Account dengan Employee pemilik
+                    account.Guid = resultEmp.Guid;
 
                     // Simpan Account dalam repository
-                    var resultAcc = _accountRepository.Create(newAccountEntity);
+                    var resultAcc = _accountRepository.Create(account);
 
                     //Generate add role user
                     var accountRole = _accountRoleRepository.Create(new AccountRole
                     {
-                        AccountGuid = newEmployeeEntity.Guid,
+                        AccountGuid = resultEmp.Guid,
                         RoleGuid = _roleRepository.GetDefaultGuid() ?? throw new Exception("Default role not found")
                     });
 
