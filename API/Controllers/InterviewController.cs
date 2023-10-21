@@ -1,6 +1,7 @@
 ﻿using API.Contracts;
-using API.DTOs.Tests;
+using API.DTOs.Interviews;
 using API.Models;
+using API.Repositories;
 using API.Utilities.Handler;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -9,85 +10,85 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TestController : ControllerBase
+    public class InterviewController : ControllerBase
     {
-        private readonly ITestRepository _testRepository;
+        private readonly IInterviewRepository _interviewRepository;
 
-        public TestController(ITestRepository testRepository)
+        public InterviewController(IInterviewRepository interviewRepository)
         {
-            _testRepository = testRepository;
+            _interviewRepository = interviewRepository;
         }
 
-        // GET api/test
+        // GET api/interview
         [HttpGet]
         public IActionResult GetAll()
         {
-            // Memanggil metode GetAll dari _testRepository untuk mendapatkan semua data Test.
-            var result = _testRepository.GetAll();
+            // Memanggil metode GetAll dari _interviewRepository untuk mendapatkan semua data Interview.
+            var result = _interviewRepository.GetAll();
 
             // Memeriksa apakah hasil query tidak mengandung data.
             if (!result.Any())
             {
-                // Mengembalikan respons Not Found jika tidak ada data Test.
+                // Mengembalikan respons Not Found jika tidak ada data Interview.
                 return NotFound(new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
-                    Message = "Data Test Not Found"
+                    Message = "Data Interview Not Found"
                 });
             }
 
             // Mengonversi hasil query ke objek DTO (Data Transfer Object) menggunakan Select.
-            var data = result.Select(x => (TestDto)x);
+            var data = result.Select(x => (InterviewDto)x);
 
             // Mengembalikan data yang ditemukan dalam respons OK.
-            return Ok(new ResponseOKHandler<IEnumerable<TestDto>>(data));
+            return Ok(new ResponseOKHandler<IEnumerable<InterviewDto>>(data));
         }
 
-        // GET api/test/{guid}
+        // GET api/interview/{guid}
         [HttpGet("{guid}")]
         public IActionResult GetByGuid(Guid guid)
         {
-            // Memanggil metode GetByGuid dari _testRepository dengan parameter GUID.
-            var result = _testRepository.GetByGuid(guid);
+            // Memanggil metode GetByGuid dari _interviewRepository dengan parameter GUID.
+            var result = _interviewRepository.GetByGuid(guid);
 
             // Memeriksa apakah hasil query tidak ditemukan (null).
             if (result is null)
             {
-                // Mengembalikan respons Not Found jika data Test dengan GUID tertentu tidak ditemukan.
+                // Mengembalikan respons Not Found jika data Interview dengan GUID tertentu tidak ditemukan.
                 return NotFound(new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
-                    Message = "Test Data with Specific GUID Not Found"
+                    Message = "Interview Data with Specific GUID Not Found"
                 });
             }
 
             // Mengonversi hasil query ke objek DTO (Data Transfer Object).
-            return Ok(new ResponseOKHandler<TestDto>((TestDto)result));
+            return Ok(new ResponseOKHandler<InterviewDto>((InterviewDto)result));
         }
 
-        // POST api/test
+        // POST api/interview
         [HttpPost]
-        public IActionResult Create(CreateTestDto testDto)
+        public IActionResult Create(CreateInterviewDto interviewDto)
         {
             try
             {
-                // Mengonversi DTO CreateTestDto menjadi objek Test.
-                Test toCreate = testDto;
+                // Mengonversi DTO CreateInterviewDto menjadi objek Interview.
+                Interview toCreate = interviewDto;
 
-                // Memanggil metode Create dari _testRepository untuk membuat data Test baru.
-                var result = _testRepository.Create(toCreate);
+                // Memanggil metode Create dari _interviewRepository untuk membuat data Interview baru.
+                var result = _interviewRepository.Create(toCreate);
 
                 // Memeriksa apakah penciptaan data berhasil atau gagal.
                 if (result is null)
                 {
-                    // Mengembalikan respons BadRequest jika gagal membuat data Test.
+                    // Mengembalikan respons BadRequest jika gagal membuat data Interview.
                     return BadRequest("Failed to create data");
                 }
 
                 // Mengembalikan data yang berhasil dibuat dalam respons OK.
-                return Ok(new ResponseOKHandler<TestDto>((TestDto)result));
+                return Ok(new ResponseOKHandler<InterviewDto>((InterviewDto)result));
             }
             catch (ExceptionHandler ex)
             {
@@ -102,36 +103,36 @@ namespace API.Controllers
             }
         }
 
-        // PUT api/test
+        // PUT api/interview
         [HttpPut]
-        public IActionResult Update(TestDto testDto)
+        public IActionResult Update(InterviewDto interviewDto)
         {
             try
             {
-                // Memeriksa apakah entitas Test yang akan diperbarui ada dalam database.
-                var entity = _testRepository.GetByGuid(testDto.Guid);
+                // Memeriksa apakah entitas Interview yang akan diperbarui ada dalam database.
+                var entity = _interviewRepository.GetByGuid(interviewDto.Guid);
                 if (entity is null)
                 {
-                    // Mengembalikan respons Not Found jika Test dengan GUID tertentu tidak ditemukan.
+                    // Mengembalikan respons Not Found jika Interview dengan GUID tertentu tidak ditemukan.
                     return NotFound(new ResponseErrorHandler
                     {
                         Code = StatusCodes.Status404NotFound,
                         Status = HttpStatusCode.NotFound.ToString(),
-                        Message = "Test with Specific GUID Not Found"
+                        Message = "Interview with Specific GUID Not Found"
                     });
                 }
 
                 // Menyalin nilai CreatedDate dari entitas yang ada ke entitas yang akan diperbarui.
-                Test toUpdate = testDto;
+                Interview toUpdate = interviewDto;
                 toUpdate.CreatedDate = entity.CreatedDate;
 
-                // Memanggil metode Update dari _testRepository untuk memperbarui data Test.
-                var result = _testRepository.Update(toUpdate);
+                // Memanggil metode Update dari _interviewRepository untuk memperbarui data Interview.
+                var result = _interviewRepository.Update(toUpdate);
 
                 // Memeriksa apakah pembaruan data berhasil atau gagal.
                 if (!result)
                 {
-                    // Mengembalikan respons BadRequest jika gagal memperbarui data Test.
+                    // Mengembalikan respons BadRequest jika gagal memperbarui data Interview.
                     return BadRequest("Failed to update data");
                 }
 
@@ -151,48 +152,40 @@ namespace API.Controllers
             }
         }
 
-        // DELETE api/test/{guid}
+        // DELETE api/interview/{guid}
         [HttpDelete("{guid}")]
         public IActionResult Delete(Guid guid)
         {
             try
             {
-                // Memanggil metode GetByGuid dari _testRepository untuk mendapatkan entitas yang akan dihapus.
-                var existingTest = _testRepository.GetByGuid(guid);
-
-                // Memeriksa apakah entitas yang akan dihapus ada dalam database.
-                if (existingTest is null)
+                // Mengambil data interview berdasarkan GUID
+                var entity = _interviewRepository.GetByGuid(guid);
+                // Jika data interview tidak ditemukan
+                if (entity is null)
                 {
-                    // Mengembalikan respons Not Found jika Test tidak ditemukan.
+                    // Mengembalikan respon error dengan kode 404
                     return NotFound(new ResponseErrorHandler
                     {
                         Code = StatusCodes.Status404NotFound,
                         Status = HttpStatusCode.NotFound.ToString(),
-                        Message = "Test Not Found"
+                        Message = "Data Not Found"
                     });
                 }
 
-                // Memanggil metode Delete dari _testRepository untuk menghapus data Test.
-                var deleted = _testRepository.Delete(existingTest);
+                // Menghapus data interview dari repository
+                _interviewRepository.Delete(entity);
 
-                // Memeriksa apakah penghapusan data berhasil atau gagal.
-                if (!deleted)
-                {
-                    // Mengembalikan respons BadRequest jika gagal menghapus Test.
-                    return BadRequest("Failed to delete test");
-                }
-
-                // Mengembalikan kode status 204 (No Content) untuk sukses penghapusan tanpa respons.
-                return NoContent();
+                // Mengembalikan pesan bahwa data telah dihapus dengan kode 200
+                return Ok(new ResponseOKHandler<string>("Data Deleted"));
             }
             catch (ExceptionHandler ex)
             {
-                // Mengembalikan respons server error jika terjadi kesalahan dalam proses.
+                // Jika terjadi error saat penghapusan, mengembalikan respon error dengan kode 500
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
-                    Message = "Failed to delete test",
+                    Message = "Failed to create data",
                     Error = ex.Message
                 });
             }

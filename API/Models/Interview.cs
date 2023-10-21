@@ -2,8 +2,8 @@
 
 namespace API.Models
 {
-    [Table("tb_m_test")]
-    public class Test : BaseEntity
+    [Table("tb_m_interviews")]
+    public class Interview : BaseEntity
     {
         [Column("name", TypeName = "nvarchar(100)")]
         public string Name { get; set; }

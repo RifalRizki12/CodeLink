@@ -2,22 +2,22 @@
 using API.Models;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace API.DTOs.Tests
+namespace API.DTOs.Interviews
 {
-    public class CreateTestDto
+    public class CreateInterviewDto
     {
         public string Name { get; set; }
         public DateTime Date { get; set; }
         public Guid EmployeeGuid { get; set; }
 
 
-        public static implicit operator Test(CreateTestDto createTestDto)
+        public static implicit operator Interview(CreateInterviewDto createInterviewDto)
         {
-            return new Test
+            return new Interview
             {
-                Name = createTestDto.Name,
-                Date = createTestDto.Date,
-                EmployeeGuid = createTestDto.EmployeeGuid,
+                Name = createInterviewDto.Name,
+                Date = createInterviewDto.Date,
+                EmployeeGuid = createInterviewDto.EmployeeGuid,
                 CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now
             };
