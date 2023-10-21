@@ -97,6 +97,49 @@ namespace API.Controllers
             }
         }
 
+        [HttpGet("allClient-details")]
+        public IActionResult GetAllClientDetails()
+        {
+            try
+            {
+
+                // pengambilan data dari tabel Employee
+                var employees = _employeeRepository.GetAll();
+
+                // pengambilan data dari tabel Company
+                var companies = _companyRepository.GetAll();
+
+                // pengambilan data dari tabel Account
+                var accounts = _accountRepository.GetAll();
+
+                // Gabungkan data dari tabel sesuai dengan hubungannya
+                var clientDetails = (from emp in employees
+                                     join com in companies on emp.Guid equals com.EmployeeGuid
+                                     join acc in accounts on emp.Guid equals acc.Guid
+                                     select new ClientDetailDto
+                                     {
+                                         FullName = $"{emp.FirstName} {emp.LastName}",
+                                         Gender = emp.Gender.ToString(),
+                                         Email = emp.Email,
+                                         PhoneNumber = emp.PhoneNumber,
+                                         StatusEmployee = emp.Status,
+                                         NameCompany = com.Name,
+                                         Address = com.Address
+                                     }).ToList();
+
+                return Ok(new ResponseOKHandler<IEnumerable<ClientDetailDto>>(clientDetails));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseErrorHandler
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Message = "Failed to retrieve client details. " + ex.Message
+                });
+            }
+        }
+
         // GET api/employee
         [HttpGet]
         public IActionResult GetAll()
