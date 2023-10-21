@@ -9,7 +9,7 @@ namespace API.Models
         public int Rate { get; set; }
 
         [Column("employee_guid")]
-        public int EmployeeGuid { get; set; }
+        public Guid EmployeeGuid { get; set; }
 
         //kardinalitas
         public Employee? Employee { get; set; }
