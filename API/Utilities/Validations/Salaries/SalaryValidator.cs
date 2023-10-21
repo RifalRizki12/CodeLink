@@ -13,8 +13,7 @@ namespace API.Utilities.Validations.Salaries
             RuleFor(e => e.BasicSalary)
                .NotEmpty();
 
-            RuleFor(e => e.OvertimePay)
-               .NotEmpty();
+
         }
     }
 }

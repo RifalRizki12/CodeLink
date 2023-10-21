@@ -7,7 +7,7 @@ namespace API.DTOs.Salaries
     {
         public Guid Guid { get; set; }
         public int BasicSalary { get; set; }
-        public int OvertimePay { get; set; }
+        public int? OvertimePay { get; set; }
 
 
 
