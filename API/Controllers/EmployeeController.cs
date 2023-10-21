@@ -1,4 +1,5 @@
 ﻿using API.Contracts;
+using API.DTOs.Accounts;
 using API.DTOs.Employees;
 using API.Models;
 using API.Utilities.Handler;
@@ -16,13 +17,84 @@ namespace API.Controllers
         private readonly IAccountRepository _accountRepository;
         private readonly IAccountRoleRepository _accountRoleRepository;
         private readonly IRoleRepository _roleRepository;
+        private readonly ICompanyRepository _companyRepository;
 
-        public EmployeeController(IEmployeeRepository employeeRepository, IAccountRepository accountRepository, IAccountRoleRepository accountRoleRepository, IRoleRepository roleRepository)
+        public EmployeeController(IEmployeeRepository employeeRepository, IAccountRepository accountRepository, IAccountRoleRepository accountRoleRepository, IRoleRepository roleRepository, ICompanyRepository companyRepository)
         {
             _employeeRepository = employeeRepository;
             _accountRepository = accountRepository;
             _accountRoleRepository = accountRoleRepository;
             _roleRepository = roleRepository;
+            _companyRepository = companyRepository;
+        }
+
+        [HttpPost("registerClient")]
+        //[AllowAnonymous]
+        public IActionResult RegisterClient([FromBody] RegisterClientDto request)
+        {
+            // Validasi apakah kata sandi dan konfirmasi kata sandi cocok
+            if (request.Password != request.ConfirmPassword)
+            {
+                return BadRequest(new ResponseErrorHandler
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Message = "Password and ConfirmPassword do not match."
+                });
+            }
+
+            using (var transactionScope = new TransactionScope())
+            {
+                try
+                {
+
+                    // Hash password menggunakan bcrypt
+                    string hashedPassword = HashHandler.HashPassword(request.Password);
+
+                    // Konversi RegisterDto ke Employee entity menggunakan operator konversi implisit
+                    Employee newEmployeeEntity = request;
+
+                    // Simpan Employee dalam repository
+                    var resultEmp = _employeeRepository.Create(newEmployeeEntity);
+
+                    // Hubungkan Employee dengan Company
+                    Company newCompanyEntity = request; // Menggunakan operator konversi implisit
+                    newCompanyEntity.Guid = resultEmp.Guid;
+                    var resultEdu = _companyRepository.Create(newCompanyEntity);
+
+                    // Buat objek Account dari RegisterDto
+                    Account newAccountEntity = request; // Menggunakan operator konversi implisit
+                    newAccountEntity.Password = hashedPassword;
+                    newAccountEntity.Guid = newEmployeeEntity.Guid;
+
+                    // Simpan Account dalam repository
+                    var resultAcc = _accountRepository.Create(newAccountEntity);
+
+                    //Generate add role user
+                    var accountRole = _accountRoleRepository.Create(new AccountRole
+                    {
+                        AccountGuid = newEmployeeEntity.Guid,
+                        RoleGuid = _roleRepository.GetDefaultGuid() ?? throw new Exception("Default role not found")
+                    });
+
+                    // Commit transaksi jika semua operasi berhasil
+                    transactionScope.Complete();
+
+                    return Ok(new ResponseOKHandler<string>("Registration successful, Waiting for Admin Approval"));
+                }
+                catch (Exception ex)
+                {
+                    // Rollback transaksi jika terjadi kesalahan
+                    transactionScope.Dispose();
+
+                    return BadRequest(new ResponseErrorHandler
+                    {
+                        Code = StatusCodes.Status400BadRequest,
+                        Status = HttpStatusCode.BadRequest.ToString(),
+                        Message = "Registration failed. " + ex.Message
+                    });
+                }
+            }
         }
 
         // GET api/employee
