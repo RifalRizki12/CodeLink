@@ -15,7 +15,7 @@
         public string Position { get; set; }
         public string CompanyExperience { get; set; }
         public string EmployeeOwner { get; set; }
-        public string CompanyOwner { get; set; }
+        public Guid EmployeeGuid { get; set; }
 
     }
 }
