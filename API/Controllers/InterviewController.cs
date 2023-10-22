@@ -1,10 +1,13 @@
 ﻿using API.Contracts;
+using API.Data;
 using API.DTOs.Interviews;
 using API.Models;
 using API.Repositories;
 using API.Utilities.Handler;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Security.Principal;
 
 namespace API.Controllers
 {
@@ -13,10 +16,17 @@ namespace API.Controllers
     public class InterviewController : ControllerBase
     {
         private readonly IInterviewRepository _interviewRepository;
+        private readonly IEmailHandler _emailHandler;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IEmployeeRepository _employeeRepository;
 
-        public InterviewController(IInterviewRepository interviewRepository)
+
+        public InterviewController(IInterviewRepository interviewRepository, IEmailHandler emailHandler, IEmployeeRepository employeeRepository, IAccountRepository accountRepository)
         {
             _interviewRepository = interviewRepository;
+            _emailHandler = emailHandler;
+            _employeeRepository = employeeRepository;
+            _accountRepository = accountRepository;
         }
 
         // GET api/interview
@@ -87,6 +97,21 @@ namespace API.Controllers
                     return BadRequest("Failed to create data");
                 }
 
+                // Get employee dengan role "admin"
+                var adminEmployee = _employeeRepository.GetAdminEmployee();
+
+                if (adminEmployee != null)
+                {
+                    _emailHandler.Send("Interview Schedule", $"Your Schedule {interviewDto.Name} at {interviewDto.Date}", adminEmployee.Email);
+                }
+
+                // Mengirim email ke employee dengan GUID tertentu
+                var specificEmployee = _employeeRepository.GetByGuid(interviewDto.EmployeeGuid); // Ganti dengan metode yang sesuai
+                if (specificEmployee != null)
+                {
+                    _emailHandler.Send("Interview Schedule", $"Your Schedule {interviewDto.Name} at {interviewDto.Date}", specificEmployee.Email);
+                }
+
                 // Mengembalikan data yang berhasil dibuat dalam respons OK.
                 return Ok(new ResponseOKHandler<InterviewDto>((InterviewDto)result));
             }
@@ -102,6 +127,9 @@ namespace API.Controllers
                 });
             }
         }
+
+
+
 
         // PUT api/interview
         [HttpPut]
