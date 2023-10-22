@@ -13,5 +13,10 @@ namespace API.Repositories
             // Mengambil role dengan nama "user" dari database
             return _context.Set<Role>().FirstOrDefault(r => r.Name == "perusahaan")?.Guid;
         }
+
+        public Guid? GetDefaultClient()
+        {
+            return _context.Set<Role>().FirstOrDefault(r => r.Name == "idle")?.Guid;
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace API.Models
         public string PhoneNumber { get; set; }
 
         [Column("status")]
-        public string Status { get; set; }
+        public string? Status { get; set; }
 
         [Column("hire_date")]
         public DateTime? HireDate { get; set; }

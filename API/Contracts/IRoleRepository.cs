@@ -5,5 +5,6 @@ namespace API.Contracts
     public interface IRoleRepository : IGeneralRepository<Role>
     {
         Guid? GetDefaultGuid();
+        Guid? GetDefaultClient();
     }
 }

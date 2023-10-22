@@ -2,6 +2,7 @@
 using API.DTOs.Accounts;
 using API.DTOs.Employees;
 using API.Models;
+using API.Repositories;
 using API.Utilities.Handler;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -18,14 +19,20 @@ namespace API.Controllers
         private readonly IAccountRoleRepository _accountRoleRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly ICompanyRepository _companyRepository;
+        private readonly IExperienceSkillRepository _experienceSkillRepository;
+        private readonly IExperienceRepository _experienceRepository;
+        private readonly ISkillRepository _skillRepository;
 
-        public EmployeeController(IEmployeeRepository employeeRepository, IAccountRepository accountRepository, IAccountRoleRepository accountRoleRepository, IRoleRepository roleRepository, ICompanyRepository companyRepository)
+        public EmployeeController(IEmployeeRepository employeeRepository, IAccountRepository accountRepository, IAccountRoleRepository accountRoleRepository, IRoleRepository roleRepository, ICompanyRepository companyRepository, IExperienceSkillRepository experienceSkillRepository, IExperienceRepository experienceRepository, ISkillRepository skillRepository)
         {
             _employeeRepository = employeeRepository;
             _accountRepository = accountRepository;
             _accountRoleRepository = accountRoleRepository;
             _roleRepository = roleRepository;
             _companyRepository = companyRepository;
+            _experienceSkillRepository = experienceSkillRepository;
+            _experienceRepository = experienceRepository;
+            _skillRepository = skillRepository;
         }
 
         [HttpPost("registerClient")]
@@ -137,6 +144,82 @@ namespace API.Controllers
                     Status = HttpStatusCode.BadRequest.ToString(),
                     Message = "Failed to retrieve client details. " + ex.Message
                 });
+            }
+        }
+
+        [HttpPost("registerIdle")]
+        public IActionResult RegisterIdle([FromBody] RegisterIdleDto request)
+        {
+            // Validasi apakah kata sandi dan konfirmasi kata sandi cocok
+            if (request.Password != request.ConfirmPassword)
+            {
+                return BadRequest(new ResponseErrorHandler
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Message = "Password and ConfirmPassword do not match."
+                });
+            }
+
+            using (var transactionScope = new TransactionScope())
+            {
+                try
+                {
+                    // Konversi RegisterIdleDto ke entitas Employee, Account, Experience, dan Skills menggunakan operator konversi implisit
+                    Employee employee = request;
+                    Account account = request;
+                    Experience experience = request;
+                    List<Skill> skills = request;
+
+                    // Simpan Employee dalam repository
+                    var resultEmp = _employeeRepository.Create(employee);
+
+                    // Simpan Account dalam repository
+                    account.Guid = resultEmp.Guid;
+                    account.Password = HashHandler.HashPassword(request.Password);
+                    var resultAcc = _accountRepository.Create(account);
+
+                    // Simpan Experience dalam repository
+                    var resultExp = _experienceRepository.Create(experience);
+
+                    // Simpan Skills dalam repository
+                    foreach (var skill in skills)
+                    {
+                        var resultSkl = _skillRepository.Create(skill);
+
+                        //Generate add Experience_Skill
+                        var experienceSkill = _experienceSkillRepository.Create(new ExperienceSkill
+                        {
+                            EmployeeGuid = resultEmp.Guid,
+                            ExperienceGuid = resultExp?.Guid,
+                            SkillGuid = resultSkl?.Guid,
+                        });
+                    }
+
+                    //Generate add role user
+                    var accountRole = _accountRoleRepository.Create(new AccountRole
+                    {
+                        AccountGuid = resultEmp.Guid,
+                        RoleGuid = _roleRepository.GetDefaultClient() ?? throw new Exception("Default role not found")
+                    });
+
+                    // Commit transaksi jika semua operasi berhasil
+                    transactionScope.Complete();
+
+                    return Ok(new ResponseOKHandler<string>("Registration successful !"));
+                }
+                catch (Exception ex)
+                {
+                    // Rollback transaksi jika terjadi kesalahan
+                    transactionScope.Dispose();
+
+                    return BadRequest(new ResponseErrorHandler
+                    {
+                        Code = StatusCodes.Status400BadRequest,
+                        Status = HttpStatusCode.BadRequest.ToString(),
+                        Message = "Registration failed. " + ex.Message
+                    });
+                }
             }
         }
 
