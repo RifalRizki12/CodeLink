@@ -24,8 +24,9 @@ namespace API.Controllers
         private readonly IExperienceSkillRepository _experienceSkillRepository;
         private readonly IExperienceRepository _experienceRepository;
         private readonly ISkillRepository _skillRepository;
+        private readonly IRatingRepository _ratingRepository;
 
-        public EmployeeController(IEmployeeRepository employeeRepository, IAccountRepository accountRepository, IAccountRoleRepository accountRoleRepository, IRoleRepository roleRepository, ICompanyRepository companyRepository, IExperienceSkillRepository experienceSkillRepository, IExperienceRepository experienceRepository, ISkillRepository skillRepository)
+        public EmployeeController(IEmployeeRepository employeeRepository, IAccountRepository accountRepository, IAccountRoleRepository accountRoleRepository, IRoleRepository roleRepository, ICompanyRepository companyRepository, IExperienceSkillRepository experienceSkillRepository, IExperienceRepository experienceRepository, ISkillRepository skillRepository, IRatingRepository ratingRepository)
         {
             _employeeRepository = employeeRepository;
             _accountRepository = accountRepository;
@@ -35,6 +36,7 @@ namespace API.Controllers
             _experienceSkillRepository = experienceSkillRepository;
             _experienceRepository = experienceRepository;
             _skillRepository = skillRepository;
+            _ratingRepository = ratingRepository;
         }
 
 
@@ -371,7 +373,8 @@ namespace API.Controllers
                 });
             }
         }
-        [HttpGet("details")]
+
+        [HttpGet("detailsIdle")]
         public IActionResult GetDetails()
         {
             var employees = _employeeRepository.GetAll();
@@ -379,6 +382,7 @@ namespace API.Controllers
             var skills = _skillRepository.GetAll();
             var experiences = _experienceRepository.GetAll();
             var experienceSkills = _experienceSkillRepository.GetAll();
+            var ratings = _ratingRepository.GetAll();
 
             if (!(employees.Any() && companies.Any() && skills.Any() && experiences.Any() && experienceSkills.Any()))
             {
@@ -390,24 +394,29 @@ namespace API.Controllers
                 });
             }
 
+            var avgRatings = from rate in ratings
+                             group rate by rate.EmployeeGuid into ratingGroup
+                             select new
+                             {
+                                 EmployeeGuid = ratingGroup.Key,
+                                 AvgRating = ratingGroup.Average(r => r.Rate)
+                             };
+
+
             var employeeDetails = from emp in employees
                                   join expSkill in experienceSkills on emp.Guid equals expSkill.EmployeeGuid into expSkillJoined
                                   from expSkillResult in expSkillJoined.DefaultIfEmpty()
-
                                   join exp in experiences on expSkillResult?.ExperienceGuid equals exp.Guid into expJoined
                                   from expResult in expJoined.DefaultIfEmpty()
-
                                   join skill in skills on expSkillResult?.SkillGuid equals skill.Guid into skillJoined
                                   from skillResult in skillJoined.DefaultIfEmpty()
-
                                   join com in companies on emp.CompanyGuid equals com.Guid into companyJoined
                                   from company in companyJoined.DefaultIfEmpty()
-
                                   join owner in employees on company?.EmployeeGuid equals owner.Guid into ownerJoined
                                   from companyOwner in ownerJoined.DefaultIfEmpty()
-
-                                  where emp.Status == "pekerja"
-
+                                  join avgRate in avgRatings on emp.Guid equals avgRate.EmployeeGuid into avgRatingJoined
+                                  from avgRatingResult in avgRatingJoined.DefaultIfEmpty()
+                                  where emp.Status == "pekerja"|| emp.Status=="idle"
                                   select new EmployeeDetailDto
                                   {
                                       FullName = emp.FirstName + " " + emp.LastName,
@@ -415,19 +424,17 @@ namespace API.Controllers
                                       Email = emp.Email,
                                       PhoneNumber = emp.PhoneNumber,
                                       StatusEmployee = emp.Status,
+                                      AverageRating = avgRatingResult?.AvgRating ?? 0,
                                       HardSkill = skillResult?.Hard ?? "N/A",
                                       SoftSkill = skillResult?.Soft ?? "N/A",
                                       NameCompany = company?.Name ?? "N/A",
                                       Address = company?.Address ?? "N/A",
-                                      EmployeeGuid = company?.EmployeeGuid ?? Guid.Empty, // Mengambil EmployeeGuid dari tabel Company
-                                      EmployeeOwner = companyOwner?.FirstName + " " + companyOwner?.LastName ?? "N/A", // FullName dari EmployeeGuid pada Company
+                                      OwnerGuid = company?.EmployeeGuid ?? Guid.Empty,
+                                      EmployeeOwner = companyOwner?.FirstName + " " + companyOwner?.LastName ?? "N/A",
                                       Experience = expResult?.Name ?? "N/A",
                                       Position = expResult?.Position ?? "N/A",
                                       CompanyExperience = expResult?.Company ?? "N/A"
                                   };
-
-       
-
 
             return Ok(new ResponseOKHandler<IEnumerable<EmployeeDetailDto>>(employeeDetails));
         }
@@ -435,8 +442,9 @@ namespace API.Controllers
 
 
 
-            // DELETE api/employee/{guid}
-            [HttpDelete("{guid}")]
+
+        // DELETE api/employee/{guid}
+        [HttpDelete("{guid}")]
         public IActionResult Delete(Guid guid)
         {
             try

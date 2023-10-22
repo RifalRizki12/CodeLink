@@ -68,6 +68,28 @@ namespace API.Controllers
             return Ok(new ResponseOKHandler<RatingDto>((RatingDto)result));
         }
 
+        [HttpGet("average-rating/employee/{employeeGuid}")]
+        public IActionResult GetAverageRatingByEmployeeAndCompany(Guid employeeGuid)
+        {
+            // Memanggil metode GetAverageRatingByEmployeeAndCompany dari _ratingRepository dengan parameter employeeGuid dan companyGuid.
+            double? averageRating = _ratingRepository.GetAverageRatingByEmployeeAndCompany(employeeGuid);
+
+            // Memeriksa apakah hasil query tidak ditemukan (null atau tidak ada rating).
+            if (!averageRating.HasValue)
+            {
+                // Mengembalikan respons Not Found jika tidak ada rating untuk kombinasi EmployeeGuid dan CompanyGuid tertentu.
+                return NotFound(new ResponseErrorHandler
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "No ratings found for the specified Employee and Company"
+                });
+            }
+
+            // Mengembalikan rata-rata rating yang ditemukan.
+            return Ok(new ResponseOKHandler<double>(averageRating.Value));
+        }
+
         // POST api/rating
         [HttpPost]
         public IActionResult Create(CreateRatingDto ratingDto)
