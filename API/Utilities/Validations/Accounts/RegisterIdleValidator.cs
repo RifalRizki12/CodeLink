@@ -3,19 +3,23 @@ using FluentValidation;
 
 namespace API.Utilities.Validations.Accounts
 {
-    public class RegisterClientValidator : AbstractValidator<RegisterClientDto>
+    public class RegisterIdleValidator : AbstractValidator<RegisterIdleDto>
     {
-        public RegisterClientValidator()
+        public RegisterIdleValidator()
         {
             // Aturan validasi untuk properti 'FirstName' dalam objek EmployeeDto
             RuleFor(e => e.FirstName)
-                .NotEmpty()
-                .MinimumLength(3);  // Properti tidak boleh kosong
+                .NotEmpty()  // Properti tidak boleh kosong
+                .MinimumLength(3); 
 
             // Aturan validasi untuk properti 'Gender' dalam objek EmployeeDto
             RuleFor(e => e.Gender)
                 .NotNull()     // Properti tidak boleh null
                 .IsInEnum();   // Properti harus merupakan nilai dari enum yang valid
+
+            RuleFor(e => e.PhoneNumber)
+                .NotEmpty().WithMessage("Phone Number tidak boleh kosong")         // Properti tidak boleh kosong
+                .MaximumLength(16);
 
             // Aturan validasi untuk properti 'Email' dalam objek EmployeeDto
             RuleFor(e => e.Email)
@@ -23,17 +27,9 @@ namespace API.Utilities.Validations.Accounts
                 .EmailAddress().WithMessage("Format Email Salah");  // Properti harus merupakan alamat email yang valid, dengan pesan kustom jika tidak terpenuhi
 
             // Aturan validasi untuk properti 'PhoneNumber' dalam objek EmployeeDto
-            RuleFor(e => e.PhoneNumber)
-                .NotEmpty().WithMessage("Phone Number tidak boleh kosong")         // Properti tidak boleh kosong
-                .MaximumLength(16);
 
-            RuleFor(e => e.NameCompany)
-                .NotEmpty()
-                .MinimumLength(3);
-
-            RuleFor(e => e.AddressCompany)
-                .NotEmpty()
-                .MinimumLength(4);
+            RuleFor(e => e.StatusAccount)
+                .NotNull();
 
             RuleFor(e => e.Password)
                 .NotEmpty()         // Properti tidak boleh kosong
@@ -48,6 +44,16 @@ namespace API.Utilities.Validations.Accounts
                 .MaximumLength(16) //max lenght karakter 16
                 .Matches(@"[A-Z]+") //harus berisi min 1 huruf kapital
                 .Matches(@"[a-z]+");//harus berisi min 1 huruf lowercase
+
+
+            RuleFor(e => e.ExperienceName)
+                .MaximumLength(100); //max lenght karakter 100
+
+            RuleFor(e => e.Position)
+                .MaximumLength(50);
+
+            RuleFor(e => e.Company)
+                .MaximumLength(50);
 
         }
     }

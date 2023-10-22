@@ -20,10 +20,6 @@ namespace API.Utilities.Validations.Employees
                 .NotNull()     // Properti tidak boleh null
                 .IsInEnum();   // Properti harus merupakan nilai dari enum yang valid
 
-            // Aturan validasi untuk properti 'HiringDate' dalam objek EmployeeDto
-            RuleFor(e => e.HireDate)
-                .NotEmpty();  // Properti tidak boleh kosong
-
             // Aturan validasi untuk properti 'Email' dalam objek EmployeeDto
             RuleFor(e => e.Email)
                 .NotEmpty().WithMessage("Tidak Boleh Kosong")  // Properti tidak boleh kosong, dengan pesan kustom jika tidak terpenuhi
