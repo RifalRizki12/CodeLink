@@ -15,7 +15,8 @@
         public string Position { get; set; }
         public string CompanyExperience { get; set; }
         public string EmployeeOwner { get; set; }
-        public Guid EmployeeGuid { get; set; }
+        public Guid OwnerGuid { get; set; }
+        public double? AverageRating { get; set; }
 
     }
 }
