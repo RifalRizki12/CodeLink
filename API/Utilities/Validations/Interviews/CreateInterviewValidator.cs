@@ -1,11 +1,11 @@
 ﻿using API.DTOs.Interviews;
 using FluentValidation;
 
-namespace API.Utilities.Validations.Test
+namespace API.Utilities.Validations.Interviews
 {
-    public class CreateTestValidator : AbstractValidator<CreateInterviewDto>
+    public class CreateInterviewValidator : AbstractValidator<CreateInterviewDto>
     {
-        public CreateTestValidator()
+        public CreateInterviewValidator()
         {
             RuleFor(e => e.Name)
                 .NotEmpty()
