@@ -4,6 +4,7 @@ using API.DTOs.Employees;
 using API.Models;
 using API.Repositories;
 using API.Utilities.Handler;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Transactions;
@@ -339,9 +340,53 @@ namespace API.Controllers
                 });
             }
         }
+        [HttpGet("details")]
+        public IActionResult GetDetails()
+        {
+            var employees = _employeeRepository.GetAll();
+            var companies = _companyRepository.GetAll();
+            var skills = _skillRepository.GetAll();
+            var experiences = _experienceRepository.GetAll();
+            var experienceSkills = _experienceSkillRepository.GetAll();
 
-        // DELETE api/employee/{guid}
-        [HttpDelete("{guid}")]
+            if (!(employees.Any() && companies.Any() && skills.Any() && experiences.Any() && experienceSkills.Any()))
+            {
+                return NotFound(new ResponseErrorHandler
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Data Employee Tidak Ditemukan"
+                });
+            }
+
+            var employeeDetails = from emp in employees
+                                  join expSkill in experienceSkills on emp.Guid equals expSkill.EmployeeGuid
+                                  join exp in experiences on expSkill.ExperienceGuid equals exp.Guid
+                                  join skill in skills on expSkill.SkillGuid equals skill.Guid
+                                  join com in companies on emp.CompanyGuid equals com.Guid
+                                  select new EmployeeDetailDto
+                                  {
+                                      FullName = emp.FirstName + " " + emp.LastName,
+                                      Gender = emp.Gender.ToString(),
+                                      Email = emp.Email,
+                                      PhoneNumber = emp.PhoneNumber,
+                                      StatusEmployee = emp.Status,
+                                      HardSkill = skill.Hard,
+                                      SoftSkill = skill.Soft,
+                                      NameCompany = emp.Status == "pekerja" ? com.Name : null, // Tampilkan hanya ketika Status Employee adalah "pekerja"
+                                      Address = emp.Status == "pekerja" ? com.Address : null,   // Tampilkan hanya ketika Status Employee adalah "pekerja"
+                                      EmployeeOwner = emp.Status == "pekerja" ? com.EmployeeGuid : null, // Tampilkan Employee Pemilik hanya ketika Status Employee adalah "pekerja"
+                                      CompanyOwner = emp.Status == "pekerja" ? com.Owner : null  // Tampilkan Pemilik Company hanya ketika Status Employee adalah "pekerja"
+                                  };
+
+            return Ok(new ResponseOKHandler<IEnumerable<EmployeeDetailDto>>(employeeDetails));
+        }
+
+
+
+
+            // DELETE api/employee/{guid}
+            [HttpDelete("{guid}")]
         public IActionResult Delete(Guid guid)
         {
             try
