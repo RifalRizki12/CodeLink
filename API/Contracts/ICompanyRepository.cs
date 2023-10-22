@@ -4,5 +4,7 @@ namespace API.Contracts
 {
     public interface ICompanyRepository : IGeneralRepository<Company>
     {
+
+        int GetCaount();
     }
 }

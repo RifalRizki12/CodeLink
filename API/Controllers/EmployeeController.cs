@@ -37,6 +37,36 @@ namespace API.Controllers
             _skillRepository = skillRepository;
         }
 
+
+        [HttpGet("GetChart")]
+        public IActionResult GetChart()
+        {
+            var hireEmp = _employeeRepository.GetCaountHired();
+            var idleEmp = _employeeRepository.GetCountIdle();
+            var company = _companyRepository.GetCaount();
+
+            if ((hireEmp == null) && (idleEmp == null)  && (company == null))
+            {
+                return NotFound(new ResponseErrorHandler
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Employee with Specific GUID Not Found"
+                });
+            }
+            var chartData = new
+            {
+                HiredEmployeesCount = hireEmp,
+                IdleEmployeesCount = idleEmp,
+                CompaniesCount = company
+            };
+
+            return Ok(new ResponseOKHandler<object>(chartData));
+
+        }
+
+
+
         [HttpPost("registerClient")]
         public IActionResult RegisterClient([FromBody] RegisterClientDto request)
         {

@@ -7,5 +7,8 @@ namespace API.Contracts
         Employee GetByEmployeeEmail(string employeeEmail);
         Employee GetAdminEmployee();
 
+        public int GetCountIdle();
+        public int GetCaountHired();
+
     }
 }

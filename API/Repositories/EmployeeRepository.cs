@@ -25,5 +25,21 @@ namespace API.Repositories
                 .Where(e => e.Account.AccountRoles.Any(ar => ar.Role.Name == "admin"))
                 .FirstOrDefault();
         }
+
+        public int GetCountIdle()
+        {
+            int idleEmployeeCount = _context.Employees
+                .Count(e => e.Status == "idle");
+
+            return idleEmployeeCount;
+        }
+
+        public int GetCaountHired()
+        {
+            int hiredEmployeeCount = _context.Employees
+                 .Count(e => e.Status == "onsite");
+
+            return hiredEmployeeCount;
+        }
     }
 }
