@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Transactions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace API.Controllers
 {
@@ -360,10 +361,23 @@ namespace API.Controllers
             }
 
             var employeeDetails = from emp in employees
-                                  join expSkill in experienceSkills on emp.Guid equals expSkill.EmployeeGuid
-                                  join exp in experiences on expSkill.ExperienceGuid equals exp.Guid
-                                  join skill in skills on expSkill.SkillGuid equals skill.Guid
-                                  join com in companies on emp.CompanyGuid equals com.Guid
+                                  join expSkill in experienceSkills on emp.Guid equals expSkill.EmployeeGuid into expSkillJoined
+                                  from expSkillResult in expSkillJoined.DefaultIfEmpty()
+
+                                  join exp in experiences on expSkillResult?.ExperienceGuid equals exp.Guid into expJoined
+                                  from expResult in expJoined.DefaultIfEmpty()
+
+                                  join skill in skills on expSkillResult?.SkillGuid equals skill.Guid into skillJoined
+                                  from skillResult in skillJoined.DefaultIfEmpty()
+
+                                  join com in companies on emp.CompanyGuid equals com.Guid into companyJoined
+                                  from company in companyJoined.DefaultIfEmpty()
+
+                                  join owner in employees on company?.EmployeeGuid equals owner.Guid into ownerJoined
+                                  from companyOwner in ownerJoined.DefaultIfEmpty()
+
+                                  where emp.Status == "pekerja"
+
                                   select new EmployeeDetailDto
                                   {
                                       FullName = emp.FirstName + " " + emp.LastName,
@@ -371,13 +385,19 @@ namespace API.Controllers
                                       Email = emp.Email,
                                       PhoneNumber = emp.PhoneNumber,
                                       StatusEmployee = emp.Status,
-                                      HardSkill = skill.Hard,
-                                      SoftSkill = skill.Soft,
-                                      NameCompany = emp.Status == "pekerja" ? com.Name : null, // Tampilkan hanya ketika Status Employee adalah "pekerja"
-                                      Address = emp.Status == "pekerja" ? com.Address : null,   // Tampilkan hanya ketika Status Employee adalah "pekerja"
-                                      EmployeeOwner = emp.Status == "pekerja" ? com.EmployeeGuid : null, // Tampilkan Employee Pemilik hanya ketika Status Employee adalah "pekerja"
-                                      CompanyOwner = emp.Status == "pekerja" ? com.Owner : null  // Tampilkan Pemilik Company hanya ketika Status Employee adalah "pekerja"
+                                      HardSkill = skillResult?.Hard ?? "N/A",
+                                      SoftSkill = skillResult?.Soft ?? "N/A",
+                                      NameCompany = company?.Name ?? "N/A",
+                                      Address = company?.Address ?? "N/A",
+                                      EmployeeGuid = company?.EmployeeGuid ?? Guid.Empty, // Mengambil EmployeeGuid dari tabel Company
+                                      EmployeeOwner = companyOwner?.FirstName + " " + companyOwner?.LastName ?? "N/A", // FullName dari EmployeeGuid pada Company
+                                      Experience = expResult?.Name ?? "N/A",
+                                      Position = expResult?.Position ?? "N/A",
+                                      CompanyExperience = expResult?.Company ?? "N/A"
                                   };
+
+       
+
 
             return Ok(new ResponseOKHandler<IEnumerable<EmployeeDetailDto>>(employeeDetails));
         }

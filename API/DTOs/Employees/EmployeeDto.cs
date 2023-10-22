@@ -14,6 +14,7 @@ namespace API.DTOs.Employees
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string Status { get; set; }
+        public Guid? CompanyGuid { get; set; }
 
         // Konversi Eksplisit (Explicit Conversion):
         // Metode ini akan mengonversi EmployeeDto ke Employee secara eksplisit jika diperlukan.
@@ -30,7 +31,8 @@ namespace API.DTOs.Employees
                 ExpiredDate = employee.ExpiredDate,
                 Status = employee.Status,
                 Email = employee.Email,             // Mengonversi Email dari Employee ke EmployeeDto.
-                PhoneNumber = employee.PhoneNumber  // Mengonversi Nomor Telepon dari Employee ke EmployeeDto.
+                PhoneNumber = employee.PhoneNumber,  // Mengonversi Nomor Telepon dari Employee ke EmployeeDto.
+                CompanyGuid = employee.CompanyGuid  // Mengonversi Nomor Telepon dari Employee ke EmployeeDto.
             };
         }
 
@@ -48,7 +50,8 @@ namespace API.DTOs.Employees
                 ExpiredDate = dto.ExpiredDate,
                 Status = dto.Status,
                 Email = dto.Email,              // Mengonversi Email dari EmployeeDto ke Employee.
-                PhoneNumber = dto.PhoneNumber,   // Mengonversi Nomor Telepon dari EmployeeDto ke Employee.
+                PhoneNumber = dto.PhoneNumber,
+                CompanyGuid = dto.CompanyGuid,// Mengonversi Nomor Telepon dari EmployeeDto ke Employee.
                 ModifiedDate = DateTime.Now
             };
         }
