@@ -18,5 +18,12 @@ namespace API.Repositories
             // Menggunakan LINQ untuk mencari karyawan berdasarkan email
             return _context.Employees.FirstOrDefault(employee => employee.Email == employeeEmail);
         }
+
+        public Employee GetAdminEmployee()
+        {
+            return _context.Employees
+                .Where(e => e.Account.AccountRoles.Any(ar => ar.Role.Name == "admin"))
+                .FirstOrDefault();
+        }
     }
 }

@@ -13,7 +13,6 @@ namespace API.DTOs.Accounts
         public StatusLevel Status { get; set; }
 
         public bool IsUsed { get; set; }
-        public DateTime ExpiredTime { get; set; }
 
         // Operator implisit yang mengubah CreateAccountDto menjadi Account
         public static implicit operator Account(CreateAccountDto dto)
@@ -26,8 +25,6 @@ namespace API.DTOs.Accounts
                 Otp = dto.Otp,
                 Status = dto.Status,
                 IsUsed = dto.IsUsed,
-                ExpiredTime = dto.ExpiredTime,
-
                 // Mengatur nilai ExpiredTime, CreatedDate, dan ModifiedDate dengan waktu saat ini
                 CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now

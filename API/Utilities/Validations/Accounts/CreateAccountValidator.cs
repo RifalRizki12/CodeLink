@@ -18,9 +18,7 @@ namespace API.Utilities.Validations.Accounts
                 .NotEmpty();        // Properti tidak boleh kosong
 
             // Aturan validasi untuk properti 'ExpiredTime' dalam objek CreateAccountDto
-            RuleFor(e => e.ExpiredTime)
-                .NotEmpty()                 // Properti tidak boleh kosong
-                .Must(expiredTime => expiredTime > DateTime.Now);  // Harus lebih besar dari waktu saat ini
+           
         }
     }
 }
