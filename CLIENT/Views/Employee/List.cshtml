@@ -1,0 +1,131 @@
+﻿@model IEnumerable<API.DTOs.Employees.EmployeeDto>
+
+@{
+    ViewData["Title"] = "List";
+    Layout = "/Views/Shared/Admin/_Layout.cshtml";
+}
+
+<h1>List</h1>
+
+<!-- Complex Headers -->
+<div class="card">
+    <h5 class="card-header">Data Employee</h5>
+    <div class="dt-action-buttons text-end pt-3 pt-md-0">
+        <div class="datatable-buttons">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#modalCenter">
+                Create
+            </button>
+            <button id="custom-copy-button" class="btn btn-secondary">Copy</button>
+            <button id="custom-excel-button" class="btn btn-secondary">Excel</button>
+            <button id="custom-pdf-button" class="btn btn-secondary">PDF</button>
+            <button id="custom-print-button" class="btn btn-secondary">Print</button>
+            <button id="custom-visibility" class="btn btn-secondary">Visibility</button>
+        </div>
+    </div>
+    <div class="card-datatable text-nowrap table-responsive">
+        <table id="tableEmployee"
+               class="dt-complex-header table table-bordered dt-responsive table datatables-basic table">
+            <thead>
+                <tr>
+                    <th rowspan="2">No</th>
+                    <th colspan="3" style="text-align: center;">Biodata</th>
+                    <th colspan="2" style="text-align: center;">Information</th>
+                    <th colspan="1" style="text-align: center;">Hiring</th>
+                    <th class="no-export" rowspan="2" style="text-align: center;">Action</th>
+                </tr>
+                <tr>
+                    <th>Full Name</th>
+                    <th>Gender</th>
+                    <th>Birth Date</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Hiring Date</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<!--/ Complex Headers -->
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Guid)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Gender)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HireDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExpiredDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CompanyGuid)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Guid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Gender)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HireDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpiredDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyGuid)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
