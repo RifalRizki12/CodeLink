@@ -118,6 +118,10 @@ namespace API.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("created_date");
 
+                    b.Property<string>("Cv")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("cv");
+
                     b.Property<Guid?>("ExperienceGuid")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("experiences_guid");
@@ -167,6 +171,10 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("first_name");
+
+                    b.Property<string>("Foto")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("foto");
 
                     b.Property<int>("Gender")
                         .HasColumnType("int")

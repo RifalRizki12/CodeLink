@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(CodeLinkDbContext))]
-    [Migration("20231024030704_DatabaseAdd")]
+    [Migration("20231024041818_DatabaseAdd")]
     partial class DatabaseAdd
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -120,6 +120,10 @@ namespace API.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("created_date");
 
+                    b.Property<string>("Cv")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("cv");
+
                     b.Property<Guid?>("ExperienceGuid")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("experiences_guid");
@@ -169,6 +173,10 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("first_name");
+
+                    b.Property<string>("Foto")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("foto");
 
                     b.Property<int>("Gender")
                         .HasColumnType("int")

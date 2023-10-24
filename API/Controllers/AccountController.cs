@@ -32,7 +32,7 @@ namespace API.Controllers
         }
 
         //Login
-/*        [HttpPost("login")]
+        [HttpPost("login")]
         public IActionResult Login([FromBody] LoginDto request)
         {
             try
@@ -44,7 +44,7 @@ namespace API.Controllers
                     {
                         Code = StatusCodes.Status400BadRequest,
                         Status = HttpStatusCode.BadRequest.ToString(),
-                        Message = "Invalid input !"
+                        Message = "Invalid input!"
                     });
                 }
 
@@ -58,21 +58,20 @@ namespace API.Controllers
                     {
                         Code = StatusCodes.Status400BadRequest,
                         Status = HttpStatusCode.BadRequest.ToString(),
-                        Message = "Account or Password is invalid !",
+                        Message = "Account or Password is invalid!",
                     });
                 }
 
                 var claims = new List<Claim>();
                 claims.Add(new Claim("Email", employee.Email));
                 claims.Add(new Claim("Fullname", string.Concat(employee.FirstName + " " + employee.LastName)));
-                var getRoleName = from ar in _accountRoleRepository.GetAll()
-                                  join r in _roleRepository.GetAll() on ar.RoleGuid equals r.Guid
-                                  where ar.AccountGuid == user.Guid
-                                  select r.Name;
 
-                foreach (var roleName in getRoleName)
+                // Menggunakan RoleRepository untuk mendapatkan peran yang sesuai dengan akun
+                var role = _roleRepository.GetByGuid(user.RoleGuid);
+
+                if (role != null)
                 {
-                    claims.Add(new Claim(ClaimTypes.Role, roleName));
+                    claims.Add(new Claim(ClaimTypes.Role, role.Name));
                 }
 
                 var generateToken = _tokenHandler.Generate(claims);
@@ -91,7 +90,7 @@ namespace API.Controllers
                     Error = ex.Message
                 });
             }
-        }*/
+        }
 
 
         // Metode untuk mengirim OTP melalui email dalam kasus lupa kata sandi
