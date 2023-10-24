@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Security.Principal;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace API.Controllers
 {
@@ -17,17 +18,98 @@ namespace API.Controllers
     {
         private readonly IInterviewRepository _interviewRepository;
         private readonly IEmailHandler _emailHandler;
+        private readonly ICompanyRepository _companyRepository;
         private readonly IAccountRepository _accountRepository;
         private readonly IEmployeeRepository _employeeRepository;
+        private readonly IRatingRepository _ratingRepository;
 
 
-        public InterviewController(IInterviewRepository interviewRepository, IEmailHandler emailHandler, IEmployeeRepository employeeRepository, IAccountRepository accountRepository)
+        public InterviewController(IInterviewRepository interviewRepository, IEmailHandler emailHandler,
+            IEmployeeRepository employeeRepository, IAccountRepository accountRepository,
+            IRatingRepository ratingRepository, ICompanyRepository companyRepository)
         {
             _interviewRepository = interviewRepository;
             _emailHandler = emailHandler;
             _employeeRepository = employeeRepository;
             _accountRepository = accountRepository;
+            _ratingRepository = ratingRepository;
+            _companyRepository = companyRepository;
         }
+        [HttpPut("Announcement")]
+        public IActionResult Announcement(AnnouncmentDto announcment)
+        {
+            try
+            {
+                // Dapatkan data interview berdasarkan Guid.
+                // var existInterview = _interviewRepository.GetByGuid(announcment.Guid);
+
+                var company = _companyRepository.GetCompany(announcment.OwnerGuid);
+
+                var entity = _interviewRepository.GetByGuid(announcment.Guid);
+                if (entity is null)
+                {
+                    // Mengembalikan respons Not Found jika Interview dengan GUID tertentu tidak ditemukan.
+                    return NotFound(new ResponseErrorHandler
+                    {
+                        Code = StatusCodes.Status404NotFound,
+                        Status = HttpStatusCode.NotFound.ToString(),
+                        Message = "Interview with Specific GUID Not Found"
+                    });
+                }
+
+                // Menyalin nilai CreatedDate dari entitas yang ada ke entitas yang akan diperbarui.
+                Interview toUpdate = announcment;
+                toUpdate.CreatedDate = entity.CreatedDate;
+                toUpdate.Name = entity.Name;
+                toUpdate.Date = entity.Date;
+
+                // Memanggil metode Update dari _interviewRepository untuk memperbarui data Interview.
+                var result = _interviewRepository.Update(toUpdate);
+
+                Rating rating = announcment;
+                rating.Guid = toUpdate.Guid;
+                rating.Feedback = announcment.FeedBack;
+                var resultUpdate = _interviewRepository.Update(toUpdate);
+
+                // Memeriksa apakah penciptaan data berhasil atau gagal.
+                if ((result == null) && (resultUpdate == null))
+                {
+                    // Mengembalikan respons BadRequest jika gagal membuat data Interview.
+                    return BadRequest("Failed to create data");
+                }
+
+                // Mengirim email ke employee dengan GUID tertentu
+                var specificEmployee = _employeeRepository.GetByGuid(announcment.EmployeeGuid);
+                if (specificEmployee != null)
+                {
+
+                    _emailHandler.Send("Interview Schedule",
+                        $"Terimakasih atas partisipasinya telah mengikuti proses {announcment.Name} pada\n" +
+                        $"Date                  : {announcment.Date}\n" +
+                        $"kami nyatakan anda    : {announcment.Description}\n" +
+                        $"Start Contract        : {announcment.StartContract} \n" +
+                        $"End Contract          : {announcment.EndContract}\n" +
+                        $"Company Name          : {company.Name}\n" +
+                        $"{announcment.FeedBack}", specificEmployee.Email);
+                }
+
+                // Mengembalikan data yang berhasil dibuat dalam respons OK.
+                return Ok(new ResponseOKHandler<string>("Announcement sent successfully"));
+
+            }
+            catch (ExceptionHandler ex)
+            {
+                // Mengembalikan respons server error jika terjadi kesalahan dalam proses.
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorHandler
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = HttpStatusCode.InternalServerError.ToString(),
+                    Message = "Failed to create data",
+                    Error = ex.Message
+                });
+            }
+        }
+
 
         // GET api/interview
         [HttpGet]
@@ -80,7 +162,7 @@ namespace API.Controllers
 
         // POST api/interview
         [HttpPost]
-        public IActionResult Create(CreateInterviewDto interviewDto)
+        public IActionResult InterviewClient(CreateInterviewDto interviewDto)
         {
             try
             {
@@ -89,6 +171,10 @@ namespace API.Controllers
 
                 // Memanggil metode Create dari _interviewRepository untuk membuat data Interview baru.
                 var result = _interviewRepository.Create(toCreate);
+
+                Rating rating = interviewDto;
+                rating.Guid = result.Guid;
+                Rating createRating = _ratingRepository.Create(rating);
 
                 // Memeriksa apakah penciptaan data berhasil atau gagal.
                 if (result is null)

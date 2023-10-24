@@ -12,6 +12,7 @@ namespace API.DTOs.Interviews
         public DateTime? StartContract { get; set; }
         public DateTime? EndContract { get; set; }
         public Guid EmployeeGuid { get; set; }
+     
 
 
 

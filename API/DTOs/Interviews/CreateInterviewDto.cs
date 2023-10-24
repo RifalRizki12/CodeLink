@@ -12,19 +12,33 @@ namespace API.DTOs.Interviews
         public DateTime? StartContract {  get; set; }
         public DateTime? EndContract {  get; set; }
         public Guid EmployeeGuid { get; set; }
+        public Guid OwnerGuid { get; set; }
+
 
 
         public static implicit operator Interview(CreateInterviewDto createInterviewDto)
         {
             return new Interview
             {
+                OwnerGuid = createInterviewDto.OwnerGuid,
                 Name = createInterviewDto.Name,
                 Date = createInterviewDto.Date,
+                Description = createInterviewDto.Description,
                 EmployeeGuid = createInterviewDto.EmployeeGuid,
                 StartContract = createInterviewDto.StartContract,
                 EndContract = createInterviewDto.EndContract,
                 CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now
+            };
+        }
+
+        public static implicit operator Rating(CreateInterviewDto createInterviewDto)
+        {
+            return new Rating
+            {
+                CreatedDate = DateTime.Now,
+                ModifiedDate = DateTime.Now
+
             };
         }
     }

@@ -6,5 +6,6 @@ namespace API.Contracts
     {
 
         int GetCaount();
+        Company GetCompany(Guid company);
     }
 }

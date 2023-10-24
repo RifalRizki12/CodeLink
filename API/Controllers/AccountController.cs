@@ -368,66 +368,48 @@ namespace API.Controllers
         }
 
         // PUT api/account
-        [HttpPut]
+        [HttpPut] //menangani request update ke endpoint /Account
+                  //parameter berupa objek menggunakan format DTO explicit agar crete data disesuaikan dengan format DTO
         public IActionResult Update(AccountDto accountDto)
         {
             try
             {
-                // Memeriksa apakah entitas Account yang akan diperbarui ada dalam database.
+                //get data by guid dan menggunakan format DTO 
                 var entity = _accountRepository.GetByGuid(accountDto.Guid);
-                if (entity is null)
+                if (entity is null) //cek apakah data berdasarkan guid tersedia 
                 {
+                    //respons dengan kode status HTTP 404(Not Found) dengan pesan kesalahan yang dihasilkan.
                     return NotFound(new ResponseErrorHandler
                     {
                         Code = StatusCodes.Status404NotFound,
                         Status = HttpStatusCode.NotFound.ToString(),
-                        Message = "Id Not Found"
+                        Message = "Data Not Found"
                     });
                 }
+                //convert data DTO dari inputan user menjadi objek Account
+                Account toUpdate = accountDto;
+                //menyimpan createdate yg lama 
+                toUpdate.CreatedDate = entity.CreatedDate;
+                toUpdate.Password = HashHandler.HashPassword(accountDto.Password);
 
-                // Memeriksa apakah kata sandi berubah.
-                if (!string.IsNullOrEmpty(accountDto.Password))
-                {
-                    // Meng-hash kata sandi baru sebelum menyimpannya ke database.
-                    string hashedPassword = HashHandler.HashPassword(accountDto.Password);
+                //update Account dalam repository
+                _accountRepository.Update(toUpdate);
 
-                    // Menyalin nilai CreatedDate dari entitas yang ada ke entitas yang akan diperbarui.
-                    Account toUpdate = accountDto;
-                    toUpdate.CreatedDate = entity.CreatedDate;
-
-                    // Mengganti kata sandi asli dengan yang di-hash pada objek entity.
-                    entity.Password = hashedPassword;
-                }
-
-                // Memanggil metode Update dari _accountRepository.
-                var result = _accountRepository.Update(entity);
-
-                // Memeriksa apakah pembaruan data berhasil atau gagal.
-                if (!result)
-                {
-                    return BadRequest(new ResponseErrorHandler
-                    {
-                        Code = StatusCodes.Status400BadRequest,
-                        Status = HttpStatusCode.BadRequest.ToString(),
-                        Message = "Failed to update data"
-                    });
-                }
-
-                // Mengembalikan pesan sukses dalam respons OK.
+                // return HTTP OK dengan kode status 200 dan return "data updated" untuk sukses update.
                 return Ok(new ResponseOKHandler<string>("Data Updated"));
             }
-            catch (ExceptionHandler ex)
+            catch (Exception ex)
             {
-                // Jika terjadi pengecualian saat mengupdate data, akan mengembalikan respons kesalahan dengan pesan pengecualian.
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
-                    Message = "Failed to update data",
+                    Message = "Failed to Update data",
                     Error = ex.Message
                 });
             }
         }
+
 
         // DELETE api/account/{guid}
         [HttpDelete("{guid}")]

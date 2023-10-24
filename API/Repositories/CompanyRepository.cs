@@ -16,5 +16,11 @@ namespace API.Repositories
 
             return company;
         }
+
+        public Company GetCompany(Guid company)
+        {
+            return _context.Companies
+                .FirstOrDefault(e => e.EmployeeGuid == company);
+        }
     }
 }
