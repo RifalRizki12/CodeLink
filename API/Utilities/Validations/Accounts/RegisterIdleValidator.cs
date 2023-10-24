@@ -45,16 +45,6 @@ namespace API.Utilities.Validations.Accounts
                 .Matches(@"[A-Z]+") //harus berisi min 1 huruf kapital
                 .Matches(@"[a-z]+");//harus berisi min 1 huruf lowercase
 
-
-            RuleFor(e => e.ExperienceName)
-                .MaximumLength(100); //max lenght karakter 100
-
-            RuleFor(e => e.Position)
-                .MaximumLength(50);
-
-            RuleFor(e => e.Company)
-                .MaximumLength(50);
-
         }
     }
 }

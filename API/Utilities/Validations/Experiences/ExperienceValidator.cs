@@ -7,8 +7,6 @@ public class ExperienceValidator : AbstractValidator<ExperienceDto>
 {
     public ExperienceValidator()
     {
-        RuleFor(e => e.Guid)
-           .NotNull();
 
         RuleFor(e => e.Name)
             .MaximumLength(100);

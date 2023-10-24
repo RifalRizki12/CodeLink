@@ -1,14 +1,17 @@
-﻿using API.Models;
+﻿using API.DTOs.Experiences;
+using API.Models;
 using API.Utilities.Enums;
-using API.Utilities.Handler;
-using System.Reflection;
+using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace API.DTOs.Accounts
 {
     public class RegisterIdleDto
     {
         public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
         public GenderLevel Gender { get; set; }
         public IFormFile? ProfilePictureFile { get; set; }
         public IFormFile? CvFile { get; set; }
@@ -20,10 +23,8 @@ namespace API.DTOs.Accounts
         public StatusEmployee StatusEmployee { get; set; }
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
-        public string ExperienceName { get; set; }
-        public string Position { get; set; }
-        public string Company { get; set; }
         public List<string> Skills { get; set; }
+        public List<Experience>? Experiences { get; set; }
 
         public static implicit operator Employee(RegisterIdleDto dto)
         {
@@ -57,17 +58,6 @@ namespace API.DTOs.Accounts
             };
         }
 
-        public static implicit operator Experience(RegisterIdleDto dto)
-        {
-            return new Experience
-            {
-                Guid = Guid.NewGuid(),
-                Name = dto.ExperienceName,
-                Position = dto.Position,
-                Company = dto.Company
-            };
-        }
-        
         public static implicit operator CurriculumVitae(RegisterIdleDto dto)
         {
             return new CurriculumVitae
@@ -91,6 +81,16 @@ namespace API.DTOs.Accounts
             }
 
             return skillsList;
+        }
+
+        public static implicit operator List<Experience>(RegisterIdleDto dto)
+        {
+            if (dto.Experiences == null || dto.Experiences.Count == 0)
+            {
+                return new List<Experience>();
+            }
+
+            return dto.Experiences;
         }
     }
 }

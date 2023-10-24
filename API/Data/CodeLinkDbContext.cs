@@ -28,16 +28,16 @@ namespace API.Data
 
             // One Skill has many CurriculumVitaes
             modelBuilder.Entity<Skill>()
-                .HasMany(e => e.CurriculumVitaes)
-                .WithOne(s => s.Skill)
-                .HasForeignKey(e => e.SkillGuid)
+                .HasOne(c => c.CurriculumVitae)
+                .WithMany(s => s.Skills)
+                .HasForeignKey(s => s.CvGuid)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // One Experience has many CurriculumVitaes
             modelBuilder.Entity<Experience>()
-                .HasMany(e => e.CurriculumVitaes)
-                .WithOne(ex => ex.Experience)
-                .HasForeignKey(e => e.ExperienceGuid)
+                .HasOne(c => c.CurriculumVitae)
+                .WithMany(ex => ex.Experiences)
+                .HasForeignKey(ex => ex.CvGuid)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // One Employee has one CuriculumVitae

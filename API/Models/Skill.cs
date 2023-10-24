@@ -7,7 +7,9 @@ namespace API.Models
     {
         [Column("name", TypeName = "nvarchar(50)")]
         public string? Name {  get; set; }
+        [Column("cv_guid")]
+        public Guid CvGuid { get; set; }
 
-        public ICollection<CurriculumVitae>? CurriculumVitaes { get; set; }
+        public CurriculumVitae? CurriculumVitae { get; set; }
     }
 }

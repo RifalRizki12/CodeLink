@@ -8,15 +8,9 @@ namespace API.Models
         [Column("cv")]
         public string? Cv {  get; set; }
 
-        [Column("skills_guid")]
-        public Guid? SkillGuid { get; set;}
-
-        [Column("experiences_guid")]
-        public Guid? ExperienceGuid { get; set;}
-
         //kardinalitas
-        public Experience? Experience { get; set;}
-        public Skill? Skill { get; set;}
+        public ICollection<Experience>? Experiences { get; set; }
+        public ICollection<Skill>? Skills { get; set;}
         public Employee? Employee { get; set;}
     }
 }

@@ -53,7 +53,7 @@ namespace API.DTOs.Employees
                 StatusEmployee = dto.StatusEmployee,
                 Email = dto.Email,              
                 PhoneNumber = dto.PhoneNumber,
-                CompanyGuid = dto.CompanyGuid,// Mengonversi Nomor Telepon dari EmployeeDto ke Employee.
+                CompanyGuid = dto.CompanyGuid,
                 ModifiedDate = DateTime.Now
             };
         }

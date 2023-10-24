@@ -11,9 +11,10 @@ namespace API.Models
         public string Position { get; set; }
         [Column ("company", TypeName = "nvarchar(50)")]
         public string Company { get; set; }
-        [Column ("employee_guid")]
+        [Column ("cv_guid")]
+        public Guid CvGuid { get; set; }
 
         //kardinalitas
-        public ICollection<CurriculumVitae>? CurriculumVitaes { get; set;}
+        public CurriculumVitae? CurriculumVitae { get; set;}
     }
 }

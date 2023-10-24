@@ -23,6 +23,9 @@ namespace API.Models
         [Column("employee_guid")]
         public Guid EmployeeGuid { get; set; }
 
+        [Column("owner_guid")]
+        public Guid OwnerGuid { get; set; }
+
         //kardinalitas
         public Employee? Employee { get; set; }
         public Rating? Rating { get; set; }

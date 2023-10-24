@@ -10,22 +10,6 @@ namespace API.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "tb_m_experiences",
-                columns: table => new
-                {
-                    guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    name = table.Column<string>(type: "nvarchar(100)", nullable: false),
-                    position = table.Column<string>(type: "nvarchar(50)", nullable: false),
-                    company = table.Column<string>(type: "nvarchar(50)", nullable: false),
-                    created_date = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    modified_date = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tb_m_experiences", x => x.guid);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "tb_m_roles",
                 columns: table => new
                 {
@@ -37,20 +21,6 @@ namespace API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tb_m_roles", x => x.guid);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "tb_m_skills",
-                columns: table => new
-                {
-                    guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    name = table.Column<string>(type: "nvarchar(50)", nullable: true),
-                    created_date = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    modified_date = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tb_m_skills", x => x.guid);
                 });
 
             migrationBuilder.CreateTable(
@@ -136,6 +106,7 @@ namespace API.Migrations
                     start_contract = table.Column<DateTime>(type: "datetime2", nullable: true),
                     end_contract = table.Column<DateTime>(type: "datetime2", nullable: true),
                     employee_guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    owner_guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     created_date = table.Column<DateTime>(type: "datetime2", nullable: true),
                     modified_date = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -156,8 +127,6 @@ namespace API.Migrations
                 {
                     guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     cv = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    skills_guid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    experiences_guid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     created_date = table.Column<DateTime>(type: "datetime2", nullable: true),
                     modified_date = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -168,18 +137,6 @@ namespace API.Migrations
                         name: "FK_tb_tr_cv_tb_m_employees_guid",
                         column: x => x.guid,
                         principalTable: "tb_m_employees",
-                        principalColumn: "guid",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_tb_tr_cv_tb_m_experiences_experiences_guid",
-                        column: x => x.experiences_guid,
-                        principalTable: "tb_m_experiences",
-                        principalColumn: "guid",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_tb_tr_cv_tb_m_skills_skills_guid",
-                        column: x => x.skills_guid,
-                        principalTable: "tb_m_skills",
                         principalColumn: "guid",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -201,6 +158,50 @@ namespace API.Migrations
                         name: "FK_tb_m_ratings_tb_m_interviews_guid",
                         column: x => x.guid,
                         principalTable: "tb_m_interviews",
+                        principalColumn: "guid",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tb_m_experiences",
+                columns: table => new
+                {
+                    guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    name = table.Column<string>(type: "nvarchar(100)", nullable: false),
+                    position = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    company = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    cv_guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    created_date = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    modified_date = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tb_m_experiences", x => x.guid);
+                    table.ForeignKey(
+                        name: "FK_tb_m_experiences_tb_tr_cv_cv_guid",
+                        column: x => x.cv_guid,
+                        principalTable: "tb_tr_cv",
+                        principalColumn: "guid",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tb_m_skills",
+                columns: table => new
+                {
+                    guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    name = table.Column<string>(type: "nvarchar(50)", nullable: true),
+                    cv_guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    created_date = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    modified_date = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tb_m_skills", x => x.guid);
+                    table.ForeignKey(
+                        name: "FK_tb_m_skills_tb_tr_cv_cv_guid",
+                        column: x => x.cv_guid,
+                        principalTable: "tb_tr_cv",
                         principalColumn: "guid",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -233,19 +234,19 @@ namespace API.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_tb_m_experiences_cv_guid",
+                table: "tb_m_experiences",
+                column: "cv_guid");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_tb_m_interviews_employee_guid",
                 table: "tb_m_interviews",
                 column: "employee_guid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_tr_cv_experiences_guid",
-                table: "tb_tr_cv",
-                column: "experiences_guid");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_tb_tr_cv_skills_guid",
-                table: "tb_tr_cv",
-                column: "skills_guid");
+                name: "IX_tb_m_skills_cv_guid",
+                table: "tb_m_skills",
+                column: "cv_guid");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_tb_m_accounts_tb_m_employees_guid",
@@ -274,10 +275,13 @@ namespace API.Migrations
                 name: "tb_m_accounts");
 
             migrationBuilder.DropTable(
+                name: "tb_m_experiences");
+
+            migrationBuilder.DropTable(
                 name: "tb_m_ratings");
 
             migrationBuilder.DropTable(
-                name: "tb_tr_cv");
+                name: "tb_m_skills");
 
             migrationBuilder.DropTable(
                 name: "tb_m_roles");
@@ -286,10 +290,7 @@ namespace API.Migrations
                 name: "tb_m_interviews");
 
             migrationBuilder.DropTable(
-                name: "tb_m_experiences");
-
-            migrationBuilder.DropTable(
-                name: "tb_m_skills");
+                name: "tb_tr_cv");
 
             migrationBuilder.DropTable(
                 name: "tb_m_employees");

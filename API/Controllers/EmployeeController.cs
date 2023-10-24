@@ -82,7 +82,7 @@ namespace API.Controllers
                         if (registrationDto.ProfilePictureFile != null && registrationDto.ProfilePictureFile.Length > 0)
                         {
                             string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}{Path.GetExtension(registrationDto.ProfilePictureFile.FileName)}";
-                            string uploadPath = "Utilities/File/"; // Ganti dengan direktori yang sesuai
+                            string uploadPath = "Utilities/File/ProfilePictures/"; // Ganti dengan direktori yang sesuai
                             string filePath = Path.Combine(uploadPath, uniqueFileName);
 
                             using (var stream = new FileStream(filePath, FileMode.Create))
@@ -105,7 +105,6 @@ namespace API.Controllers
 
                         // Simpan Company dalam repository
                         _companyRepository.Create(company);
-                        employee.CompanyGuid = company.Guid;
 
                         // Hubungkan Account dengan Employee pemilik
                         account.Guid = employee.Guid;
@@ -198,42 +197,41 @@ namespace API.Controllers
                 {
                     try
                     {
-                        // Konversi RegisterIdleDto ke entitas Employee, Account, Experience, dan Skills menggunakan operator konversi implisit
                         Employee employee = registrationDto;
                         Account account = registrationDto;
-                        Experience experience = registrationDto;
                         CurriculumVitae curriculumVitae = registrationDto;
                         List<Skill> skills = registrationDto;
+                        List<Experience> experiences = registrationDto;
 
                         // Handle pengunggahan foto (jika diperlukan)
                         if (registrationDto.ProfilePictureFile != null && registrationDto.ProfilePictureFile.Length > 0)
                         {
                             string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}{Path.GetExtension(registrationDto.ProfilePictureFile.FileName)}";
-                            string uploadPath = "Utilities/File/"; // Ganti dengan direktori yang sesuai
+                            string uploadPath = "Utilities/File/ProfilePictures/"; // Ganti dengan direktori yang sesuai
                             string filePath = Path.Combine(uploadPath, uniqueFileName);
 
                             using (var stream = new FileStream(filePath, FileMode.Create))
                             {
-                                registrationDto.ProfilePictureFile.CopyTo(stream);
+                                await registrationDto.ProfilePictureFile.CopyToAsync(stream);
                             }
 
                             // Simpan nama berkas unik ke atribut Foto pada objek Employee
                             employee.Foto = uniqueFileName;
                         }
 
-                        // Handle pengunggahan cv (jika diperlukan)
+                        // Handle pengunggahan CV (jika diperlukan)
                         if (registrationDto.CvFile != null && registrationDto.CvFile.Length > 0)
                         {
                             string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}{Path.GetExtension(registrationDto.CvFile.FileName)}";
-                            string uploadPath = "File/Cv/"; // Ganti dengan direktori yang sesuai
+                            string uploadPath = "Utilities/File/Cv/"; // Ganti dengan direktori yang sesuai
                             string filePath = Path.Combine(uploadPath, uniqueFileName);
 
                             using (var stream = new FileStream(filePath, FileMode.Create))
                             {
-                                registrationDto.CvFile.CopyTo(stream);
+                                await registrationDto.CvFile.CopyToAsync(stream);
                             }
 
-                            // Simpan nama berkas unik ke atribut Foto pada objek Employee
+                            // Simpan nama berkas unik ke atribut CV pada objek CurriculumVitae
                             curriculumVitae.Cv = uniqueFileName;
                         }
 
@@ -245,31 +243,29 @@ namespace API.Controllers
                         account.Password = HashHandler.HashPassword(registrationDto.Password);
                         account.RoleGuid = _roleRepository.GetDefaultClient() ?? throw new Exception("Default role not found");
                         var resultAcc = _accountRepository.Create(account);
-                        
-                        // Simpan Experience dalam repository
-                        var resultExp = _experienceRepository.Create(experience);
+
+                        // Simpan CurriculumVitae dalam repository
+                        curriculumVitae.Guid = resultEmp.Guid;
+                        var resultCv = _curriculumVitaeRepository.Create(curriculumVitae);
 
                         // Simpan Skills dalam repository
                         foreach (var skill in skills)
                         {
+                            skill.CvGuid = resultCv.Guid; // Sesuaikan ini dengan hubungan yang benar
                             var resultSkl = _skillRepository.Create(skill);
-
-                            //Generate add Experience_Skill
-                            var curriculumVitae1 = _curriculumVitaeRepository.Create(new CurriculumVitae
-                            {
-                                ExperienceGuid = resultExp.Guid,
-                                SkillGuid = resultSkl.Guid,
-                            });
                         }
 
-                        //simpan cv dalam repository
-                        curriculumVitae.Guid = resultEmp.Guid;
-                        curriculumVitae.ExperienceGuid = resultExp.Guid;
+                        // Simpan Experiences dalam repository
+                        foreach (var experience in experiences)
+                        {
+                            experience.CvGuid = resultCv.Guid; // Sesuaikan ini dengan hubungan yang benar
+                            var resultExp = _experienceRepository.Create(experience);
+                        }
 
                         // Commit transaksi jika semua operasi berhasil
                         transactionScope.Complete();
 
-                        return Ok(new ResponseOKHandler<string>("Registration successful !"));
+                        return Ok(new ResponseOKHandler<string>("Registration successful!"));
                     }
                     catch (Exception ex)
                     {

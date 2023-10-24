@@ -11,8 +11,6 @@ public class CreateCurriculumVitaeDto
     {
         return new CurriculumVitae
         {
-            SkillGuid = Dto.SkillGuid,
-            ExperienceGuid = Dto.ExperienceGuid,
             CreatedDate = DateTime.Now,
             ModifiedDate = DateTime.Now
 

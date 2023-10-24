@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(CodeLinkDbContext))]
-    [Migration("20231024041818_DatabaseAdd")]
+    [Migration("20231024130711_DatabaseAdd")]
     partial class DatabaseAdd
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -124,23 +124,11 @@ namespace API.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("cv");
 
-                    b.Property<Guid?>("ExperienceGuid")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("experiences_guid");
-
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2")
                         .HasColumnName("modified_date");
 
-                    b.Property<Guid?>("SkillGuid")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("skills_guid");
-
                     b.HasKey("Guid");
-
-                    b.HasIndex("ExperienceGuid");
-
-                    b.HasIndex("SkillGuid");
 
                     b.ToTable("tb_tr_cv");
                 });
@@ -236,6 +224,10 @@ namespace API.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("created_date");
 
+                    b.Property<Guid>("CvGuid")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("cv_guid");
+
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2")
                         .HasColumnName("modified_date");
@@ -251,6 +243,8 @@ namespace API.Migrations
                         .HasColumnName("position");
 
                     b.HasKey("Guid");
+
+                    b.HasIndex("CvGuid");
 
                     b.ToTable("tb_m_experiences");
                 });
@@ -291,6 +285,10 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("name");
+
+                    b.Property<Guid>("OwnerGuid")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("owner_guid");
 
                     b.Property<DateTime?>("StartContract")
                         .HasColumnType("datetime2")
@@ -366,6 +364,10 @@ namespace API.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("created_date");
 
+                    b.Property<Guid>("CvGuid")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("cv_guid");
+
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2")
                         .HasColumnName("modified_date");
@@ -375,6 +377,8 @@ namespace API.Migrations
                         .HasColumnName("name");
 
                     b.HasKey("Guid");
+
+                    b.HasIndex("CvGuid");
 
                     b.ToTable("tb_m_skills");
                 });
@@ -410,27 +414,13 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.CurriculumVitae", b =>
                 {
-                    b.HasOne("API.Models.Experience", "Experience")
-                        .WithMany("CurriculumVitaes")
-                        .HasForeignKey("ExperienceGuid")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("API.Models.Employee", "Employee")
                         .WithOne("CurriculumVitae")
                         .HasForeignKey("API.Models.CurriculumVitae", "Guid")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("API.Models.Skill", "Skill")
-                        .WithMany("CurriculumVitaes")
-                        .HasForeignKey("SkillGuid")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("Employee");
-
-                    b.Navigation("Experience");
-
-                    b.Navigation("Skill");
                 });
 
             modelBuilder.Entity("API.Models.Employee", b =>
@@ -441,6 +431,17 @@ namespace API.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("API.Models.Experience", b =>
+                {
+                    b.HasOne("API.Models.CurriculumVitae", "CurriculumVitae")
+                        .WithMany("Experiences")
+                        .HasForeignKey("CvGuid")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CurriculumVitae");
                 });
 
             modelBuilder.Entity("API.Models.Interview", b =>
@@ -465,9 +466,27 @@ namespace API.Migrations
                     b.Navigation("Interview");
                 });
 
+            modelBuilder.Entity("API.Models.Skill", b =>
+                {
+                    b.HasOne("API.Models.CurriculumVitae", "CurriculumVitae")
+                        .WithMany("Skills")
+                        .HasForeignKey("CvGuid")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CurriculumVitae");
+                });
+
             modelBuilder.Entity("API.Models.Company", b =>
                 {
                     b.Navigation("Employees");
+                });
+
+            modelBuilder.Entity("API.Models.CurriculumVitae", b =>
+                {
+                    b.Navigation("Experiences");
+
+                    b.Navigation("Skills");
                 });
 
             modelBuilder.Entity("API.Models.Employee", b =>
@@ -481,11 +500,6 @@ namespace API.Migrations
                     b.Navigation("Tests");
                 });
 
-            modelBuilder.Entity("API.Models.Experience", b =>
-                {
-                    b.Navigation("CurriculumVitaes");
-                });
-
             modelBuilder.Entity("API.Models.Interview", b =>
                 {
                     b.Navigation("Rating");
@@ -494,11 +508,6 @@ namespace API.Migrations
             modelBuilder.Entity("API.Models.Role", b =>
                 {
                     b.Navigation("Accounts");
-                });
-
-            modelBuilder.Entity("API.Models.Skill", b =>
-                {
-                    b.Navigation("CurriculumVitaes");
                 });
 #pragma warning restore 612, 618
         }

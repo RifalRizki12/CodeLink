@@ -8,8 +8,6 @@ public class CreateExperienceDto
     public string Position { get; set; }
     public string Company { get; set; }
 
-
-
     public static implicit operator Experience(CreateExperienceDto experienceDto) 
     {
         return new Experience
