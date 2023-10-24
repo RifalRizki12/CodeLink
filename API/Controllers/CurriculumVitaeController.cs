@@ -33,7 +33,7 @@ namespace API.Controllers
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
-                    Message = "Data Experience Not Found"
+                    Message = "Data Curriculum Vitae Not Found"
                 });
             }
 
@@ -59,7 +59,7 @@ namespace API.Controllers
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
-                    Message = "Experience Data with Specific GUID Not Found"
+                    Message = "Curriculum Vitae Data with Specific GUID Not Found"
                 });
             }
 
@@ -108,7 +108,7 @@ namespace API.Controllers
                     {
                         Code = StatusCodes.Status404NotFound,
                         Status = HttpStatusCode.NotFound.ToString(),
-                        Message = " Experience with Specific GUID Not Found"
+                        Message = " Curriculum Vitae with Specific GUID Not Found"
                     });
                 }
 
@@ -121,7 +121,7 @@ namespace API.Controllers
 
 
                 // Mengembalikan pesan sukses dalam respons OK.
-                return Ok(new ResponseOKHandler<string>("Data Has Been Deleted"));
+                return Ok(new ResponseOKHandler<string>("Data Has Been Updated"));
             }
             catch (ExceptionHandler ex)
             {
@@ -153,7 +153,7 @@ namespace API.Controllers
                     {
                         Code = StatusCodes.Status404NotFound,
                         Status = HttpStatusCode.NotFound.ToString(),
-                        Message = "experienceSkill Not Found"
+                        Message = "Curriculum Vitae Not Found"
                     });
                 }
 
@@ -171,7 +171,7 @@ namespace API.Controllers
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
-                    Message = "Failed to delete ExperienceSkill",
+                    Message = "Failed to delete Curriculum Vitae",
                     Error = ex.Message
                 });
             }
