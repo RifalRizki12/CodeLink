@@ -30,15 +30,13 @@ builder.Services.AddScoped<ITokenHandlers, API.Utilities.Handler.TokenHandler>()
 // Add repositories to the container.
 // Mendaftarkan AccountRepository sebagai implementasi IAccountRepository.
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-builder.Services.AddScoped<IAccountRoleRepository, AccountRoleRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IExperienceRepository, ExperienceRepository>();
-builder.Services.AddScoped<IExperienceSkillRepository, ExperienceSkillRepository>();
+builder.Services.AddScoped<ICurriculumVitaeRepository, CurriculumVitaeRepository>();
 builder.Services.AddScoped<IRatingRepository, RatingRepository>();
 builder.Services.AddScoped<IRatingRepository, RatingRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-builder.Services.AddScoped<ISalaryRepository, SalaryRepository>();
 builder.Services.AddScoped<ISkillRepository, SkillRepository>();
 builder.Services.AddScoped<IInterviewRepository, InterviewRepository>();
 

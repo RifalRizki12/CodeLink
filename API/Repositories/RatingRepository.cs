@@ -16,13 +16,13 @@ namespace API.Repositories
             _context = context;
         }
 
-        public double? GetAverageRatingByEmployeeAndCompany(Guid employeeGuid)
+/*        public double? GetAverageRatingByEmployeeAndCompany(Guid employeeGuid)
         {
             // Query menggunakan Entity Framework
             return _context.Ratings
                 .Where(r => r.EmployeeGuid == employeeGuid)
                 .Average(r => (double?)r.Rate);
 
-        }
+        }*/
     }
 }

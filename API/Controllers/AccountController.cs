@@ -17,24 +17,22 @@ namespace API.Controllers
     {
         private readonly IAccountRepository _accountRepository;
         private readonly IRoleRepository _roleRepository;
-        private readonly IAccountRoleRepository _accountRoleRepository;
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IEmailHandler _emailHandler;
         private readonly ITokenHandlers _tokenHandler;
 
         // Konstruktor controller yang menerima IAccountRepository sebagai parameter.
-        public AccountController(IAccountRepository accountRepository, IEmployeeRepository employeeRepository, IEmailHandler emailHandler, IRoleRepository roleRepository, IAccountRoleRepository accountRoleRepository, ITokenHandlers tokenHandler)
+        public AccountController(IAccountRepository accountRepository, IEmployeeRepository employeeRepository, IEmailHandler emailHandler, IRoleRepository roleRepository, ITokenHandlers tokenHandler)
         {
             _accountRepository = accountRepository;
             _employeeRepository = employeeRepository;
             _emailHandler = emailHandler;
             _roleRepository = roleRepository;
-            _accountRoleRepository = accountRoleRepository;
             _tokenHandler = tokenHandler;
         }
 
         //Login
-        [HttpPost("login")]
+/*        [HttpPost("login")]
         public IActionResult Login([FromBody] LoginDto request)
         {
             try
@@ -93,7 +91,7 @@ namespace API.Controllers
                     Error = ex.Message
                 });
             }
-        }
+        }*/
 
 
         // Metode untuk mengirim OTP melalui email dalam kasus lupa kata sandi

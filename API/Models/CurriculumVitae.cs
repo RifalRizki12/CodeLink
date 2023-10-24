@@ -2,17 +2,14 @@
 
 namespace API.Models
 {
-    [Table("tb_m_experiences_skills")]
-    public class ExperienceSkill : BaseEntity
+    [Table("tb_tr_cv")]
+    public class CurriculumVitae : BaseEntity
     {
         [Column("skills_guid")]
         public Guid? SkillGuid { get; set;}
 
         [Column("experiences_guid")]
         public Guid? ExperienceGuid { get; set;}
-        
-        [Column("employee_guid")]
-        public Guid EmployeeGuid { get; set;}
 
         //kardinalitas
         public Experience? Experience { get; set;}

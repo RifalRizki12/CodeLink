@@ -13,27 +13,29 @@ namespace CLIENT.Controllers
             this.repository = repository;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> List()
+        {
+            var result = await repository.Get();
+            var listEmployee = new List<EmployeeDto>();
+            if (result != null)
+            {
+
+                listEmployee = result.Data.Select(x => (EmployeeDto)x).ToList();
+            }
+
+            return View(listEmployee);
+        }
+
+        public async Task<IActionResult> Index()
         {
             return View();
         }
 
-        public async Task<IActionResult> List()
+        public async Task<JsonResult> GetEmployeeData()
         {
-            var result = await repository.Get(); // Menggunakan metode Get dari repository
-            if (result.Status == "Ok")
-            {
-                var listEmployee = result.Data.Select(x => (EmployeeDto)x).ToList();
-
-                // Mengirim data karyawan ke tampilan
-                ViewBag.EmployeeData = listEmployee;
-                return View();
-            }
-            else
-            {
-                // Handle kesalahan jika diperlukan
-                return View();
-            }
+            var result = await repository.GetDetailIdle();
+            return Json(new { data = result.Data });
         }
+
     }
 }

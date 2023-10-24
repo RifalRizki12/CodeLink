@@ -24,20 +24,21 @@ namespace API.Models
         public string PhoneNumber { get; set; }
 
         [Column("status")]
-        public string? Status { get; set; }
+        public StatusEmployee StatusEmployee { get; set; }
 
-        [Column("hire_date")]
-        public DateTime? HireDate { get; set; }
-        [Column("expired_date")]
-        public DateTime? ExpiredDate { get; set; }
+        [Column("grade")]
+        public GradeLevel? Grade { get; set; }
+
+        [Column("hire_metrodata")]
+        public DateTime? HireMetro { get; set; }
+        [Column("end_metrodata")]
+        public DateTime? EndMetro { get; set; }
 
         [Column("company_id")]
         public Guid? CompanyGuid { get; set; }
 
         //kardinalitas
-        public ICollection<ExperienceSkill> ExperienceSkills { get; set; }
-        public Salary? Salary { get; set; }
-        public ICollection<Rating>? Ratings { get; set; }
+        public CurriculumVitae? CurriculumVitae { get; set; }
         public Account? Account { get; set; }
         public ICollection<Interview>? Tests { get; set; }
         public Company? Company { get; set; }

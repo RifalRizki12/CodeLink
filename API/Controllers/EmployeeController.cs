@@ -18,19 +18,17 @@ namespace API.Controllers
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IAccountRepository _accountRepository;
-        private readonly IAccountRoleRepository _accountRoleRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly ICompanyRepository _companyRepository;
-        private readonly IExperienceSkillRepository _experienceSkillRepository;
+        private readonly ICurriculumVitaeRepository _experienceSkillRepository;
         private readonly IExperienceRepository _experienceRepository;
         private readonly ISkillRepository _skillRepository;
         private readonly IRatingRepository _ratingRepository;
 
-        public EmployeeController(IEmployeeRepository employeeRepository, IAccountRepository accountRepository, IAccountRoleRepository accountRoleRepository, IRoleRepository roleRepository, ICompanyRepository companyRepository, IExperienceSkillRepository experienceSkillRepository, IExperienceRepository experienceRepository, ISkillRepository skillRepository, IRatingRepository ratingRepository)
+        public EmployeeController(IEmployeeRepository employeeRepository, IAccountRepository accountRepository, IRoleRepository roleRepository, ICompanyRepository companyRepository, ICurriculumVitaeRepository experienceSkillRepository, IExperienceRepository experienceRepository, ISkillRepository skillRepository, IRatingRepository ratingRepository)
         {
             _employeeRepository = employeeRepository;
             _accountRepository = accountRepository;
-            _accountRoleRepository = accountRoleRepository;
             _roleRepository = roleRepository;
             _companyRepository = companyRepository;
             _experienceSkillRepository = experienceSkillRepository;
@@ -67,9 +65,7 @@ namespace API.Controllers
 
         }
 
-
-
-        [HttpPost("registerClient")]
+/*        [HttpPost("registerClient")]
         public IActionResult RegisterClient([FromBody] RegisterClientDto request)
         {
             // Validasi apakah kata sandi dan konfirmasi kata sandi cocok
@@ -136,9 +132,9 @@ namespace API.Controllers
                     });
                 }
             }
-        }
+        }*/
 
-        [HttpGet("allClient-details")]
+/*        [HttpGet("allClient-details")]
         public IActionResult GetAllClientDetails()
         {
             try
@@ -179,9 +175,9 @@ namespace API.Controllers
                     Message = "Failed to retrieve client details. " + ex.Message
                 });
             }
-        }
+        }*/
 
-        [HttpPost("registerIdle")]
+        /*[HttpPost("registerIdle")]
         public IActionResult RegisterIdle([FromBody] RegisterIdleDto request)
         {
             // Validasi apakah kata sandi dan konfirmasi kata sandi cocok
@@ -222,7 +218,7 @@ namespace API.Controllers
                         var resultSkl = _skillRepository.Create(skill);
 
                         //Generate add Experience_Skill
-                        var experienceSkill = _experienceSkillRepository.Create(new ExperienceSkill
+                        var experienceSkill = _experienceSkillRepository.Create(new CurriculumVitae
                         {
                             EmployeeGuid = resultEmp.Guid,
                             ExperienceGuid = resultExp?.Guid,
@@ -255,7 +251,7 @@ namespace API.Controllers
                     });
                 }
             }
-        }
+        }*/
 
         // GET api/employee
         [HttpGet]
@@ -301,7 +297,7 @@ namespace API.Controllers
         }
 
         // POST api/employee
-        [HttpPost]
+/*        [HttpPost]
         public IActionResult Create(CreateEmployeeDto employeeDto)
         {
             try
@@ -327,7 +323,7 @@ namespace API.Controllers
                     Error = ex.Message
                 });
             }
-        }
+        }*/
 
         // PUT api/employee
         [HttpPut]
@@ -374,7 +370,7 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("detailsIdle")]
+        /*[HttpGet("detailsIdle")]
         public IActionResult GetDetails()
         {
             var employees = _employeeRepository.GetAll();
@@ -433,14 +429,13 @@ namespace API.Controllers
                                       EmployeeOwner = companyOwner?.FirstName + " " + companyOwner?.LastName ?? "N/A",
                                       Experience = expResult?.Name ?? "N/A",
                                       Position = expResult?.Position ?? "N/A",
-                                      CompanyExperience = expResult?.Company ?? "N/A"
+                                      CompanyExperience = expResult?.Company ?? "N/A",
+                                      HireDate = emp.HireDate,
+                                      ExpiredDate = emp.ExpiredDate,
                                   };
 
             return Ok(new ResponseOKHandler<IEnumerable<EmployeeDetailDto>>(employeeDetails));
-        }
-
-
-
+        }*/
 
 
         // DELETE api/employee/{guid}

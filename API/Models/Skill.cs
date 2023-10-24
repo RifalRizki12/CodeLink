@@ -5,12 +5,9 @@ namespace API.Models
     [Table("tb_m_skills")]
     public class Skill : BaseEntity
     {
-        [Column("hard", TypeName = "nvarchar(50)")]
-        public string? Hard {  get; set; }
+        [Column("name", TypeName = "nvarchar(50)")]
+        public string? Name {  get; set; }
 
-        [Column("soft", TypeName = "nvarchar(50)")]
-        public string? Soft { get; set; }
-
-        public ICollection<ExperienceSkill>? ExperienceSkills { get; set; }
+        public ICollection<CurriculumVitae>? CurriculumVitaes { get; set; }
     }
 }

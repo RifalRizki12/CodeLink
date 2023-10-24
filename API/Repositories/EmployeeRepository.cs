@@ -1,6 +1,7 @@
 ﻿using API.Contracts;
 using API.Data;
 using API.Models;
+using API.Utilities.Enums;
 
 namespace API.Repositories
 {
@@ -19,17 +20,17 @@ namespace API.Repositories
             return _context.Employees.FirstOrDefault(employee => employee.Email == employeeEmail);
         }
 
-        public Employee GetAdminEmployee()
+/*        public Employee GetAdminEmployee()
         {
             return _context.Employees
-                .Where(e => e.Account.AccountRoles.Any(ar => ar.Role.Name == "admin"))
+                .Where(e => e.Account.Any(ar => ar.Role.Name == "admin"))
                 .FirstOrDefault();
-        }
+        }*/
 
         public int GetCountIdle()
         {
             int idleEmployeeCount = _context.Employees
-                .Count(e => e.Status == "idle");
+                .Count(e => e.StatusEmployee == StatusEmployee.idle);
 
             return idleEmployeeCount;
         }
@@ -37,7 +38,7 @@ namespace API.Repositories
         public int GetCaountHired()
         {
             int hiredEmployeeCount = _context.Employees
-                 .Count(e => e.Status == "onsite");
+                 .Count(e => e.StatusEmployee == StatusEmployee.onsite);
 
             return hiredEmployeeCount;
         }

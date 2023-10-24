@@ -1,12 +1,11 @@
-﻿using API.DTOs.Salaries;
-using API.Models;
+﻿using API.Models;
 
 namespace API.DTOs.Ratings
 {
     public class CreateRatingDto
     {
-        public int Rate { get; set; }
-        public Guid EmployeeGuid { get; set; }
+        public int? Rate { get; set; }
+        public string? Feedback { get; set; }
 
 
         public static implicit operator Rating(CreateRatingDto createRatingDto)
@@ -14,7 +13,7 @@ namespace API.DTOs.Ratings
             return new Rating
             {
                 Rate = createRatingDto.Rate,
-                EmployeeGuid = createRatingDto.EmployeeGuid,
+                Feedback = createRatingDto.Feedback,
                 CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now
             };

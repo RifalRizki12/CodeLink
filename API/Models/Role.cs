@@ -9,7 +9,7 @@ namespace API.Models
         public string Name { get; set; }
 
         //Kardinalitas
-        public ICollection<AccountRole>? AccountRoles { get; set; }
+        public ICollection<Account>? Accounts { get; set; }
 
     }
 }

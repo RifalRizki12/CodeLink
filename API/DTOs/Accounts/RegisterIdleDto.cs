@@ -11,11 +11,11 @@ namespace API.DTOs.Accounts
         public string LastName { get; set; }
         public GenderLevel Gender { get; set; }
         public string PhoneNumber { get; set; }
-        public DateTime? HireDate { get; set; }
-        public DateTime? ExpiredDate { get; set; }
+        public DateTime? HireMetro { get; set; }
+        public DateTime? EndMetro { get; set; }
         public string Email { get; set; }
-        public string? StatusEmployee { get; set; }
-        public StatusLevel StatusAccount { get; set; }
+        public GradeLevel Grade { get; set; }
+        public StatusEmployee StatusEmployee { get; set; }
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
         public string ExperienceName { get; set; }
@@ -31,10 +31,11 @@ namespace API.DTOs.Accounts
                 LastName = dto.LastName,
                 Gender = dto.Gender,
                 PhoneNumber = dto.PhoneNumber,
-                HireDate = dto.HireDate,
-                ExpiredDate = dto.ExpiredDate,
+                Grade = dto.Grade,
+                HireMetro = dto.HireMetro,
+                EndMetro = dto.EndMetro,
                 Email = dto.Email,
-                Status = dto.StatusEmployee
+                StatusEmployee = dto.StatusEmployee
             };
         }
 
@@ -46,7 +47,7 @@ namespace API.DTOs.Accounts
                 Password = dto.ConfirmPassword,
                 Otp = 0,
                 IsUsed = true,
-                Status = dto.StatusAccount,
+                Status = StatusLevel.Approved,
                 ExpiredTime = DateTime.Now,
                 CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now
@@ -73,7 +74,7 @@ namespace API.DTOs.Accounts
                 var skill = new Skill
                 {
                     Guid = Guid.NewGuid(),
-                    Hard = skillName
+                    Name = skillName
                 };
                 skillsList.Add(skill);
             }

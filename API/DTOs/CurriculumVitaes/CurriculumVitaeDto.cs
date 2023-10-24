@@ -2,7 +2,7 @@
 
 namespace API.DTOs.ExperienceSkills;
 
-public class ExperienceSkillDto
+public class CurriculumVitaeDto
 {
     public Guid Guid { get; set; }
     public Guid? SkillGuid { get; set; }
@@ -11,25 +11,23 @@ public class ExperienceSkillDto
 
 
 
-    public static explicit operator ExperienceSkillDto(ExperienceSkill expSkill)
+    public static explicit operator CurriculumVitaeDto(CurriculumVitae expSkill)
     {
-        return new ExperienceSkillDto
+        return new CurriculumVitaeDto
         {
            Guid = expSkill.Guid,
            SkillGuid = expSkill.SkillGuid,
            ExperienceGuid = expSkill.ExperienceGuid,
-           EmployeeGuid = expSkill.EmployeeGuid,
         };
     }
 
-    public static implicit operator ExperienceSkill(ExperienceSkillDto expSkillDto) 
+    public static implicit operator CurriculumVitae(CurriculumVitaeDto expSkillDto) 
     {
-        return new ExperienceSkill
+        return new CurriculumVitae
         {
             Guid = expSkillDto.Guid,
             SkillGuid = expSkillDto.SkillGuid,
             ExperienceGuid = expSkillDto.ExperienceGuid,
-            EmployeeGuid = expSkillDto.EmployeeGuid,
             ModifiedDate = DateTime.Now
 
         };

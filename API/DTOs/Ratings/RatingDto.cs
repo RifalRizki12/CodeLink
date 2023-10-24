@@ -1,13 +1,12 @@
-﻿using API.DTOs.Salaries;
-using API.Models;
+﻿using API.Models;
 
 namespace API.DTOs.Ratings
 {
     public class RatingDto
     {
         public Guid Guid { get; set; }
-        public int Rate { get; set; }
-        public Guid EmployeeGuid { get; set; }
+        public int? Rate { get; set; }
+        public string? Feedback { get; set; }
 
 
 
@@ -17,7 +16,7 @@ namespace API.DTOs.Ratings
             {
                 Guid = rating.Guid,
                 Rate = rating.Rate,
-                EmployeeGuid = rating.EmployeeGuid,
+                Feedback = rating.Feedback,
             };
         }
 
@@ -27,7 +26,7 @@ namespace API.DTOs.Ratings
             {
                 Guid = ratingDto.Guid,
                 Rate = ratingDto.Rate,
-                EmployeeGuid = ratingDto.EmployeeGuid,
+                Feedback = ratingDto.Feedback,
                 ModifiedDate = DateTime.Now
             };
         }

@@ -11,6 +11,7 @@ namespace API.DTOs.Accounts
 
         public int Otp { get; set; }
         public StatusLevel Status { get; set; }
+        public Guid RoleGuid { get; set; }
 
         public bool IsUsed { get; set; }
 
@@ -25,6 +26,7 @@ namespace API.DTOs.Accounts
                 Otp = dto.Otp,
                 Status = dto.Status,
                 IsUsed = dto.IsUsed,
+                RoleGuid = dto.RoleGuid,
                 // Mengatur nilai ExpiredTime, CreatedDate, dan ModifiedDate dengan waktu saat ini
                 CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now

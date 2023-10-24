@@ -13,9 +13,6 @@ namespace API.Utilities.Validations.Ratings
 
             RuleFor(e => e.Rate)
                .NotNull();
-
-            RuleFor(e => e.EmployeeGuid)
-                .NotEmpty();
         }
     }
 }

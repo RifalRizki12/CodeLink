@@ -9,12 +9,12 @@ namespace API.Repositories
     {
         public InterviewRepository(CodeLinkDbContext context) : base(context) { }
 
-        public Employee GetAdminEmployee()
+/*        public Employee GetAdminEmployee()
         {
             return _context.Employees
                 .Where(e => e.Account.AccountRoles.Any(ar => ar.Role.Name == "admin"))
                 .FirstOrDefault();
-        }
+        }*/
 
     }
 }

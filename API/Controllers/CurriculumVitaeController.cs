@@ -9,21 +9,21 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ExperienceSkillController : ControllerBase
+    public class CurriculumVitaeController : ControllerBase
     {
-        private readonly IExperienceSkillRepository _expskillRepository;
+        private readonly ICurriculumVitaeRepository _cvRepository;
 
-        public ExperienceSkillController(IExperienceSkillRepository expSkillRepository)
+        public CurriculumVitaeController(ICurriculumVitaeRepository cvRepository)
         {
-            _expskillRepository = expSkillRepository;
+            _cvRepository = cvRepository;
         }
 
         // GET api/experienceSkill
         [HttpGet]
         public IActionResult GetAll()
         {
-            // Memanggil metode GetAll dari _expskillRepository untuk mendapatkan semua data experienceSkill.
-            var result = _expskillRepository.GetAll();
+            // Memanggil metode GetAll dari _cvRepository untuk mendapatkan semua data experienceSkill.
+            var result = _cvRepository.GetAll();
 
             // Memeriksa apakah hasil query tidak mengandung data.
             if (!result.Any())
@@ -38,18 +38,18 @@ namespace API.Controllers
             }
 
             // Mengonversi hasil query ke objek DTO (Data Transfer Object) menggunakan Select.
-            var data = result.Select(x => (ExperienceSkillDto)x);
+            var data = result.Select(x => (CurriculumVitaeDto)x);
 
             // Mengembalikan data yang ditemukan dalam respons OK.
-            return Ok(new ResponseOKHandler<IEnumerable<ExperienceSkillDto>>(data));
+            return Ok(new ResponseOKHandler<IEnumerable<CurriculumVitaeDto>>(data));
         }
 
         // GET api/experienceSkill/{guid}
         [HttpGet("{guid}")]
         public IActionResult GetByGuid(Guid guid)
         {
-            // Memanggil metode GetByGuid dari _expskillRepository dengan parameter GUID.
-            var result = _expskillRepository.GetByGuid(guid);
+            // Memanggil metode GetByGuid dari _cvRepository dengan parameter GUID.
+            var result = _cvRepository.GetByGuid(guid);
 
             // Memeriksa apakah hasil query tidak ditemukan (null).
             if (result is null)
@@ -64,21 +64,21 @@ namespace API.Controllers
             }
 
             // Mengonversi hasil query ke objek DTO (Data Transfer Object).
-            return Ok(new ResponseOKHandler<ExperienceSkillDto>((ExperienceSkillDto)result));
+            return Ok(new ResponseOKHandler<CurriculumVitaeDto>((CurriculumVitaeDto)result));
         }
 
         // POST api/ExperienceSkill
         [HttpPost]
-        public IActionResult Create(CreateExperienceSkillDto expSkillDto)
+        public IActionResult Create(CreateCurriculumVitaeDto cvDto)
         {
             try
             {
 
-                // Memanggil metode Create dari _expskillRepository untuk membuat data ExperienceSkill baru.
-                var result = _expskillRepository.Create(expSkillDto);
+                // Memanggil metode Create dari _cvRepository untuk membuat data ExperienceSkill baru.
+                var result = _cvRepository.Create(cvDto);
 
                 // Mengembalikan data yang berhasil dibuat dalam respons OK.
-                return Ok(new ResponseOKHandler<ExperienceSkillDto>((ExperienceSkillDto)result));
+                return Ok(new ResponseOKHandler<CurriculumVitaeDto>((CurriculumVitaeDto)result));
             }
             catch (ExceptionHandler ex)
             {
@@ -95,12 +95,12 @@ namespace API.Controllers
 
         // PUT api/experienceSkill
         [HttpPut]
-        public IActionResult Update(ExperienceSkillDto expDto)
+        public IActionResult Update(CurriculumVitaeDto expDto)
         {
             try
             {
                 // Memeriksa apakah entitas ExperienceSkill yang akan diperbarui ada dalam database.
-                var entity = _expskillRepository.GetByGuid(expDto.Guid);
+                var entity = _cvRepository.GetByGuid(expDto.Guid);
                 if (entity is null)
                 {
                     // Mengembalikan respons Not Found jika experienceSkill dengan GUID tertentu tidak ditemukan.
@@ -113,11 +113,11 @@ namespace API.Controllers
                 }
 
                 // Menyalin nilai CreatedDate dari entitas yang ada ke entitas yang akan diperbarui.
-                ExperienceSkill toUpdate = expDto;
+                CurriculumVitae toUpdate = expDto;
                 toUpdate.CreatedDate = entity.CreatedDate;
 
-                // Memanggil metode Update dari _expskillRepository untuk memperbarui data experienceSkill.
-               _expskillRepository.Update(expDto);
+                // Memanggil metode Update dari _cvRepository untuk memperbarui data experienceSkill.
+               _cvRepository.Update(expDto);
 
 
                 // Mengembalikan pesan sukses dalam respons OK.
@@ -142,8 +142,8 @@ namespace API.Controllers
         {
             try
             {
-                // Memanggil metode GetByGuid dari _expskillRepository untuk mendapatkan entitas yang akan dihapus.
-                var entity = _expskillRepository.GetByGuid(guid);
+                // Memanggil metode GetByGuid dari _cvRepository untuk mendapatkan entitas yang akan dihapus.
+                var entity = _cvRepository.GetByGuid(guid);
 
                 // Memeriksa apakah entitas yang akan dihapus ada dalam database.
                 if (entity is null)
@@ -157,8 +157,8 @@ namespace API.Controllers
                     });
                 }
 
-                // Memanggil metode Delete dari _expskillRepository untuk menghapus data ExperienceSkill.
-               _expskillRepository.Delete(entity);
+                // Memanggil metode Delete dari _cvRepository untuk menghapus data ExperienceSkill.
+               _cvRepository.Delete(entity);
 
 
                 // Mengembalikan kode status 204 (No Content) untuk sukses penghapusan tanpa respons.

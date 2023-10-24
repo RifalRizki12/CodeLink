@@ -28,7 +28,7 @@ namespace API.Utilities.Validations.Accounts
 
             // Aturan validasi untuk properti 'PhoneNumber' dalam objek EmployeeDto
 
-            RuleFor(e => e.StatusAccount)
+            RuleFor(e => e.StatusEmployee)
                 .NotNull();
 
             RuleFor(e => e.Password)

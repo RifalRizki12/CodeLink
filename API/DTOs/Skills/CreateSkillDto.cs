@@ -4,18 +4,13 @@ namespace API.DTOs.Skills;
 
 public class CreateSkillDto
 {
-    public string? Hard { get; set; }
-    public string? Soft { get; set; }
-
-
-
+    public string? Skill { get; set; }
 
     public static implicit operator Skill(CreateSkillDto skillDto)
     {
         return new Skill
         {
-            Hard = skillDto.Hard,
-            Soft = skillDto.Soft,
+            Name = skillDto.Skill,
             CreatedDate = DateTime.Now,
             ModifiedDate = DateTime.Now
 

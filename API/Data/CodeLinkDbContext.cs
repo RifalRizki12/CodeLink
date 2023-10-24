@@ -9,13 +9,11 @@ namespace API.Data
 
         //add model to migrate
         public DbSet<Account> Accounts { get; set; }
-        public DbSet<AccountRole> AccountRoles { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Experience> Experiences { get; set; }
-        public DbSet<ExperienceSkill> ExperienceSkills { get; set; }
+        public DbSet<CurriculumVitae> CurriculumVitaes { get; set; }
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<Role> Roles { get; set; }
-        public DbSet<Salary> Salaries { get; set; }
         public DbSet<Skill> Skills { get; set; }
         public DbSet<Interview> Tests { get; set; }
         public DbSet<Company> Companies { get; set; }
@@ -28,25 +26,25 @@ namespace API.Data
             modelBuilder.Entity<Employee>().HasIndex(e => e.Email).IsUnique();
             modelBuilder.Entity<Employee>().HasIndex(e => e.PhoneNumber).IsUnique();
 
-            // One Skill has many ExperienceSkills
+            // One Skill has many CurriculumVitaes
             modelBuilder.Entity<Skill>()
-                .HasMany(e => e.ExperienceSkills)
+                .HasMany(e => e.CurriculumVitaes)
                 .WithOne(s => s.Skill)
                 .HasForeignKey(e => e.SkillGuid)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // One Experience has many ExperienceSkills
+            // One Experience has many CurriculumVitaes
             modelBuilder.Entity<Experience>()
-                .HasMany(e => e.ExperienceSkills)
+                .HasMany(e => e.CurriculumVitaes)
                 .WithOne(ex => ex.Experience)
                 .HasForeignKey(e => e.ExperienceGuid)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // One Employee has many ExperienceSkills
+            // One Employee has one CuriculumVitae
             modelBuilder.Entity<Employee>()
-                .HasMany(e => e.ExperienceSkills)
+                .HasOne(e => e.CurriculumVitae)
                 .WithOne(em => em.Employee)
-                .HasForeignKey(e => e.EmployeeGuid)
+                .HasForeignKey<CurriculumVitae>(e => e.Guid)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // One employee has One Account
@@ -56,32 +54,18 @@ namespace API.Data
                 .HasForeignKey<Account>(a => a.Guid)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // One Account has Many AccountRole
-            modelBuilder.Entity<Account>()
-            .HasMany(ar => ar.AccountRoles)
-            .WithOne(e => e.Account)
-            .HasForeignKey(ar => ar.AccountGuid)
+            // One Role has Many Account
+            modelBuilder.Entity<Role>()
+            .HasMany(ar => ar.Accounts)
+            .WithOne(e => e.Role)
+            .HasForeignKey(ar => ar.RoleGuid)
             .OnDelete(DeleteBehavior.Restrict);
 
-            // One Role has Many AccountRole
-            modelBuilder.Entity<AccountRole>()
-                .HasOne(r => r.Role)
-                .WithMany(ar => ar.AccountRoles)
-                .HasForeignKey(ar => ar.RoleGuid)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // One Employee has One Salary
-            modelBuilder.Entity<Employee>()
-                .HasOne(s => s.Salary)
-                .WithOne(e => e.Employee)
-                .HasForeignKey<Salary>(s => s.Guid)
-                .OnDelete(DeleteBehavior.Restrict);
-
             // One Employee has Many Rating
-            modelBuilder.Entity<Employee>()
-                .HasMany(r => r.Ratings)
-                .WithOne(e => e.Employee)
-                .HasForeignKey(r => r.EmployeeGuid)
+            modelBuilder.Entity<Rating>()
+                .HasOne(i => i.Interview)
+                .WithOne(r => r.Rating)
+                .HasForeignKey<Rating>(r => r.Guid)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // One Employee has Many Test

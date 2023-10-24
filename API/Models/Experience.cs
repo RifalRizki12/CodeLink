@@ -14,6 +14,6 @@ namespace API.Models
         [Column ("employee_guid")]
 
         //kardinalitas
-        public ICollection<ExperienceSkill>? ExperienceSkills { get; set;}
+        public ICollection<CurriculumVitae>? CurriculumVitaes { get; set;}
     }
 }

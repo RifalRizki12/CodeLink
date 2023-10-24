@@ -9,27 +9,28 @@ namespace API.DTOs.Employees
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public GenderLevel Gender { get; set; }
-        public DateTime? HireDate { get; set; }
-        public DateTime? ExpiredDate { get; set; }
+        public DateTime? HireMetro { get; set; }
+        public DateTime? EndMetro { get; set; }
+        public GradeLevel? GradeLevel { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
-        public string Status { get; set; }
+        public StatusEmployee StatusEmployee { get; set; }
         public Guid? CompanyGuid { get; set; }
 
         // Konversi Eksplisit (Explicit Conversion):
         // Metode ini akan mengonversi EmployeeDto ke Employee secara eksplisit jika diperlukan.
         public static explicit operator EmployeeDto(Employee employee)
         {
-
             return new EmployeeDto
             {
                 Guid = employee.Guid,               // Mengonversi GUID dari Employee ke EmployeeDto.
                 FirstName = employee.FirstName,     // Mengonversi Nama Depan dari Employee ke EmployeeDto.
                 LastName = employee.LastName,       // Mengonversi Nama Belakang dari Employee ke EmployeeDto.
                 Gender = employee.Gender,           // Mengonversi Jenis Kelamin dari Employee ke EmployeeDto.
-                HireDate = employee.HireDate,
-                ExpiredDate = employee.ExpiredDate,
-                Status = employee.Status,
+                HireMetro = employee.HireMetro,
+                EndMetro = employee.EndMetro,
+                GradeLevel = employee.Grade,
+                StatusEmployee = employee.StatusEmployee,
                 Email = employee.Email,             // Mengonversi Email dari Employee ke EmployeeDto.
                 PhoneNumber = employee.PhoneNumber,  // Mengonversi Nomor Telepon dari Employee ke EmployeeDto.
                 CompanyGuid = employee.CompanyGuid  // Mengonversi Nomor Telepon dari Employee ke EmployeeDto.
@@ -46,10 +47,11 @@ namespace API.DTOs.Employees
                 FirstName = dto.FirstName,      // Mengonversi Nama Depan dari EmployeeDto ke Employee.
                 LastName = dto.LastName,        // Mengonversi Nama Belakang dari EmployeeDto ke Employee.
                 Gender = dto.Gender,            // Mengonversi Jenis Kelamin dari EmployeeDto ke Employee.
-                HireDate = dto.HireDate,
-                ExpiredDate = dto.ExpiredDate,
-                Status = dto.Status,
-                Email = dto.Email,              // Mengonversi Email dari EmployeeDto ke Employee.
+                HireMetro = dto.HireMetro,
+                EndMetro = dto.EndMetro,
+                Grade = dto.GradeLevel,
+                StatusEmployee = dto.StatusEmployee,
+                Email = dto.Email,              
                 PhoneNumber = dto.PhoneNumber,
                 CompanyGuid = dto.CompanyGuid,// Mengonversi Nomor Telepon dari EmployeeDto ke Employee.
                 ModifiedDate = DateTime.Now

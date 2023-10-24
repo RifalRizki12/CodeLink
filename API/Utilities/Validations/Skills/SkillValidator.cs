@@ -11,10 +11,7 @@ public class SkillValidator : AbstractValidator<SkillDto>
         RuleFor(s => s.Guid)
             .NotEmpty();
 
-        RuleFor(s => s.Hard)
-            .MaximumLength(50);
-
-        RuleFor(s => s.Soft)
+        RuleFor(s => s.Skill)
             .MaximumLength(50);
 
     }

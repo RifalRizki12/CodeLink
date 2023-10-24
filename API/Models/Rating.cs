@@ -5,13 +5,13 @@ namespace API.Models
     [Table("tb_m_ratings")]
     public class Rating : BaseEntity
     {
-        [Column("rating")]
-        public int Rate { get; set; }
+        [Column("rate")]
+        public int? Rate { get; set; }
 
-        [Column("employee_guid")]
-        public Guid EmployeeGuid { get; set; }
+        [Column("feedback")]
+        public string? Feedback { get; set; }
 
         //kardinalitas
-        public Employee? Employee { get; set; }
+        public Interview? Interview { get; set; }
     }
 }

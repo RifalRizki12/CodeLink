@@ -24,7 +24,7 @@ namespace API.DTOs.Accounts
                 Password = accountDto.ConfirmPassword,
                 Otp = 0,
                 IsUsed = true,
-                Status = 0,
+                Status = StatusLevel.Requested,
                 ExpiredTime = DateTime.Now,
                 CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now
@@ -39,7 +39,7 @@ namespace API.DTOs.Accounts
                 LastName = registrationDto.LastName,
                 Gender = registrationDto.Gender,
                 Email = registrationDto.Email,
-                Status = "owner",
+                StatusEmployee = StatusEmployee.owner,
                 PhoneNumber = registrationDto.PhoneNumber,
                 CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now

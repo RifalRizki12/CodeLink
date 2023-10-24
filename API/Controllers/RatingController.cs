@@ -46,7 +46,7 @@ namespace API.Controllers
         }
 
         // GET api/rating/{guid}
-        [HttpGet("{guid}")]
+/*        [HttpGet("{guid}")]
         public IActionResult GetByGuid(Guid guid)
         {
             // Memanggil metode GetByGuid dari _ratingRepository dengan parameter GUID.
@@ -66,9 +66,9 @@ namespace API.Controllers
 
             // Mengonversi hasil query ke objek DTO (Data Transfer Object).
             return Ok(new ResponseOKHandler<RatingDto>((RatingDto)result));
-        }
+        }*/
 
-        [HttpGet("average-rating/employee/{employeeGuid}")]
+/*        [HttpGet("average-rating/employee/{employeeGuid}")]
         public IActionResult GetAverageRatingByEmployeeAndCompany(Guid employeeGuid)
         {
             // Memanggil metode GetAverageRatingByEmployeeAndCompany dari _ratingRepository dengan parameter employeeGuid dan companyGuid.
@@ -88,7 +88,7 @@ namespace API.Controllers
 
             // Mengembalikan rata-rata rating yang ditemukan.
             return Ok(new ResponseOKHandler<double>(averageRating.Value));
-        }
+        }*/
 
         // POST api/rating
         [HttpPost]

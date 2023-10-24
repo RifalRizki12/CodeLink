@@ -10,6 +10,7 @@ public class AccountDto
     public int Otp { get; set; }
     public StatusLevel Status { get; set; }
     public bool IsUsed { get; set; }
+    public Guid RoleGuid { get; set; }
     public DateTime ExpiredTime { get; set; }
 
     // Operator eksplisit digunakan untuk mengonversi objek Account ke AccountDto
@@ -23,6 +24,7 @@ public class AccountDto
             Status = account.Status,
             IsUsed = account.IsUsed,
             ExpiredTime = account.ExpiredTime,
+            RoleGuid = account.RoleGuid,
         };
     }
 
@@ -36,6 +38,7 @@ public class AccountDto
             Otp = accountDto.Otp,
             Status = accountDto.Status,
             IsUsed = accountDto.IsUsed,
+            RoleGuid = accountDto.RoleGuid,
             ExpiredTime = accountDto.ExpiredTime,
             ModifiedDate = DateTime.Now // Mengisi properti ModifiedDate dengan tanggal dan waktu saat ini.
         };

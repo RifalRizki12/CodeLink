@@ -5,19 +5,14 @@ namespace API.DTOs.Skills;
 public class SkillDto
 {
     public Guid Guid { get; set; }
-    public string? Hard { get; set; }
-    public string? Soft { get; set; }
-    
-
-
+    public string? Skill { get; set; }
 
     public static explicit operator SkillDto(Skill skill)
     {
         return new SkillDto
         {
            Guid = skill.Guid,
-           Hard = skill.Hard,
-           Soft = skill.Soft,
+           Skill = skill.Name,
         };
     }
 
@@ -26,8 +21,7 @@ public class SkillDto
         return new Skill
         {
             Guid = skillDto.Guid,
-            Hard = skillDto.Hard,
-            Soft = skillDto.Soft,
+            Name = skillDto.Skill,
             ModifiedDate = DateTime.Now
 
         };
