@@ -65,7 +65,7 @@ namespace API.Controllers
         }
 
         [HttpPost("registerClient")]
-        public async Task<IActionResult> RegisterClient([FromForm] RegisterClientDto registrationDto)
+        public async Task<IActionResult> RegisterClient(RegisterClientDto registrationDto)
         {
             if (ModelState.IsValid)
             {
@@ -189,7 +189,7 @@ namespace API.Controllers
         }
 
         [HttpPost("registerIdle")]
-        public async Task<IActionResult> RegisterIdle([FromForm] RegisterIdleDto registrationDto)
+        public async Task<IActionResult> RegisterIdle(RegisterIdleDto registrationDto)
         {
             if (ModelState.IsValid)
             {
