@@ -22,9 +22,9 @@ namespace API.Repositories
 
         public Employee GetAdminEmployee()
         {
-            return _context.Employees
-                .FirstOrDefault(e => e.Account.Role.Name == "admin");
+            return _context.Employees.FirstOrDefault(e => e.Account.Role.Name == "admin");
         }
+
 
         public int GetCountIdle()
         {
@@ -41,5 +41,7 @@ namespace API.Repositories
 
             return hiredEmployeeCount;
         }
+
+        
     }
 }
