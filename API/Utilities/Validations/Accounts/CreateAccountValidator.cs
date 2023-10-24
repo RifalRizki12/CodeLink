@@ -9,7 +9,7 @@ namespace API.Utilities.Validations.Accounts
         public CreateAccountValidator()
         {
             // Aturan validasi untuk properti 'Password' dalam objek CreateAccountDto
-            RuleFor(e => e.Password)
+            RuleFor(a => a.Password)
                 .NotEmpty()         // Properti tidak boleh kosong
                 .MinimumLength(8) // Panjang minimal 8 karakter
                 .MaximumLength(16) //max lenght karakter 16
@@ -17,9 +17,15 @@ namespace API.Utilities.Validations.Accounts
                 .Matches(@"[a-z]+");//harus berisi min 1 huruf lowercase
 
             // Aturan validasi untuk properti 'IsUsed' dalam objek CreateAccountDto
-            RuleFor(e => e.IsUsed)
+            RuleFor(a => a.IsUsed)
                 .NotEmpty();        // Properti tidak boleh kosong
-           
+
+            RuleFor(a => a.Status)
+             .NotEmpty();        // Properti tidak boleh kosong
+
+            RuleFor(a => a.RoleGuid)
+            .NotEmpty();
+
         }
     }
 }
