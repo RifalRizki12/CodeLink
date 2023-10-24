@@ -11,18 +11,28 @@ namespace API.Repositories
     {
         private readonly CodeLinkDbContext _context;
 
+
         public RatingRepository(CodeLinkDbContext context) : base(context)
         {
             _context = context;
         }
 
-/*        public double? GetAverageRatingByEmployeeAndCompany(Guid employeeGuid)
+        public double? GetAverageRatingByEmployee(Guid employeeGuid)
         {
-            // Query menggunakan Entity Framework
-            return _context.Ratings
-                .Where(r => r.EmployeeGuid == employeeGuid)
-                .Average(r => (double?)r.Rate);
+            // Ambil semua rating dari interview yang terkait dengan employee tertentu
+            var ratings = _context.Tests
+                                  .Where(i => i.EmployeeGuid == employeeGuid)
+                                  .Join(_context.Ratings,
+                                        interview => interview.Guid,
+                                        rating => rating.Guid,
+                                        (interview, rating) => rating.Rate)
+                                  .ToList();
 
-        }*/
+            // Jika tidak ada rating yang ditemukan, kembalikan null
+            if (!ratings.Any()) return null;
+
+            // Hitung rata-rata rating
+            return ratings.Average();
+        }
     }
 }
