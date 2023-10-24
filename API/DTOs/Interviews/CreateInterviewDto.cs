@@ -1,5 +1,4 @@
-﻿
-using API.Models;
+﻿using API.Models;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace API.DTOs.Interviews
@@ -8,9 +7,9 @@ namespace API.DTOs.Interviews
     {
         public string Name { get; set; }
         public DateTime Date { get; set; }
-        public string Description { get; set; }
-        public DateTime? StartContract {  get; set; }
-        public DateTime? EndContract {  get; set; }
+        public string? Description { get; set; }
+        public DateTime? StartContract { get; set; }
+        public DateTime? EndContract { get; set; }
         public Guid EmployeeGuid { get; set; }
 
 
@@ -20,6 +19,7 @@ namespace API.DTOs.Interviews
             {
                 Name = createInterviewDto.Name,
                 Date = createInterviewDto.Date,
+                Description = createInterviewDto.Description,
                 EmployeeGuid = createInterviewDto.EmployeeGuid,
                 StartContract = createInterviewDto.StartContract,
                 EndContract = createInterviewDto.EndContract,
