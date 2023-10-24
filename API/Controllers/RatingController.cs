@@ -13,10 +13,12 @@ namespace API.Controllers
     public class RatingController : ControllerBase
     {
         private readonly IRatingRepository _ratingRepository;
+        private readonly IInterviewRepository _interviewRepository;
 
-        public RatingController(IRatingRepository ratingRepository)
+        public RatingController(IRatingRepository ratingRepository, IInterviewRepository interviewRepository)
         {
             _ratingRepository = ratingRepository;
+            _interviewRepository = interviewRepository;
         }
 
         // GET api/rating
@@ -46,7 +48,7 @@ namespace API.Controllers
         }
 
         // GET api/rating/{guid}
-/*        [HttpGet("{guid}")]
+        [HttpGet("{guid}")]
         public IActionResult GetByGuid(Guid guid)
         {
             // Memanggil metode GetByGuid dari _ratingRepository dengan parameter GUID.
@@ -66,29 +68,29 @@ namespace API.Controllers
 
             // Mengonversi hasil query ke objek DTO (Data Transfer Object).
             return Ok(new ResponseOKHandler<RatingDto>((RatingDto)result));
-        }*/
+        }
 
-/*        [HttpGet("average-rating/employee/{employeeGuid}")]
-        public IActionResult GetAverageRatingByEmployeeAndCompany(Guid employeeGuid)
+        [HttpGet("average-rating/employee/{employeeGuid}")]
+        public IActionResult GetAverageRatingByEmployee(Guid employeeGuid)
         {
-            // Memanggil metode GetAverageRatingByEmployeeAndCompany dari _ratingRepository dengan parameter employeeGuid dan companyGuid.
-            double? averageRating = _ratingRepository.GetAverageRatingByEmployeeAndCompany(employeeGuid);
+            double? averageRating = _ratingRepository.GetAverageRatingByEmployee(employeeGuid);
 
-            // Memeriksa apakah hasil query tidak ditemukan (null atau tidak ada rating).
             if (!averageRating.HasValue)
             {
-                // Mengembalikan respons Not Found jika tidak ada rating untuk kombinasi EmployeeGuid dan CompanyGuid tertentu.
                 return NotFound(new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
-                    Message = "No ratings found for the specified Employee and Company"
+                    Message = "No ratings found for the specified Employee"
                 });
             }
 
-            // Mengembalikan rata-rata rating yang ditemukan.
             return Ok(new ResponseOKHandler<double>(averageRating.Value));
-        }*/
+        }
+
+
+
+
 
         // POST api/rating
         [HttpPost]
