@@ -20,6 +20,9 @@ namespace API.Models
         [Column("email", TypeName = "nvarchar(100)")]
         public string Email { get; set; }
 
+        [Column("foto")]
+        public string? Foto { get; set; }
+
         [Column("phone_number", TypeName = "nvarchar(16)")]
         public string PhoneNumber { get; set; }
 

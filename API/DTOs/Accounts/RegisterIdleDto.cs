@@ -10,6 +10,8 @@ namespace API.DTOs.Accounts
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public GenderLevel Gender { get; set; }
+        public IFormFile? ProfilePictureFile { get; set; }
+        public IFormFile? CvFile { get; set; }
         public string PhoneNumber { get; set; }
         public DateTime? HireMetro { get; set; }
         public DateTime? EndMetro { get; set; }
@@ -30,6 +32,7 @@ namespace API.DTOs.Accounts
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 Gender = dto.Gender,
+                Foto = null,
                 PhoneNumber = dto.PhoneNumber,
                 Grade = dto.Grade,
                 HireMetro = dto.HireMetro,
@@ -62,6 +65,14 @@ namespace API.DTOs.Accounts
                 Name = dto.ExperienceName,
                 Position = dto.Position,
                 Company = dto.Company
+            };
+        }
+        
+        public static implicit operator CurriculumVitae(RegisterIdleDto dto)
+        {
+            return new CurriculumVitae
+            {
+                Cv = null,
             };
         }
 

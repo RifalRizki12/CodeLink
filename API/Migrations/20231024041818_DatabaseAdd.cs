@@ -104,6 +104,7 @@ namespace API.Migrations
                     last_name = table.Column<string>(type: "nvarchar(100)", nullable: true),
                     gender = table.Column<int>(type: "int", nullable: false),
                     email = table.Column<string>(type: "nvarchar(100)", nullable: false),
+                    foto = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     phone_number = table.Column<string>(type: "nvarchar(16)", nullable: false),
                     status = table.Column<int>(type: "int", nullable: false),
                     grade = table.Column<int>(type: "int", nullable: true),
@@ -154,6 +155,7 @@ namespace API.Migrations
                 columns: table => new
                 {
                     guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    cv = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     skills_guid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     experiences_guid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     created_date = table.Column<DateTime>(type: "datetime2", nullable: true),

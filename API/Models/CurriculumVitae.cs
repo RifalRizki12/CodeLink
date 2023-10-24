@@ -5,6 +5,9 @@ namespace API.Models
     [Table("tb_tr_cv")]
     public class CurriculumVitae : BaseEntity
     {
+        [Column("cv")]
+        public string? Cv {  get; set; }
+
         [Column("skills_guid")]
         public Guid? SkillGuid { get; set;}
 
