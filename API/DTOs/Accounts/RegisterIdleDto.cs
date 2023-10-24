@@ -24,7 +24,7 @@ namespace API.DTOs.Accounts
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
         public List<string> Skills { get; set; }
-        public List<Experience>? Experiences { get; set; }
+        public List<CreateExperienceDto>? Experiences { get; set; }
 
         public static implicit operator Employee(RegisterIdleDto dto)
         {
@@ -85,12 +85,26 @@ namespace API.DTOs.Accounts
 
         public static implicit operator List<Experience>(RegisterIdleDto dto)
         {
-            if (dto.Experiences == null || dto.Experiences.Count == 0)
+            if (dto.Experiences == null || !dto.Experiences.Any())
             {
                 return new List<Experience>();
             }
 
-            return dto.Experiences;
+            var experiencesList = new List<Experience>();
+
+            foreach (var experienceDto in dto.Experiences)
+            {
+                var experience = new Experience
+                {
+                    Guid = Guid.NewGuid(),
+                    Name = experienceDto.Name,
+                    Position = experienceDto.Position,
+                    Company = experienceDto.Company
+                };
+                experiencesList.Add(experience);
+            }
+
+            return experiencesList;
         }
     }
 }
