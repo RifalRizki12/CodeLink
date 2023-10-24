@@ -5,7 +5,7 @@ namespace API.Contracts
     public interface IEmployeeRepository : IGeneralRepository<Employee>
     {
         Employee GetByEmployeeEmail(string employeeEmail);
-        /*Employee GetAdminEmployee();*/
+        Employee GetAdminEmployee();
 
         public int GetCountIdle();
         public int GetCaountHired();

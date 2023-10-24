@@ -79,7 +79,7 @@ namespace API.Controllers
         }
 
         // POST api/interview
-/*        [HttpPost]
+        [HttpPost]
         public IActionResult Create(CreateInterviewDto interviewDto)
         {
             try
@@ -126,7 +126,7 @@ namespace API.Controllers
                     Error = ex.Message
                 });
             }
-        }*/
+        }
 
         // PUT api/interview
         [HttpPut]

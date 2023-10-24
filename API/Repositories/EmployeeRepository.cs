@@ -20,12 +20,11 @@ namespace API.Repositories
             return _context.Employees.FirstOrDefault(employee => employee.Email == employeeEmail);
         }
 
-/*        public Employee GetAdminEmployee()
+        public Employee GetAdminEmployee()
         {
             return _context.Employees
-                .Where(e => e.Account.Any(ar => ar.Role.Name == "admin"))
-                .FirstOrDefault();
-        }*/
+                .FirstOrDefault(e => e.Account.Role.Name == "admin");
+        }
 
         public int GetCountIdle()
         {
