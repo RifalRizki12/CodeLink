@@ -8,7 +8,6 @@ namespace API.DTOs.Interviews
     {
         public string Name { get; set; }
         public DateTime Date { get; set; }
-        public string Remarks { get; set; }
         public Guid EmployeeGuid { get; set; }
         public Guid OwnerGuid { get; set; }
 
@@ -21,7 +20,6 @@ namespace API.DTOs.Interviews
                 OwnerGuid = createInterviewDto.OwnerGuid,
                 Name = createInterviewDto.Name,
                 Date = createInterviewDto.Date,
-                Remarks = createInterviewDto.Remarks,
                 EmployeeGuid = createInterviewDto.EmployeeGuid,
                 CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now

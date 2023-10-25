@@ -1,4 +1,5 @@
 ﻿using API.Models;
+using API.Utilities.Enums;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace API.DTOs.Interviews
@@ -6,7 +7,8 @@ namespace API.DTOs.Interviews
     public class ScheduleInterviewDto //untuk admin kirim email detail schedule interview
     {
         public Guid Guid { get; set; }
-      
+        public string Location { get; set; }
+        public TypeInterview? Type { get; set; }
         public string Remarks { get; set; }
         public Guid EmployeeGuid { get; set; }
         public Guid OwnerGuid { get; set; }
@@ -20,6 +22,8 @@ namespace API.DTOs.Interviews
             return new ScheduleInterviewDto
             {
                 Guid = interview.Guid,
+                Location = interview.Location,
+                Type = interview.Type,
                 Remarks = interview.Remarks,
                 EmployeeGuid = interview.EmployeeGuid,
                 OwnerGuid = interview.OwnerGuid,
@@ -31,6 +35,8 @@ namespace API.DTOs.Interviews
             return new Interview
             {
                 Guid = interviewDto.Guid,
+                Location = interviewDto.Location,
+                Type = interviewDto.Type,
                 Remarks = interviewDto.Remarks,
                 EmployeeGuid = interviewDto.EmployeeGuid,
                 OwnerGuid = interviewDto.OwnerGuid,

@@ -1,5 +1,6 @@
 ﻿
 using API.Models;
+using API.Utilities.Enums;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace API.DTOs.Interviews
@@ -7,12 +8,14 @@ namespace API.DTOs.Interviews
     public class AnnouncmentDto //dipake buat ngasih announcment lolos/ tidak
     {
         public Guid Guid { get; set; }
-        public string Remarks { get; set; }
+        public StatusIntervew? StatusIntervew { get; set; }
+        public string? Remarks { get; set; }
         public DateTime? StartContract {  get; set; }
         public DateTime? EndContract {  get; set; }
         public Guid EmployeeGuid { get; set; }
-        public string FeedBack {  get; set; }
+        public string? FeedBack {  get; set; }
         public Guid OwnerGuid { get; set; }
+
        
 
 
@@ -22,6 +25,7 @@ namespace API.DTOs.Interviews
             return new Interview
             {
                 Guid = announceDto.Guid,
+                StatusIntervew = announceDto.StatusIntervew,
                 EmployeeGuid = announceDto.EmployeeGuid,
                 OwnerGuid = announceDto.OwnerGuid,
                 Remarks = announceDto.Remarks,
