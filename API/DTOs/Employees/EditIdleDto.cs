@@ -1,15 +1,13 @@
-﻿using API.DTOs.Experiences;
+﻿using API.DTOs.Accounts;
+using API.DTOs.Experiences;
 using API.Models;
 using API.Utilities.Enums;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace API.DTOs.Accounts
+namespace API.DTOs.Employees
 {
-    public class RegisterIdleDto
+    public class EditIdleDto
     {
+        public Guid Guid { get; set; }
         public string FirstName { get; set; }
         public string? LastName { get; set; }
         public GenderLevel Gender { get; set; }
@@ -26,10 +24,11 @@ namespace API.DTOs.Accounts
         public List<string>? Skills { get; set; }
         public List<CreateExperienceDto>? Experiences { get; set; }
 
-        public static implicit operator Employee(RegisterIdleDto dto)
+        public static implicit operator Employee(EditIdleDto dto)
         {
             return new Employee
             {
+                Guid = dto.Guid,
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 Gender = dto.Gender,
@@ -43,7 +42,7 @@ namespace API.DTOs.Accounts
             };
         }
 
-        public static implicit operator Account(RegisterIdleDto dto)
+        public static implicit operator Account(EditIdleDto dto)
         {
             return new Account
             {
@@ -58,7 +57,7 @@ namespace API.DTOs.Accounts
             };
         }
 
-        public static implicit operator CurriculumVitae(RegisterIdleDto dto)
+        public static implicit operator CurriculumVitae(EditIdleDto dto)
         {
             return new CurriculumVitae
             {
@@ -66,7 +65,7 @@ namespace API.DTOs.Accounts
             };
         }
 
-        public static implicit operator List<Skill>(RegisterIdleDto dto)
+        public static implicit operator List<Skill>(EditIdleDto dto)
         {
             var skillsList = new List<Skill>();
 
@@ -83,7 +82,7 @@ namespace API.DTOs.Accounts
             return skillsList;
         }
 
-        public static implicit operator List<Experience>(RegisterIdleDto dto)
+        public static implicit operator List<Experience>(EditIdleDto dto)
         {
             if (dto.Experiences == null || !dto.Experiences.Any())
             {
@@ -108,3 +107,4 @@ namespace API.DTOs.Accounts
         }
     }
 }
+

@@ -197,7 +197,7 @@ namespace API.Controllers
         {
             if (ModelState.IsValid)
             {
-                using (var transactionScope = new TransactionScope())
+                using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
                     try
                     {
@@ -294,6 +294,51 @@ namespace API.Controllers
             });
         }
 
+        [HttpPut("updateIdle")]
+        public async Task<IActionResult> UpdateIdle(EditIdleDto editIdleDto)
+        {
+            // Validasi data yang diterima
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ResponseErrorHandler
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Message = "Invalid request data."
+                });
+            }
+
+            try
+            {
+                // Lakukan validasi lebih lanjut jika diperlukan, misalnya, periksa apakah karyawan dengan GUID yang diberikan ada di repositori Anda.
+
+                // Konversi EditIdleDto menjadi entitas yang sesuai
+                Employee employee = editIdleDto;
+                Account account = editIdleDto;
+                CurriculumVitae curriculumVitae = editIdleDto;
+                List<Skill> skills = editIdleDto;
+                List<Experience> experiences = editIdleDto;
+
+                // Lakukan operasi pembaruan di repositori Anda
+                // Misalnya, Anda dapat memanggil metode Update di repositori karyawan Anda.
+                // Pastikan untuk menggunakan GUID yang sesuai dalam operasi pembaruan.
+
+                // Setelah operasi pembaruan berhasil, Anda dapat mengembalikan respons sukses.
+                return Ok(new ResponseOKHandler<string>("Update successful!"));
+            }
+            catch (Exception ex)
+            {
+                // Tangani pengecualian jika ada kesalahan selama operasi pembaruan
+                return BadRequest(new ResponseErrorHandler
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Message = "Update failed. " + ex.Message
+                });
+            }
+        }
+
+
         [HttpGet("detailsIdle")]
         public IActionResult GetDetails()
         {
@@ -327,8 +372,6 @@ namespace API.Controllers
             var employeeDetails = from emp in employees
                                   join cuVit in curriculumVitae on emp.Guid equals cuVit.Guid into cuVitJoined
                                   from cuVitResult in cuVitJoined.DefaultIfEmpty()
-                                  join exp in experiences on cuVitResult?.Guid equals exp.CvGuid into expJoined
-                                  from expResult in expJoined.DefaultIfEmpty()
                                   join com in companies on emp.CompanyGuid equals com.Guid into companyJoined
                                   from company in companyJoined.DefaultIfEmpty()
                                   join owner in employees on company?.EmployeeGuid equals owner.Guid into ownerJoined
@@ -342,22 +385,29 @@ namespace API.Controllers
                                       Gender = emp.Gender.ToString(),
                                       Email = emp.Email,
                                       PhoneNumber = emp.PhoneNumber,
+                                      Grade = emp.Grade.ToString(),
                                       StatusEmployee = emp.StatusEmployee.ToString(),
+                                      Foto = emp.Foto,
                                       AverageRating = avgRatingResult?.AvgRating ?? 0,
                                       Skill = skills
                                               .Where(skill => skill.CvGuid == cuVitResult?.Guid)
                                               .Select(skill => skill.Name)
                                               .ToList(),
+                                      Cv = cuVitResult?.Cv, // Change this line
                                       NameCompany = company?.Name ?? "N/A",
                                       Address = company?.Address ?? "N/A",
                                       OwnerGuid = company?.EmployeeGuid ?? Guid.Empty,
                                       EmployeeOwner = companyOwner?.FirstName + " " + companyOwner?.LastName ?? "N/A",
-                                      Experience = expResult?.Name ?? "N/A",
-                                      Position = expResult?.Position ?? "N/A",
-                                      CompanyExperience = expResult?.Company ?? "N/A",
+                                      Experience = experiences
+                                                   .Where(experience => experience.CvGuid == cuVitResult?.Guid)
+                                                   .Select(experience => $"{experience.Position} at {experience.Company}")
+                                                   .ToList(),
                                       HireMetro = emp.HireMetro,
                                       EndMetro = emp.EndMetro,
                                   };
+
+
+
 
             return Ok(new ResponseOKHandler<IEnumerable<EmployeeDetailDto>>(employeeDetails));
 
