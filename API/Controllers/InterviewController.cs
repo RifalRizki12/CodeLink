@@ -19,7 +19,6 @@ namespace API.Controllers
         private readonly IInterviewRepository _interviewRepository;
         private readonly IEmailHandler _emailHandler;
         private readonly ICompanyRepository _companyRepository;
-        private readonly IAccountRepository _accountRepository;
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IRatingRepository _ratingRepository;
 
@@ -31,10 +30,93 @@ namespace API.Controllers
             _interviewRepository = interviewRepository;
             _emailHandler = emailHandler;
             _employeeRepository = employeeRepository;
-            _accountRepository = accountRepository;
             _ratingRepository = ratingRepository;
             _companyRepository = companyRepository;
         }
+
+        [HttpPut("ScheduleInterview")]
+        public IActionResult ScheduleInterview(ScheduleInterviewDto schedule)
+        {
+            try
+            {
+                // Dapatkan data interview berdasarkan Guid.
+                // var existInterview = _interviewRepository.GetByGuid(announcment.Guid);
+
+                var company = _companyRepository.GetCompany(schedule.OwnerGuid);
+
+                var entity = _interviewRepository.GetByGuid(schedule.Guid);
+                if (entity is null)
+                {
+                    // Mengembalikan respons Not Found jika Interview dengan GUID tertentu tidak ditemukan.
+                    return NotFound(new ResponseErrorHandler
+                    {
+                        Code = StatusCodes.Status404NotFound,
+                        Status = HttpStatusCode.NotFound.ToString(),
+                        Message = "Interview with Specific GUID Not Found"
+                    });
+                }
+
+                // Menyalin nilai CreatedDate dari entitas yang ada ke entitas yang akan diperbarui.
+                Interview toUpdate = schedule;
+                toUpdate.CreatedDate = entity.CreatedDate;
+                toUpdate.Name = entity.Name;
+                toUpdate.Date = entity.Date;
+                
+
+                // Memanggil metode Update dari _interviewRepository untuk memperbarui data Interview.
+                var result = _interviewRepository.Update(toUpdate);
+
+                // Memeriksa apakah penciptaan data berhasil atau gagal.
+                if ((result == null) )
+                {
+                    // Mengembalikan respons BadRequest jika gagal membuat data Interview.
+                    return BadRequest("Failed to create data");
+                }
+
+                // Mengirim email ke employee dengan GUID tertentu
+                var specificEmployee = _employeeRepository.GetByGuid(schedule.EmployeeGuid);
+                if (specificEmployee != null)
+                {
+
+                    _emailHandler.Send("Interview Schedule Details",
+                        $"Mohon perhatian, akan dilaksanakan {toUpdate.Name} pada\n" +
+                        $"Date                  : {toUpdate.Date}\n" +
+                        $"Lokasi                : {schedule.Description}\n" +
+                        $"Company Name          : {company.Name}\n", specificEmployee.Email);
+                }
+
+               
+                var employeeOwner = _employeeRepository.GetByGuid(schedule.OwnerGuid);
+                if (employeeOwner != null)
+                {
+
+                    _emailHandler.Send("Interview Schedule Details",
+                        $"Mohon perhatian, akan dilaksanakan {toUpdate.Name} pada\n" +
+                        $"Date                  : {toUpdate.Date}\n" +
+                        $"Lokasi                : {schedule.Description}\n" +
+                        $"Company Name          : {company.Name}\n" +
+                        $"Peserta               : {specificEmployee.FirstName} {specificEmployee.LastName}", employeeOwner.Email);
+                }
+
+                // Mengembalikan data yang berhasil dibuat dalam respons OK.
+                return Ok(new ResponseOKHandler<string>("Announcement sent successfully"));
+
+            }
+            catch (ExceptionHandler ex)
+            {
+                // Mengembalikan respons server error jika terjadi kesalahan dalam proses.
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorHandler
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = HttpStatusCode.InternalServerError.ToString(),
+                    Message = "Failed to create data",
+                    Error = ex.Message
+                });
+            }
+        }
+
+
+
         [HttpPut("Announcement")]
         public IActionResult Announcement(AnnouncmentDto announcment)
         {
@@ -82,16 +164,22 @@ namespace API.Controllers
                 var specificEmployee = _employeeRepository.GetByGuid(announcment.EmployeeGuid);
                 if (specificEmployee != null)
                 {
+                    string emailBody = $"Terimakasih atas partisipasinya telah mengikuti proses {toUpdate.Name} pada\n" +
+                                      $"Date                  : {toUpdate.Date}\n" +
+                                      $"kami nyatakan anda    : {announcment.Description} \n";
 
-                    _emailHandler.Send("Interview Schedule",
-                        $"Terimakasih atas partisipasinya telah mengikuti proses {announcment.Name} pada\n" +
-                        $"Date                  : {announcment.Date}\n" +
-                        $"kami nyatakan anda    : {announcment.Description}\n" +
-                        $"Start Contract        : {announcment.StartContract} \n" +
-                        $"End Contract          : {announcment.EndContract}\n" +
-                        $"Company Name          : {company.Name}\n" +
-                        $"{announcment.FeedBack}", specificEmployee.Email);
+                    if (announcment.StartContract != null && announcment.EndContract != null)
+                    {
+                        emailBody += $"Start Contract        : {announcment.StartContract} \n" +
+                                     $"End Contract          : {announcment.EndContract}\n";
+                    }
+
+                    emailBody += $"Company Name          : {company.Name}\n" +
+                                 $"{announcment.FeedBack}";
+
+                    _emailHandler.Send("Interview Schedule", emailBody, specificEmployee.Email);
                 }
+
 
                 // Mengembalikan data yang berhasil dibuat dalam respons OK.
                 return Ok(new ResponseOKHandler<string>("Announcement sent successfully"));
@@ -168,13 +256,11 @@ namespace API.Controllers
             {
                 // Mengonversi DTO CreateInterviewDto menjadi objek Interview.
                 Interview toCreate = interviewDto;
-
-                // Memanggil metode Create dari _interviewRepository untuk membuat data Interview baru.
                 var result = _interviewRepository.Create(toCreate);
 
                 Rating rating = interviewDto;
                 rating.Guid = result.Guid;
-                Rating createRating = _ratingRepository.Create(rating);
+                _ratingRepository.Create(rating);
 
                 // Memeriksa apakah penciptaan data berhasil atau gagal.
                 if (result is null)
@@ -185,14 +271,16 @@ namespace API.Controllers
 
                 // Get employee dengan role "admin"
                 var adminEmployee = _employeeRepository.GetAdminEmployee();
+                var specificEmployee = _employeeRepository.GetByGuid(interviewDto.EmployeeGuid); // Ganti dengan metode yang sesuai
+
 
                 if (adminEmployee != null)
                 {
-                    _emailHandler.Send("Interview Schedule", $"Your Schedule {interviewDto.Name} at {interviewDto.Date}", adminEmployee.Email);
+                    _emailHandler.Send("Interview Schedule", $"Kami akan mengadakan {interviewDto.Name} pada {interviewDto.Date} untuk Idle dengan nama " +
+                        $"{specificEmployee.FirstName +" " + specificEmployee.LastName} Email : {specificEmployee.Email}", adminEmployee.Email);
                 }
 
                 // Mengirim email ke employee dengan GUID tertentu
-                var specificEmployee = _employeeRepository.GetByGuid(interviewDto.EmployeeGuid); // Ganti dengan metode yang sesuai
                 if (specificEmployee != null)
                 {
                     _emailHandler.Send("Interview Schedule", $"Your Schedule {interviewDto.Name} at {interviewDto.Date}", specificEmployee.Email);
