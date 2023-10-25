@@ -12,6 +12,7 @@ namespace API.DTOs.Employees
         public DateTime? HireMetro { get; set; }
         public DateTime? EndMetro { get; set; }
         public GradeLevel? GradeLevel { get; set; }
+        public string? Foto { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public StatusEmployee StatusEmployee { get; set; }
@@ -26,7 +27,8 @@ namespace API.DTOs.Employees
                 Guid = employee.Guid,               // Mengonversi GUID dari Employee ke EmployeeDto.
                 FirstName = employee.FirstName,     // Mengonversi Nama Depan dari Employee ke EmployeeDto.
                 LastName = employee.LastName,       // Mengonversi Nama Belakang dari Employee ke EmployeeDto.
-                Gender = employee.Gender,           // Mengonversi Jenis Kelamin dari Employee ke EmployeeDto.
+                Gender = employee.Gender,
+                Foto = employee.Foto,               // Mengonversi Jenis Kelamin dari Employee ke EmployeeDto.
                 HireMetro = employee.HireMetro,
                 EndMetro = employee.EndMetro,
                 GradeLevel = employee.Grade,
@@ -46,14 +48,15 @@ namespace API.DTOs.Employees
                 Guid = dto.Guid,                // Mengonversi GUID dari EmployeeDto ke Employee.
                 FirstName = dto.FirstName,      // Mengonversi Nama Depan dari EmployeeDto ke Employee.
                 LastName = dto.LastName,        // Mengonversi Nama Belakang dari EmployeeDto ke Employee.
-                Gender = dto.Gender,            // Mengonversi Jenis Kelamin dari EmployeeDto ke Employee.
+                Gender = dto.Gender,
+                Foto = dto.Foto, // Mengonversi Jenis Kelamin dari EmployeeDto ke Employee.
                 HireMetro = dto.HireMetro,
                 EndMetro = dto.EndMetro,
                 Grade = dto.GradeLevel,
                 StatusEmployee = dto.StatusEmployee,
                 Email = dto.Email,              
                 PhoneNumber = dto.PhoneNumber,
-                CompanyGuid = dto.CompanyGuid,
+                CompanyGuid = dto.CompanyGuid,// Mengonversi Nomor Telepon dari EmployeeDto ke Employee.
                 ModifiedDate = DateTime.Now
             };
         }

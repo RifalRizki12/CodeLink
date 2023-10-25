@@ -4,6 +4,7 @@ namespace API.DTOs.Ratings
 {
     public class CreateRatingDto
     {
+        public Guid Guid { get; set; }
         public int? Rate { get; set; }
         public string? Feedback { get; set; }
 
@@ -12,6 +13,7 @@ namespace API.DTOs.Ratings
         {
             return new Rating
             {
+                Guid = createRatingDto.Guid,
                 Rate = createRatingDto.Rate,
                 Feedback = createRatingDto.Feedback,
                 CreatedDate = DateTime.Now,

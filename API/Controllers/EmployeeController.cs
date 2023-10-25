@@ -3,6 +3,7 @@ using API.DTOs.Accounts;
 using API.DTOs.Employees;
 using API.Models;
 using API.Repositories;
+using API.Utilities.Enums;
 using API.Utilities.Handler;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,8 +25,10 @@ namespace API.Controllers
         private readonly IExperienceRepository _experienceRepository;
         private readonly ISkillRepository _skillRepository;
         private readonly IRatingRepository _ratingRepository;
+        private readonly IInterviewRepository _interviewRepository;
 
-        public EmployeeController(IEmployeeRepository employeeRepository, IAccountRepository accountRepository, IRoleRepository roleRepository, ICompanyRepository companyRepository, ICurriculumVitaeRepository curriculumVitaeRepository, IExperienceRepository experienceRepository, ISkillRepository skillRepository, IRatingRepository ratingRepository)
+
+        public EmployeeController(IEmployeeRepository employeeRepository, IAccountRepository accountRepository, IRoleRepository roleRepository, ICompanyRepository companyRepository, ICurriculumVitaeRepository curriculumVitaeRepository, IExperienceRepository experienceRepository, ISkillRepository skillRepository, IRatingRepository ratingRepository, IInterviewRepository interviewRepository)
         {
             _employeeRepository = employeeRepository;
             _accountRepository = accountRepository;
@@ -35,6 +38,7 @@ namespace API.Controllers
             _experienceRepository = experienceRepository;
             _skillRepository = skillRepository;
             _ratingRepository = ratingRepository;
+            _interviewRepository = interviewRepository;
         }
 
         [HttpGet("GetChart")]
@@ -193,7 +197,7 @@ namespace API.Controllers
         {
             if (ModelState.IsValid)
             {
-                using (var transactionScope = new TransactionScope())
+                using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
                     try
                     {
@@ -290,17 +294,63 @@ namespace API.Controllers
             });
         }
 
-        /*[HttpGet("detailsIdle")]
+        [HttpPut("updateIdle")]
+        public async Task<IActionResult> UpdateIdle(EditIdleDto editIdleDto)
+        {
+            // Validasi data yang diterima
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ResponseErrorHandler
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Message = "Invalid request data."
+                });
+            }
+
+            try
+            {
+                // Lakukan validasi lebih lanjut jika diperlukan, misalnya, periksa apakah karyawan dengan GUID yang diberikan ada di repositori Anda.
+
+                // Konversi EditIdleDto menjadi entitas yang sesuai
+                Employee employee = editIdleDto;
+                Account account = editIdleDto;
+                CurriculumVitae curriculumVitae = editIdleDto;
+                List<Skill> skills = editIdleDto;
+                List<Experience> experiences = editIdleDto;
+
+                // Lakukan operasi pembaruan di repositori Anda
+                // Misalnya, Anda dapat memanggil metode Update di repositori karyawan Anda.
+                // Pastikan untuk menggunakan GUID yang sesuai dalam operasi pembaruan.
+
+                // Setelah operasi pembaruan berhasil, Anda dapat mengembalikan respons sukses.
+                return Ok(new ResponseOKHandler<string>("Update successful!"));
+            }
+            catch (Exception ex)
+            {
+                // Tangani pengecualian jika ada kesalahan selama operasi pembaruan
+                return BadRequest(new ResponseErrorHandler
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Message = "Update failed. " + ex.Message
+                });
+            }
+        }
+
+
+        [HttpGet("detailsIdle")]
         public IActionResult GetDetails()
         {
             var employees = _employeeRepository.GetAll();
             var companies = _companyRepository.GetAll();
             var skills = _skillRepository.GetAll();
             var experiences = _experienceRepository.GetAll();
-            var experienceSkills = _curriculumVitaeRepository.GetAll();
+            var curriculumVitae = _curriculumVitaeRepository.GetAll();
+            var interviews = _interviewRepository.GetAll();
             var ratings = _ratingRepository.GetAll();
 
-            if (!(employees.Any() && companies.Any() && skills.Any() && experiences.Any() && experienceSkills.Any()))
+            if (!(employees.Any() || companies.Any() || skills.Any() || experiences.Any() || curriculumVitae.Any()))
             {
                 return NotFound(new ResponseErrorHandler
                 {
@@ -310,52 +360,58 @@ namespace API.Controllers
                 });
             }
 
-            var avgRatings = from rate in ratings
-                             group rate by rate.EmployeeGuid into ratingGroup
+            var avgRatings = from emp in employees
+                             join interview in interviews on emp.Guid equals interview.EmployeeGuid into interviewGroup
+
                              select new
                              {
-                                 EmployeeGuid = ratingGroup.Key,
-                                 AvgRating = ratingGroup.Average(r => r.Rate)
+                                 Employee = emp,
+                                 AvgRating = interviewGroup.Select(i => i.Rating.Rate).Average()
                              };
 
-
             var employeeDetails = from emp in employees
-                                  join expSkill in experienceSkills on emp.Guid equals expSkill.EmployeeGuid into expSkillJoined
-                                  from expSkillResult in expSkillJoined.DefaultIfEmpty()
-                                  join exp in experiences on expSkillResult?.ExperienceGuid equals exp.Guid into expJoined
-                                  from expResult in expJoined.DefaultIfEmpty()
-                                  join skill in skills on expSkillResult?.SkillGuid equals skill.Guid into skillJoined
-                                  from skillResult in skillJoined.DefaultIfEmpty()
+                                  join cuVit in curriculumVitae on emp.Guid equals cuVit.Guid into cuVitJoined
+                                  from cuVitResult in cuVitJoined.DefaultIfEmpty()
                                   join com in companies on emp.CompanyGuid equals com.Guid into companyJoined
                                   from company in companyJoined.DefaultIfEmpty()
                                   join owner in employees on company?.EmployeeGuid equals owner.Guid into ownerJoined
                                   from companyOwner in ownerJoined.DefaultIfEmpty()
-                                  join avgRate in avgRatings on emp.Guid equals avgRate.EmployeeGuid into avgRatingJoined
+                                  join avgRating in avgRatings on emp.Guid equals avgRating.Employee.Guid into avgRatingJoined
                                   from avgRatingResult in avgRatingJoined.DefaultIfEmpty()
-                                  where emp.Status == "pekerja"|| emp.Status=="idle"
+                                  where emp.StatusEmployee == StatusEmployee.idle
                                   select new EmployeeDetailDto
                                   {
                                       FullName = emp.FirstName + " " + emp.LastName,
                                       Gender = emp.Gender.ToString(),
                                       Email = emp.Email,
                                       PhoneNumber = emp.PhoneNumber,
-                                      StatusEmployee = emp.Status,
+                                      Grade = emp.Grade.ToString(),
+                                      StatusEmployee = emp.StatusEmployee.ToString(),
+                                      Foto = emp.Foto,
                                       AverageRating = avgRatingResult?.AvgRating ?? 0,
-                                      HardSkill = skillResult?.Hard ?? "N/A",
-                                      SoftSkill = skillResult?.Soft ?? "N/A",
+                                      Skill = skills
+                                              .Where(skill => skill.CvGuid == cuVitResult?.Guid)
+                                              .Select(skill => skill.Name)
+                                              .ToList(),
+                                      Cv = cuVitResult?.Cv, // Change this line
                                       NameCompany = company?.Name ?? "N/A",
                                       Address = company?.Address ?? "N/A",
                                       OwnerGuid = company?.EmployeeGuid ?? Guid.Empty,
                                       EmployeeOwner = companyOwner?.FirstName + " " + companyOwner?.LastName ?? "N/A",
-                                      Experience = expResult?.Name ?? "N/A",
-                                      Position = expResult?.Position ?? "N/A",
-                                      CompanyExperience = expResult?.Company ?? "N/A",
-                                      HireDate = emp.HireDate,
-                                      ExpiredDate = emp.ExpiredDate,
+                                      Experience = experiences
+                                                   .Where(experience => experience.CvGuid == cuVitResult?.Guid)
+                                                   .Select(experience => $"{experience.Position} at {experience.Company}")
+                                                   .ToList(),
+                                      HireMetro = emp.HireMetro,
+                                      EndMetro = emp.EndMetro,
                                   };
 
+
+
+
             return Ok(new ResponseOKHandler<IEnumerable<EmployeeDetailDto>>(employeeDetails));
-        }*/
+
+        }
 
         // GET api/employee
         [HttpGet]

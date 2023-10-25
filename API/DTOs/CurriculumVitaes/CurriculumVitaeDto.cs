@@ -5,12 +5,14 @@ namespace API.DTOs.ExperienceSkills;
 public class CurriculumVitaeDto
 {
     public Guid Guid { get; set; }
+    public string? Cv { get; set; }
 
     public static explicit operator CurriculumVitaeDto(CurriculumVitae dto)
     {
         return new CurriculumVitaeDto
         {
            Guid = dto.Guid,
+           Cv = dto.Cv,
         };
     }
 
@@ -19,6 +21,7 @@ public class CurriculumVitaeDto
         return new CurriculumVitae
         {
             Guid = expSkillDto.Guid,
+            Cv = expSkillDto.Cv,
             ModifiedDate = DateTime.Now
 
         };

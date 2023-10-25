@@ -4,13 +4,13 @@ namespace API.DTOs.ExperienceSkills;
 
 public class CreateCurriculumVitaeDto
 {
-    public Guid SkillGuid { get; set; }
-    public Guid ExperienceGuid { get; set; }
+    public string? Cv { get; set; }
 
     public static implicit operator CurriculumVitae(CreateCurriculumVitaeDto Dto)
     {
         return new CurriculumVitae
         {
+            Cv = Dto.Cv,
             CreatedDate = DateTime.Now,
             ModifiedDate = DateTime.Now
 
