@@ -65,49 +65,119 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form class="needs-validation" novalidate>
+                <form id="createEmployeeForm" class="needs-validation" novalidate>
                     <div class="row">
+                        <!-- Inputan untuk data pribadi employee -->
                         <div class="col mb-3">
                             <label for="firstNameInput" class="form-label">First Name</label>
                             <input type="text" id="firstNameInput" class="form-control" placeholder="Enter First Name" required />
                         </div>
                         <div class="col mb-3">
-                            <label for "lastNameInput" class="form-label">Last Name</label>
+                            <label for="lastNameInput" class="form-label">Last Name</label>
                             <input type="text" id="lastNameInput" class="form-control" placeholder="Enter Last Name">
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col mb-3">
-                            <label class="form-label" for="genderInput">Gender</label>
+                            <label for="genderInput" class="form-label">Gender</label>
                             <select id="genderInput" class="form-select">
                                 <option value="0">Male</option>
                                 <option value="1">Female</option>
                             </select>
                         </div>
                         <div class="col mb-3">
-                            <label class="form-label" for="birthDateInput">Birth Date</label>
-                            <input type="date" id="birthDateInput" class="form-control" required />
+                            <label for="profilePictureInput" class="form-label">Profile Picture</label>
+                            <input type="file" id="profilePictureInput" class="form-control" />
                         </div>
                     </div>
+
                     <div class="row">
+                        <div class="col mb-3">
+                            <label for="cvInput" class="form-label">CV File</label>
+                            <input type="file" id="cvInput" class="form-control" />
+                        </div>
                         <div class="col mb-3">
                             <label for="emailInput" class="form-label">Email</label>
                             <input type="email" id="emailInput" class="form-control" placeholder="xxxx@xxx.xx" required />
                         </div>
-                        <div class="col mb-0">
-                            <label class="form-label" for="phoneNumberInput">Phone Number</label>
+                        <div class="col mb-3">
+                            <label for="phoneNumberInput" class="form-label">Phone Number</label>
                             <input type="text" id="phoneNumberInput" class="form-control" placeholder="081.xxx.xxx.xx" required />
                         </div>
-                        <div class="row">
-                            <div class="col mb-3">
-                                <label class="form-label" for="hiringDateInput">Hiring Date</label>
-                                <input type="datetime-local" id="hiringDateInput" class="form-control" required />
+                    </div>
+
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label for="hireMetroInput" class="form-label">Hire Metro</label>
+                            <input type="datetime-local" id="hireMetroInput" class="form-control" required />
+                        </div>
+                        <div class="col mb-3">
+                            <label for="endMetroInput" class="form-label">End Metro</label>
+                            <input type="datetime-local" id="endMetroInput" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label for="gradeInput" class="form-label">Grade</label>
+                            <select id="gradeInput" class="form-select">
+                                <option value="0">A</option>
+                                <option value="1">B</option>
+                            </select>
+                        </div>
+                        <div class="col mb-3">
+                            <label for="statusEmployeeInput" class="form-label">Status Employee</label>
+                            <select id="statusEmployeeInput" class="form-select">
+                                <option value="0">Idle</option>
+                                <option value="2">On Site</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label for="passwordInput" class="form-label">Password</label>
+                            <input type="password" id="passwordInput" class="form-control" required />
+                        </div>
+                        <div class="col mb-3">
+                            <label for="confirmPasswordInput" class="form-label">Confirm Password</label>
+                            <input type="password" id="confirmPasswordInput" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label for="skillsInput" class="form-label">Skills</label>
+                            <input type="text" id="skillsInput" class="form-control" placeholder="Skill 1, Skill 2, Skill 3" />
+                        </div>
+                    </div>
+
+                    <!-- Inputan untuk pengalaman -->
+                    <div class="experience-container">
+                        <h5>Experiences</h5>
+                        <div class="experience-row">
+                            <div class="row">
+                                <div class="col mb-3">
+                                    <label for="experienceNameInput" class="form-label">Experience Name</label>
+                                    <input type="text" class="form-control name-input" placeholder="Enter Experience Name" />
+                                </div>
+                                <div class="col mb-3">
+                                    <label for="experiencePositionInput" class="form-label">Position</label>
+                                    <input type="text" class="form-control position-input" placeholder="Enter Position" />
+                                </div>
+                                <div class="col mb-3">
+                                    <label for="experienceCompanyInput" class="form-label">Company</label>
+                                    <input type="text" class="form-control company-input" placeholder="Enter Company" />
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Tombol untuk menambahkan pengalaman -->
+                    <button type="button" class="btn btn-primary add-experience-button">Add Experience</button>
+                    <!-- Tombol untuk menambahkan lebih banyak pengalaman -->
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" id="saveEmployeeButton" class="btn btn-primary">Create</button>
+                        <button type="button" id="createEmployeeButton" class="btn btn-primary">Create</button>
                     </div>
                 </form>
             </div>
