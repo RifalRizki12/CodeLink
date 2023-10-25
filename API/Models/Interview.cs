@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using API.Utilities.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Models
 {
@@ -11,8 +12,17 @@ namespace API.Models
         [Column("date")]
         public DateTime Date { get; set; }
 
-        [Column("description")]
-        public string Description { get; set; }
+        [Column("type")]
+        public TypeInterview? Type { get; set; }
+
+        [Column("remarks", TypeName = "nvarchar(200)")]
+        public string? Remarks { get; set; }
+
+        [Column("location")]
+        public string? Location { get; set; }
+
+        [Column("status_intervew")]
+        public StatusIntervew? StatusIntervew { get; set; }
 
         [Column("start_contract")]
         public DateTime? StartContract {  get; set; }

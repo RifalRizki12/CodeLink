@@ -9,8 +9,6 @@ namespace API.DTOs.Employees
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public GenderLevel Gender { get; set; }
-        public DateTime? HireMetro { get; set; }
-        public DateTime? EndMetro { get; set; }
         public GradeLevel? GradeLevel { get; set; }
         public string? Foto { get; set; }
         public string Email { get; set; }
@@ -29,8 +27,6 @@ namespace API.DTOs.Employees
                 LastName = employee.LastName,       // Mengonversi Nama Belakang dari Employee ke EmployeeDto.
                 Gender = employee.Gender,
                 Foto = employee.Foto,               // Mengonversi Jenis Kelamin dari Employee ke EmployeeDto.
-                HireMetro = employee.HireMetro,
-                EndMetro = employee.EndMetro,
                 GradeLevel = employee.Grade,
                 StatusEmployee = employee.StatusEmployee,
                 Email = employee.Email,             // Mengonversi Email dari Employee ke EmployeeDto.
@@ -50,8 +46,6 @@ namespace API.DTOs.Employees
                 LastName = dto.LastName,        // Mengonversi Nama Belakang dari EmployeeDto ke Employee.
                 Gender = dto.Gender,
                 Foto = dto.Foto, // Mengonversi Jenis Kelamin dari EmployeeDto ke Employee.
-                HireMetro = dto.HireMetro,
-                EndMetro = dto.EndMetro,
                 Grade = dto.GradeLevel,
                 StatusEmployee = dto.StatusEmployee,
                 Email = dto.Email,              

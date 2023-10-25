@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Migrations
 {
-    public partial class DatabaseAdd : Migration
+    public partial class AddDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -78,8 +78,6 @@ namespace API.Migrations
                     phone_number = table.Column<string>(type: "nvarchar(16)", nullable: false),
                     status = table.Column<int>(type: "int", nullable: false),
                     grade = table.Column<int>(type: "int", nullable: true),
-                    hire_metrodata = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    end_metrodata = table.Column<DateTime>(type: "datetime2", nullable: true),
                     company_id = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     created_date = table.Column<DateTime>(type: "datetime2", nullable: true),
                     modified_date = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -102,7 +100,10 @@ namespace API.Migrations
                     guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     name = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    type = table.Column<int>(type: "int", nullable: true),
+                    remarks = table.Column<string>(type: "nvarchar(200)", nullable: true),
+                    location = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    status_intervew = table.Column<int>(type: "int", nullable: true),
                     start_contract = table.Column<DateTime>(type: "datetime2", nullable: true),
                     end_contract = table.Column<DateTime>(type: "datetime2", nullable: true),
                     employee_guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),

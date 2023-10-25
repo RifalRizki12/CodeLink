@@ -81,7 +81,7 @@ namespace API.Controllers
                     _emailHandler.Send("Interview Schedule Details",
                         $"Mohon perhatian, akan dilaksanakan {toUpdate.Name} pada\n" +
                         $"Date                  : {toUpdate.Date}\n" +
-                        $"Lokasi                : {schedule.Description}\n" +
+                        $"Lokasi                : {schedule.Remarks}\n" +
                         $"Company Name          : {company.Name}\n", specificEmployee.Email);
                 }
 
@@ -93,7 +93,7 @@ namespace API.Controllers
                     _emailHandler.Send("Interview Schedule Details",
                         $"Mohon perhatian, akan dilaksanakan {toUpdate.Name} pada\n" +
                         $"Date                  : {toUpdate.Date}\n" +
-                        $"Lokasi                : {schedule.Description}\n" +
+                        $"Lokasi                : {schedule.Remarks}\n" +
                         $"Company Name          : {company.Name}\n" +
                         $"Peserta               : {specificEmployee.FirstName} {specificEmployee.LastName}", employeeOwner.Email);
                 }
@@ -166,7 +166,7 @@ namespace API.Controllers
                 {
                     string emailBody = $"Terimakasih atas partisipasinya telah mengikuti proses {toUpdate.Name} pada\n" +
                                       $"Date                  : {toUpdate.Date}\n" +
-                                      $"kami nyatakan anda    : {announcment.Description} \n";
+                                      $"kami nyatakan anda    : {announcment.Remarks} \n";
 
                     if (announcment.StartContract != null && announcment.EndContract != null)
                     {

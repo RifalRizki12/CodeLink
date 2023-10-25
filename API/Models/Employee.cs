@@ -32,11 +32,6 @@ namespace API.Models
         [Column("grade")]
         public GradeLevel? Grade { get; set; }
 
-        [Column("hire_metrodata")]
-        public DateTime? HireMetro { get; set; }
-        [Column("end_metrodata")]
-        public DateTime? EndMetro { get; set; }
-
         [Column("company_id")]
         public Guid? CompanyGuid { get; set; }
 

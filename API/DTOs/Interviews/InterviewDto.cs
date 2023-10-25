@@ -7,7 +7,7 @@ public class InterviewDto //untuk update interview yang biasa
     public Guid Guid { get; set; }
     public string Name { get; set; }
     public DateTime Date { get; set; }
-    public string Description { get; set; }
+    public string Remarks { get; set; }
     public DateTime? StartContract { get; set; }
     public DateTime? EndContract { get; set; }
     public Guid EmployeeGuid { get; set; }
@@ -20,7 +20,7 @@ public class InterviewDto //untuk update interview yang biasa
             Guid = interview.Guid,
             Name = interview.Name,
             Date = interview.Date,
-            Description = interview.Description,
+            Remarks = interview.Remarks,
             OwnerGuid = interview.OwnerGuid,
             StartContract = interview.StartContract,
             EndContract = interview.EndContract,
@@ -35,7 +35,7 @@ public class InterviewDto //untuk update interview yang biasa
             Guid = interviewDto.Guid,
             Name = interviewDto.Name,
             Date = interviewDto.Date,
-            Description= interviewDto.Description,
+            Remarks = interviewDto.Remarks,
             StartContract = interviewDto.StartContract,
             EndContract = interviewDto.EndContract,
             OwnerGuid= interviewDto.OwnerGuid,

@@ -7,7 +7,7 @@ namespace API.DTOs.Interviews
     {
         public Guid Guid { get; set; }
       
-        public string Description { get; set; }
+        public string Remarks { get; set; }
         public Guid EmployeeGuid { get; set; }
         public Guid OwnerGuid { get; set; }
 
@@ -20,7 +20,7 @@ namespace API.DTOs.Interviews
             return new ScheduleInterviewDto
             {
                 Guid = interview.Guid,
-                Description = interview.Description,
+                Remarks = interview.Remarks,
                 EmployeeGuid = interview.EmployeeGuid,
                 OwnerGuid = interview.OwnerGuid,
             };
@@ -31,7 +31,7 @@ namespace API.DTOs.Interviews
             return new Interview
             {
                 Guid = interviewDto.Guid,
-                Description = interviewDto.Description,
+                Remarks = interviewDto.Remarks,
                 EmployeeGuid = interviewDto.EmployeeGuid,
                 OwnerGuid = interviewDto.OwnerGuid,
                 ModifiedDate = DateTime.Now

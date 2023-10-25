@@ -294,49 +294,56 @@ namespace API.Controllers
             });
         }
 
-        [HttpPut("updateIdle")]
+       /* [HttpPut("updateIdle")]
         public async Task<IActionResult> UpdateIdle(EditIdleDto editIdleDto)
         {
-            // Validasi data yang diterima
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(new ResponseErrorHandler
-                {
-                    Code = StatusCodes.Status400BadRequest,
-                    Status = HttpStatusCode.BadRequest.ToString(),
-                    Message = "Invalid request data."
-                });
-            }
-
             try
             {
-                // Lakukan validasi lebih lanjut jika diperlukan, misalnya, periksa apakah karyawan dengan GUID yang diberikan ada di repositori Anda.
+                // Periksa apakah karyawan dengan GUID yang diberikan ada dalam basis data
+                var existingEmployee = _employeeRepository.GetByGuid(editIdleDto.Guid);
+                if (existingEmployee == null)
+                {
+                    return NotFound(new ResponseErrorHandler
+                    {
+                        Code = StatusCodes.Status404NotFound,
+                        Status = HttpStatusCode.NotFound.ToString(),
+                        Message = "Employee with Specific GUID Not Found"
+                    });
+                }
 
-                // Konversi EditIdleDto menjadi entitas yang sesuai
-                Employee employee = editIdleDto;
+                // Lakukan validasi atau pemrosesan lain yang sesuai untuk data yang akan diupdate
+
+                // Lakukan konversi dari EditIdleDto ke entitas yang ada
+                Employee updatedEmployee = editIdleDto;
                 Account account = editIdleDto;
                 CurriculumVitae curriculumVitae = editIdleDto;
                 List<Skill> skills = editIdleDto;
                 List<Experience> experiences = editIdleDto;
 
-                // Lakukan operasi pembaruan di repositori Anda
-                // Misalnya, Anda dapat memanggil metode Update di repositori karyawan Anda.
-                // Pastikan untuk menggunakan GUID yang sesuai dalam operasi pembaruan.
+                // Lakukan pembaruan entitas dalam basis data
+                var result = _employeeRepository.Update(updatedEmployee);
+                var result1 = _accountRepository.Update(account);
+                var result2 = _curriculumvitaeRepository.Update(curriculumVitae);
+                var result3 = _skillRepository.Update(skills);
 
-                // Setelah operasi pembaruan berhasil, Anda dapat mengembalikan respons sukses.
-                return Ok(new ResponseOKHandler<string>("Update successful!"));
+                // Kembalikan pesan sukses dengan respons 200 OK
+                var response = new ResponseOKHandler<EmployeeDto>("Employee Data Has Been Updated");
+
+                return Ok(response);
             }
             catch (Exception ex)
             {
-                // Tangani pengecualian jika ada kesalahan selama operasi pembaruan
-                return BadRequest(new ResponseErrorHandler
+                // Tangani pengecualian dan kembalikan respons 500 Internal Server Error jika terjadi kesalahan
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorHandler
                 {
-                    Code = StatusCodes.Status400BadRequest,
-                    Status = HttpStatusCode.BadRequest.ToString(),
-                    Message = "Update failed. " + ex.Message
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = HttpStatusCode.InternalServerError.ToString(),
+                    Message = "Gagal memperbarui data karyawan",
+                    Error = ex.Message
                 });
             }
-        }
+        }*/
+
 
 
         [HttpGet("detailsIdle")]
@@ -402,8 +409,6 @@ namespace API.Controllers
                                                    .Where(experience => experience.CvGuid == cuVitResult?.Guid)
                                                    .Select(experience => $"{experience.Position} at {experience.Company}")
                                                    .ToList(),
-                                      HireMetro = emp.HireMetro,
-                                      EndMetro = emp.EndMetro,
                                   };
 
 

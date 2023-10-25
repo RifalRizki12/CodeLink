@@ -151,10 +151,6 @@ namespace API.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("email");
 
-                    b.Property<DateTime?>("EndMetro")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("end_metrodata");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(100)")
@@ -171,10 +167,6 @@ namespace API.Migrations
                     b.Property<int?>("Grade")
                         .HasColumnType("int")
                         .HasColumnName("grade");
-
-                    b.Property<DateTime?>("HireMetro")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("hire_metrodata");
 
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(100)")
@@ -262,11 +254,6 @@ namespace API.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("date");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("description");
-
                     b.Property<Guid>("EmployeeGuid")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("employee_guid");
@@ -274,6 +261,10 @@ namespace API.Migrations
                     b.Property<DateTime?>("EndContract")
                         .HasColumnType("datetime2")
                         .HasColumnName("end_contract");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("location");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2")
@@ -288,9 +279,21 @@ namespace API.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("owner_guid");
 
+                    b.Property<string>("Remarks")
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("remarks");
+
                     b.Property<DateTime?>("StartContract")
                         .HasColumnType("datetime2")
                         .HasColumnName("start_contract");
+
+                    b.Property<int?>("StatusIntervew")
+                        .HasColumnType("int")
+                        .HasColumnName("status_intervew");
+
+                    b.Property<int?>("Type")
+                        .HasColumnType("int")
+                        .HasColumnName("type");
 
                     b.HasKey("Guid");
 

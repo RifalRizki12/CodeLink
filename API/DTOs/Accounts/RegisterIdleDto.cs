@@ -16,8 +16,6 @@ namespace API.DTOs.Accounts
         public IFormFile? ProfilePictureFile { get; set; }
         public IFormFile? CvFile { get; set; }
         public string PhoneNumber { get; set; }
-        public DateTime? HireMetro { get; set; }
-        public DateTime? EndMetro { get; set; }
         public string Email { get; set; }
         public GradeLevel Grade { get; set; }
         public StatusEmployee StatusEmployee { get; set; }
@@ -36,8 +34,6 @@ namespace API.DTOs.Accounts
                 Foto = null,
                 PhoneNumber = dto.PhoneNumber,
                 Grade = dto.Grade,
-                HireMetro = dto.HireMetro,
-                EndMetro = dto.EndMetro,
                 Email = dto.Email,
                 StatusEmployee = dto.StatusEmployee
             };

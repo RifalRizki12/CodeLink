@@ -7,7 +7,7 @@ namespace API.DTOs.Interviews
     public class AnnouncmentDto //dipake buat ngasih announcment lolos/ tidak
     {
         public Guid Guid { get; set; }
-        public string Description { get; set; }
+        public string Remarks { get; set; }
         public DateTime? StartContract {  get; set; }
         public DateTime? EndContract {  get; set; }
         public Guid EmployeeGuid { get; set; }
@@ -24,7 +24,7 @@ namespace API.DTOs.Interviews
                 Guid = announceDto.Guid,
                 EmployeeGuid = announceDto.EmployeeGuid,
                 OwnerGuid = announceDto.OwnerGuid,
-                Description = announceDto.Description,
+                Remarks = announceDto.Remarks,
                 StartContract = announceDto.StartContract,
                 EndContract = announceDto.EndContract,
                 ModifiedDate = DateTime.Now
