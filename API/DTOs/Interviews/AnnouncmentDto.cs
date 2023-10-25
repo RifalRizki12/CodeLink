@@ -4,7 +4,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace API.DTOs.Interviews
 {
-    public class AnnouncmentDto
+    public class AnnouncmentDto //dipake buat ngasih announcment lolos/ tidak
     {
         public Guid Guid { get; set; }
         public string Description { get; set; }
@@ -13,8 +13,7 @@ namespace API.DTOs.Interviews
         public Guid EmployeeGuid { get; set; }
         public string FeedBack {  get; set; }
         public Guid OwnerGuid { get; set; }
-        public string Name {  get; set; }
-        public DateTime Date { get; set; }
+       
 
 
 
