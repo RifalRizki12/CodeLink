@@ -1,5 +1,4 @@
-﻿using API.DTOs.Experiences;
-using API.DTOs.ExperienceSkills;
+﻿using API.DTOs.ExperienceSkills;
 using FluentValidation;
 
 namespace API.Utilities.Validations.CurriculumVitaes;

@@ -10,7 +10,6 @@ namespace API.Data
         //add model to migrate
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<Experience> Experiences { get; set; }
         public DbSet<CurriculumVitae> CurriculumVitaes { get; set; }
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<Role> Roles { get; set; }
@@ -32,13 +31,7 @@ namespace API.Data
                 .WithMany(s => s.Skills)
                 .HasForeignKey(s => s.CvGuid)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            // One Experience has many CurriculumVitaes
-            modelBuilder.Entity<Experience>()
-                .HasOne(c => c.CurriculumVitae)
-                .WithMany(ex => ex.Experiences)
-                .HasForeignKey(ex => ex.CvGuid)
-                .OnDelete(DeleteBehavior.Restrict);
+           
 
             // One Employee has one CuriculumVitae
             modelBuilder.Entity<Employee>()

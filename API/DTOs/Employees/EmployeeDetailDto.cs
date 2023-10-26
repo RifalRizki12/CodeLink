@@ -15,7 +15,6 @@ namespace API.DTOs.Employees
         public string? Cv { get; set; }
         public string Address { get; set; }
         public List<string> Skill { get; set; }
-        public List<string> Experience { get; set; }
         public string EmployeeOwner { get; set; }
         public Guid OwnerGuid { get; set; }
         public double? AverageRating { get; set; }

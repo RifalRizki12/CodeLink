@@ -9,7 +9,6 @@ namespace API.Models
         public string? Cv {  get; set; }
 
         //kardinalitas
-        public ICollection<Experience>? Experiences { get; set; }
         public ICollection<Skill>? Skills { get; set;}
         public Employee? Employee { get; set;}
     }

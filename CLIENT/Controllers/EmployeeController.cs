@@ -2,11 +2,13 @@
 using API.DTOs.Employees;
 using API.Utilities.Handler;
 using CLIENT.Contract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace CLIENT.Controllers
 {
+    [Authorize]
     public class EmployeeController : Controller
     {
         private readonly IEmployeeRepository repository;

@@ -1,5 +1,4 @@
 ﻿using API.DTOs.Accounts;
-using API.DTOs.Experiences;
 using API.Models;
 using API.Utilities.Enums;
 
@@ -21,7 +20,6 @@ namespace API.DTOs.Accounts
         public string ConfirmPassword { get; set; }
         public Guid? CompanyGuid { get; set; }
         public List<string>? Skills { get; set; }
-        public List<CreateExperienceDto>? Experiences { get; set; }
 
         public static implicit operator Employee(UpdateIdleDto dto)
         {
@@ -79,30 +77,6 @@ namespace API.DTOs.Accounts
             }
 
             return skillsList;
-        }
-
-        public static implicit operator List<Experience>(UpdateIdleDto dto)
-        {
-            if (dto.Experiences == null || !dto.Experiences.Any())
-            {
-                return new List<Experience>();
-            }
-
-            var experiencesList = new List<Experience>();
-
-            foreach (var experienceDto in dto.Experiences)
-            {
-                var experience = new Experience
-                {
-
-                    Name = experienceDto.Name,
-                    Position = experienceDto.Position,
-                    Company = experienceDto.Company
-                };
-                experiencesList.Add(experience);
-            }
-
-            return experiencesList;
         }
     }
 }
