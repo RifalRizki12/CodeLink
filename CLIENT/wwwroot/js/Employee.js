@@ -1,9 +1,38 @@
 ﻿$(document).ready(function () {
+    $('#tableEmployee').DataTable({
+        ajax: {
+            url: '/Employee/GetEmployeeData',
+            type: 'GET',
+            dataType: 'json',
+            dataSrc: 'data',
+
+        },
+        columns: [
+            {
+                data: null,
+                render: function (data, type, row, meta) {
+                    return meta.row + 1;
+                }
+            },
+            { data: 'fullName' },
+            { data: 'gender' },
+            { data: 'email' },
+            { data: 'phoneNumber' },
+            { data: 'statusEmployee' },
+            { data: 'averageRating' },
+        ]
+    });
+});
+
+
+/*$(document).ready(function () {
     $.ajax({
         url: '/Employee/GetEmployeeData', // Ganti dengan URL API yang sesuai
         type: 'GET',
         dataType: 'json',
+         dataSrc: 'data'
         success: function (data) {
+            console.log(data);
             // Menggunakan data yang diterima untuk menginisialisasi tabel DataTables
             var table = $('#tableEmployee').DataTable({
                 data: data, // Menggunakan data yang telah digabungkan
@@ -14,40 +43,24 @@
                             return meta.row + 1;
                         }
                     },
-                    {
-                        data: null,
-                        render: function (data, type, row) {
-                            return row.firstName + ' ' + row.lastName;
-                        }
-                    },
+                    { data: 'fullName' },
                     { data: 'gender' },
                     { data: 'email' },
                     { data: 'phoneNumber' },
                     { data: 'statusEmployee' },
-                    { data: 'hireDate' },
-                    { data: 'expiredDate' },
-                    { data: 'nameCompany' },
-                    { data: 'employeeOwner' },
-                    { data: 'address' },
-                    { data: 'experience' },
-                    { data: 'position' },
-                    { data: 'companyExperience' },
-                    { data: 'skill' },
+                   
                     { data: 'averageRating' },
-                    {
-                        data: null,
-                        render: function (data, type, row) {
-                            return `<button type="button" class="btn btn-warning edit-button" data-guid="${data.guid}">Edit</button>
-                            <button type="button" class="btn btn-danger delete-button" data-guid="${data.guid}">Delete</button>`;
-                        }
-                    }
+                    
                 ]
             });
         },
-        error: function () {
-            // Handle kesalahan jika ada
+        error: function (xhr, status, error) {
+            console.log("Terjadi kesalahan: " + status + " - " + error);
         }
+
     });
+});*/
+
 
     var experiences = [];
 
@@ -95,8 +108,8 @@
             firstName: $('#firstNameInput').val(),
             lastName: $('#lastNameInput').val(),
             gender: $('#genderInput').val(),
-            var profilePictureFile = $('#profilePictureInput').prop('files')[0];
-            var cvFile = $('#cvInput').prop('files')[0];
+            var profilePictureFile = $('#profilePictureInput').prop('files')[0],
+            var cvFile = $('#cvInput').prop('files')[0],
             phoneNumber: $('#phoneNumberInput').val(),
             hireMetro: $('#hireMetroInput').val(),
             endMetro: $('#endMetroInput').val(),
@@ -116,6 +129,7 @@
             data: JSON.stringify(employeeData),
             contentType: 'application/json',
             success: function (response) {
+                console.log(response);
                 // Handle respons sukses atau pesan kesalahan
                 if (response.success) {
                     $('#modalCenter').modal('hide');

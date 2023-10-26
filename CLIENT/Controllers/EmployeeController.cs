@@ -19,11 +19,11 @@ namespace CLIENT.Controllers
         public async Task<IActionResult> List()
         {
             var result = await repository.Get();
-            var listEmployee = new List<EmployeeDto>();
+            var listEmployee = new List<EmployeeDetailDto>();
             if (result != null)
             {
 
-                listEmployee = result.Data.Select(x => (EmployeeDto)x).ToList();
+                listEmployee = result.Data.Select(x => (EmployeeDetailDto)x).ToList();
             }
 
             return View(listEmployee);
