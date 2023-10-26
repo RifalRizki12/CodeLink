@@ -23,20 +23,18 @@ namespace API.Controllers
         private readonly IRoleRepository _roleRepository;
         private readonly ICompanyRepository _companyRepository;
         private readonly ICurriculumVitaeRepository _curriculumVitaeRepository;
-        private readonly IExperienceRepository _experienceRepository;
         private readonly ISkillRepository _skillRepository;
         private readonly IRatingRepository _ratingRepository;
         private readonly IInterviewRepository _interviewRepository;
 
 
-        public EmployeeController(IEmployeeRepository employeeRepository, IAccountRepository accountRepository, IRoleRepository roleRepository, ICompanyRepository companyRepository, ICurriculumVitaeRepository curriculumVitaeRepository, IExperienceRepository experienceRepository, ISkillRepository skillRepository, IRatingRepository ratingRepository, IInterviewRepository interviewRepository)
+        public EmployeeController(IEmployeeRepository employeeRepository, IAccountRepository accountRepository, IRoleRepository roleRepository, ICompanyRepository companyRepository, ICurriculumVitaeRepository curriculumVitaeRepository, ISkillRepository skillRepository, IRatingRepository ratingRepository, IInterviewRepository interviewRepository)
         {
             _employeeRepository = employeeRepository;
             _accountRepository = accountRepository;
             _roleRepository = roleRepository;
             _companyRepository = companyRepository;
             _curriculumVitaeRepository = curriculumVitaeRepository;
-            _experienceRepository = experienceRepository;
             _skillRepository = skillRepository;
             _ratingRepository = ratingRepository;
             _interviewRepository = interviewRepository;
@@ -306,7 +304,7 @@ namespace API.Controllers
                         Account account = registrationDto;
                         CurriculumVitae curriculumVitae = registrationDto;
                         List<Skill> skills = registrationDto;
-                        List<Experience> experiences = registrationDto;
+
 
                         // Handle pengunggahan foto (jika diperlukan)
                         if (registrationDto.ProfilePictureFile != null && registrationDto.ProfilePictureFile.Length > 0)
@@ -360,12 +358,6 @@ namespace API.Controllers
                             var resultSkl = _skillRepository.Create(skill);
                         }
 
-                        // Simpan Experiences dalam repository
-                        foreach (var experience in experiences)
-                        {
-                            experience.CvGuid = resultCv.Guid; // Sesuaikan ini dengan hubungan yang benar
-                            var resultExp = _experienceRepository.Create(experience);
-                        }
 
                         // Commit transaksi jika semua operasi berhasil
                         transactionScope.Complete();
@@ -516,12 +508,11 @@ namespace API.Controllers
             var employees = _employeeRepository.GetAll();
             var companies = _companyRepository.GetAll();
             var skills = _skillRepository.GetAll();
-            var experiences = _experienceRepository.GetAll();
             var curriculumVitae = _curriculumVitaeRepository.GetAll();
             var interviews = _interviewRepository.GetAll();
             var ratings = _ratingRepository.GetAll();
 
-            if (!(employees.Any() || companies.Any() || skills.Any() || experiences.Any() || curriculumVitae.Any()))
+            if (!(employees.Any() || companies.Any() || skills.Any() || curriculumVitae.Any()))
             {
                 return NotFound(new ResponseErrorHandler
                 {
@@ -569,10 +560,7 @@ namespace API.Controllers
                                       Address = company?.Address ?? "N/A",
                                       OwnerGuid = company?.EmployeeGuid ?? Guid.Empty,
                                       EmployeeOwner = companyOwner?.FirstName + " " + companyOwner?.LastName ?? "N/A",
-                                      Experience = experiences
-                                                   .Where(experience => experience.CvGuid == cuVitResult?.Guid)
-                                                   .Select(experience => $"{experience.Position} at {experience.Company}")
-                                                   .ToList(),
+                                      
                                   };
 
 

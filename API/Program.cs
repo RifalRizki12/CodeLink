@@ -32,7 +32,6 @@ builder.Services.AddScoped<ITokenHandlers, API.Utilities.Handler.TokenHandler>()
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-builder.Services.AddScoped<IExperienceRepository, ExperienceRepository>();
 builder.Services.AddScoped<ICurriculumVitaeRepository, CurriculumVitaeRepository>();
 builder.Services.AddScoped<IRatingRepository, RatingRepository>();
 builder.Services.AddScoped<IRatingRepository, RatingRepository>();

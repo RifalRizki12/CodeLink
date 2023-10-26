@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Migrations
 {
-    public partial class AddDatabase : Migration
+    public partial class UpdateDatabse : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -164,29 +164,6 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "tb_m_experiences",
-                columns: table => new
-                {
-                    guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    name = table.Column<string>(type: "nvarchar(100)", nullable: false),
-                    position = table.Column<string>(type: "nvarchar(50)", nullable: false),
-                    company = table.Column<string>(type: "nvarchar(50)", nullable: false),
-                    cv_guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    created_date = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    modified_date = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tb_m_experiences", x => x.guid);
-                    table.ForeignKey(
-                        name: "FK_tb_m_experiences_tb_tr_cv_cv_guid",
-                        column: x => x.cv_guid,
-                        principalTable: "tb_tr_cv",
-                        principalColumn: "guid",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "tb_m_skills",
                 columns: table => new
                 {
@@ -235,11 +212,6 @@ namespace API.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_m_experiences_cv_guid",
-                table: "tb_m_experiences",
-                column: "cv_guid");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_tb_m_interviews_employee_guid",
                 table: "tb_m_interviews",
                 column: "employee_guid");
@@ -274,9 +246,6 @@ namespace API.Migrations
 
             migrationBuilder.DropTable(
                 name: "tb_m_accounts");
-
-            migrationBuilder.DropTable(
-                name: "tb_m_experiences");
 
             migrationBuilder.DropTable(
                 name: "tb_m_ratings");

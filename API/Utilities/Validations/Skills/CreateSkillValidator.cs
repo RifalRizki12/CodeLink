@@ -1,5 +1,4 @@
-﻿using API.DTOs.Experiences;
-using API.DTOs.Skills;
+﻿using API.DTOs.Skills;
 using FluentValidation;
 
 namespace API.Utilities.Validations.Skills;
