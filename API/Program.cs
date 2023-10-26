@@ -115,14 +115,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
        });
 
 // Add CORS
+//Add CORS, bisa diterapkan pada projek yang sudah dideploy atau jika local harus menggunakan sln yg berbeda
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.AllowAnyOrigin();
-        //policy.WithOrigins();
-        policy.AllowAnyHeader();
-        policy.WithMethods("GET", "POST", "DELETE", "PUT");
+        policy.AllowAnyOrigin(); // allow all request dari semua asal (domain) yang berbeda
+        policy.AllowAnyHeader();  // allow penggunaan header apa pun dalam request
+        policy.AllowAnyMethod(); // allow penggunaan metode HTTP GET, POST, DELETE, dan PUT
     });
 });
 
