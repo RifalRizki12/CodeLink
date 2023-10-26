@@ -12,8 +12,6 @@ namespace API.DTOs.Employees
         public string NameCompany { get; set; }
         public string? Foto { get; set; }
         public string Grade { get; set; }
-        public DateTime? HireMetro { get; set; }
-        public DateTime? EndMetro { get; set; }
         public string? Cv { get; set; }
         public string Address { get; set; }
         public List<string> Skill { get; set; }
