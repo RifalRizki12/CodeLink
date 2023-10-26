@@ -6,6 +6,7 @@ using API.Repositories;
 using API.Utilities.Enums;
 using API.Utilities.Handler;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Transactions;
@@ -69,7 +70,7 @@ namespace API.Controllers
         }
 
         [HttpPost("registerClient")]
-        public async Task<IActionResult> RegisterClient(RegisterClientDto registrationDto)
+        public async Task<IActionResult> RegisterClient([FromForm]RegisterClientDto registrationDto)
         {
             if (ModelState.IsValid)
             {
@@ -143,6 +144,106 @@ namespace API.Controllers
                 Message = "Invalid request data."
             });
         }
+        [HttpPut("updateClient/{companyGuid}")]
+        public async Task<IActionResult> UpdateClient(Guid companyGuid, [FromForm] UpdateClientDto updateClientDto)
+        {
+            if (ModelState.IsValid)
+            {
+                using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+                {
+                    try
+                    {
+                        // Ambil perusahaan berdasarkan GUID yang diberikan
+                        Company existingCompany = _companyRepository.GetByGuid(companyGuid);
+                        if (existingCompany == null)
+                        {
+                            return NotFound(new ResponseErrorHandler
+                            {
+                                Code = StatusCodes.Status404NotFound,
+                                Status = HttpStatusCode.NotFound.ToString(),
+                                Message = "Company not found."
+                            });
+                        }
+
+                        // Update informasi perusahaan
+                        existingCompany.Name = updateClientDto.NameCompany;
+                        existingCompany.Address = updateClientDto.AddressCompany;
+                        existingCompany.Description = updateClientDto.Description;
+                        _companyRepository.Update(existingCompany);
+
+                        // Ambil karyawan berdasarkan EmployeeGuid yang diberikan dalam DTO
+                        Employee existingEmployee = _employeeRepository.GetByGuid(updateClientDto.EmployeeGuid);
+                        if (existingEmployee == null)
+                        {
+                            return NotFound(new ResponseErrorHandler
+                            {
+                                Code = StatusCodes.Status404NotFound,
+                                Status = HttpStatusCode.NotFound.ToString(),
+                                Message = "Employee not found."
+                            });
+                        }
+
+                        // Update informasi karyawan
+                        existingEmployee.FirstName = updateClientDto.FirstName;
+                        existingEmployee.LastName = updateClientDto.LastName;
+                        existingEmployee.Email = updateClientDto.Email;
+                        existingEmployee.PhoneNumber = updateClientDto.PhoneNumber;
+
+                        // Handle update gambar profil jika ada
+                        if (updateClientDto.ProfilePictureFile != null && updateClientDto.ProfilePictureFile.Length > 0)
+                        {
+                            string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}{Path.GetExtension(updateClientDto.ProfilePictureFile.FileName)}";
+                            string uploadPath = "Utilities/File/ProfilePictures/"; // Update to the appropriate directory
+                            string filePath = Path.Combine(uploadPath, uniqueFileName);
+
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await updateClientDto.ProfilePictureFile.CopyToAsync(stream);
+                            }
+
+                            // Update the Foto attribute in the existingEmployee object
+                            existingEmployee.Foto = uniqueFileName;
+                        }
+
+                        // Update karyawan dalam repository
+                        _employeeRepository.Update(existingEmployee);
+
+                        // Ambil akun berdasarkan Guid karyawan
+                        Account existingAccount = _accountRepository.GetByGuid(existingEmployee.Guid);
+                        if (existingAccount != null)
+                        {
+                            // Update password jika diberikan
+                            if (!string.IsNullOrWhiteSpace(updateClientDto.Password))
+                            {
+                                existingAccount.Password = HashHandler.HashPassword(updateClientDto.Password);
+                                _accountRepository.Update(existingAccount);
+                            }
+                        }
+
+                        transactionScope.Complete();
+                        return Ok(new ResponseOKHandler<string>("Update successful!"));
+                    }
+                    catch (Exception ex)
+                    {
+                        transactionScope.Dispose();
+                        return BadRequest(new ResponseErrorHandler
+                        {
+                            Code = StatusCodes.Status400BadRequest,
+                            Status = HttpStatusCode.BadRequest.ToString(),
+                            Message = "Update failed. " + ex.Message
+                        });
+                    }
+                }
+            }
+
+            return BadRequest(new ResponseErrorHandler
+            {
+                Code = StatusCodes.Status400BadRequest,
+                Status = HttpStatusCode.BadRequest.ToString(),
+                Message = "Invalid request data."
+            });
+        }
+
 
         [HttpGet("allClient-details")]
         public IActionResult GetAllClientDetails()
@@ -193,7 +294,7 @@ namespace API.Controllers
         }
 
         [HttpPost("registerIdle")]
-        public async Task<IActionResult> RegisterIdle(RegisterIdleDto registrationDto)
+        public async Task<IActionResult> RegisterIdle([FromForm]RegisterIdleDto registrationDto)
         {
             if (ModelState.IsValid)
             {
@@ -294,55 +395,118 @@ namespace API.Controllers
             });
         }
 
-       /* [HttpPut("updateIdle")]
-        public async Task<IActionResult> UpdateIdle(EditIdleDto editIdleDto)
+
+
+        [HttpPut("updateIdle")]
+        public async Task<IActionResult> UpdateIdle([FromForm] UpdateIdleDto updateDto)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // Periksa apakah karyawan dengan GUID yang diberikan ada dalam basis data
-                var existingEmployee = _employeeRepository.GetByGuid(editIdleDto.Guid);
-                if (existingEmployee == null)
+                using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
-                    return NotFound(new ResponseErrorHandler
+                    try
                     {
-                        Code = StatusCodes.Status404NotFound,
-                        Status = HttpStatusCode.NotFound.ToString(),
-                        Message = "Employee with Specific GUID Not Found"
-                    });
+                        Employee existingEmployee = _employeeRepository.GetByGuid(updateDto.Guid);
+                        if (existingEmployee == null)
+                        {
+                            return NotFound(new ResponseErrorHandler
+                            {
+                                Code = StatusCodes.Status404NotFound,
+                                Status = HttpStatusCode.NotFound.ToString(),
+                                Message = "User not found."
+                            });
+                        }
+
+                        // Update the existingEmployee object with data from the updateDto
+                        existingEmployee.FirstName = updateDto.FirstName;
+                        existingEmployee.LastName = updateDto.LastName;
+                        existingEmployee.Email = updateDto.Email;
+                        existingEmployee.PhoneNumber = updateDto.PhoneNumber;
+                        existingEmployee.StatusEmployee = updateDto.StatusEmployee;
+                        existingEmployee.CompanyGuid = updateDto.CompanyGuid;
+
+
+                        // Update other properties as needed
+
+                        // Handle the update of the profile picture (if necessary)
+                        if (updateDto.ProfilePictureFile != null && updateDto.ProfilePictureFile.Length > 0)
+                        {
+                            string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}{Path.GetExtension(updateDto.ProfilePictureFile.FileName)}";
+                            string uploadPath = "Utilities/File/ProfilePictures/"; // Update to the appropriate directory
+                            string filePath = Path.Combine(uploadPath, uniqueFileName);
+
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await updateDto.ProfilePictureFile.CopyToAsync(stream);
+                            }
+
+                            // Update the Foto attribute in the existingEmployee object
+                            existingEmployee.Foto = uniqueFileName;
+                        }
+
+                        // Update the Employee in the repository
+                        _employeeRepository.Update(existingEmployee);
+
+                        // Update the Account in the repository (if needed)
+                        Account existingAccount = _accountRepository.GetByGuid(existingEmployee.Guid);
+                        if (existingAccount != null)
+                        {
+                            // Update account properties as needed
+                            existingAccount.Password = HashHandler.HashPassword(updateDto.Password);
+
+                            _accountRepository.Update(existingAccount);
+                        }
+
+
+                        // Update CurriculumVitae (if needed)
+                        CurriculumVitae existingCv = _curriculumVitaeRepository.GetByGuid(existingEmployee.Guid);
+                        if (updateDto.CvFile != null && updateDto.CvFile.Length > 0)
+                        {
+                            string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}{Path.GetExtension(updateDto.CvFile.FileName)}";
+                            string uploadPath = "Utilities/File/Cv/"; // Ganti dengan direktori yang sesuai
+                            string filePath = Path.Combine(uploadPath, uniqueFileName);
+
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await updateDto.CvFile.CopyToAsync(stream);
+                            }
+
+                            // Simpan nama berkas unik ke atribut CV pada objek CurriculumVitae
+                            existingCv.Cv = uniqueFileName;
+                        }
+                        _curriculumVitaeRepository.Update(existingCv);
+
+                       
+
+                        transactionScope.Complete();
+
+                        return Ok(new ResponseOKHandler<string>("Update successful!"));
+                    }
+                    catch (Exception ex)
+                    {
+                        // Rollback the transaction in case of an error
+                        transactionScope.Dispose();
+
+                        return BadRequest(new ResponseErrorHandler
+                        {
+                            Code = StatusCodes.Status400BadRequest,
+                            Status = HttpStatusCode.BadRequest.ToString(),
+                            Message = "Update failed. " + ex.Message
+                        });
+                    }
                 }
-
-                // Lakukan validasi atau pemrosesan lain yang sesuai untuk data yang akan diupdate
-
-                // Lakukan konversi dari EditIdleDto ke entitas yang ada
-                Employee updatedEmployee = editIdleDto;
-                Account account = editIdleDto;
-                CurriculumVitae curriculumVitae = editIdleDto;
-                List<Skill> skills = editIdleDto;
-                List<Experience> experiences = editIdleDto;
-
-                // Lakukan pembaruan entitas dalam basis data
-                var result = _employeeRepository.Update(updatedEmployee);
-                var result1 = _accountRepository.Update(account);
-                var result2 = _curriculumvitaeRepository.Update(curriculumVitae);
-                var result3 = _skillRepository.Update(skills);
-
-                // Kembalikan pesan sukses dengan respons 200 OK
-                var response = new ResponseOKHandler<EmployeeDto>("Employee Data Has Been Updated");
-
-                return Ok(response);
             }
-            catch (Exception ex)
+
+            return BadRequest(new ResponseErrorHandler
             {
-                // Tangani pengecualian dan kembalikan respons 500 Internal Server Error jika terjadi kesalahan
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorHandler
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Status = HttpStatusCode.InternalServerError.ToString(),
-                    Message = "Gagal memperbarui data karyawan",
-                    Error = ex.Message
-                });
-            }
-        }*/
+                Code = StatusCodes.Status400BadRequest,
+                Status = HttpStatusCode.BadRequest.ToString(),
+                Message = "Invalid request data."
+            });
+        }
+
+
+
 
 
 

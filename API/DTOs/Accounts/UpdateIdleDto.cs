@@ -3,9 +3,9 @@ using API.DTOs.Experiences;
 using API.Models;
 using API.Utilities.Enums;
 
-namespace API.DTOs.Employees
+namespace API.DTOs.Accounts
 {
-    public class EditIdleDto
+    public class UpdateIdleDto
     {
         public Guid Guid { get; set; }
         public string FirstName { get; set; }
@@ -19,14 +19,15 @@ namespace API.DTOs.Employees
         public StatusEmployee StatusEmployee { get; set; }
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
+        public Guid? CompanyGuid { get; set; }
         public List<string>? Skills { get; set; }
         public List<CreateExperienceDto>? Experiences { get; set; }
 
-        public static implicit operator Employee(EditIdleDto dto)
+        public static implicit operator Employee(UpdateIdleDto dto)
         {
             return new Employee
             {
-                Guid = dto.Guid,
+
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 Gender = dto.Gender,
@@ -34,15 +35,16 @@ namespace API.DTOs.Employees
                 PhoneNumber = dto.PhoneNumber,
                 Grade = dto.Grade,
                 Email = dto.Email,
-                StatusEmployee = dto.StatusEmployee
+                StatusEmployee = dto.StatusEmployee,
+                CompanyGuid= dto.CompanyGuid
             };
         }
 
-        public static implicit operator Account(EditIdleDto dto)
+        public static implicit operator Account(UpdateIdleDto dto)
         {
             return new Account
             {
-                Guid = Guid.NewGuid(),
+
                 Password = dto.ConfirmPassword,
                 Otp = 0,
                 IsUsed = true,
@@ -53,7 +55,7 @@ namespace API.DTOs.Employees
             };
         }
 
-        public static implicit operator CurriculumVitae(EditIdleDto dto)
+        public static implicit operator CurriculumVitae(UpdateIdleDto dto)
         {
             return new CurriculumVitae
             {
@@ -61,7 +63,8 @@ namespace API.DTOs.Employees
             };
         }
 
-        public static implicit operator List<Skill>(EditIdleDto dto)
+
+        public static implicit operator List<Skill>(UpdateIdleDto dto)
         {
             var skillsList = new List<Skill>();
 
@@ -69,7 +72,7 @@ namespace API.DTOs.Employees
             {
                 var skill = new Skill
                 {
-                    Guid = Guid.NewGuid(),
+
                     Name = skillName
                 };
                 skillsList.Add(skill);
@@ -78,7 +81,7 @@ namespace API.DTOs.Employees
             return skillsList;
         }
 
-        public static implicit operator List<Experience>(EditIdleDto dto)
+        public static implicit operator List<Experience>(UpdateIdleDto dto)
         {
             if (dto.Experiences == null || !dto.Experiences.Any())
             {
@@ -91,7 +94,7 @@ namespace API.DTOs.Employees
             {
                 var experience = new Experience
                 {
-                    Guid = Guid.NewGuid(),
+
                     Name = experienceDto.Name,
                     Position = experienceDto.Position,
                     Company = experienceDto.Company
