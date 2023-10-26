@@ -16,7 +16,7 @@ namespace CLIENT.Controllers
             this.repository = repository;
         }
 
-        public async Task<IActionResult> List()
+  /*      public async Task<IActionResult> List()
         {
             var result = await repository.Get();
             var listEmployee = new List<EmployeeDetailDto>();
@@ -27,7 +27,7 @@ namespace CLIENT.Controllers
             }
 
             return View(listEmployee);
-        }
+        }*/
 
         public async Task<IActionResult> Index()
         {
