@@ -17,6 +17,7 @@ builder.Services.AddScoped(typeof(IRepository<,>), typeof(GeneralRepository<,>))
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IExperienceRepository, ExperienceRepository>();
 builder.Services.AddScoped<ISkillRepository, SkillRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
 //builder JWT yang berfungsi sebagai authenticaion pada saat pengguna ingin mengakses method method yang ada pada program
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -1,0 +1,109 @@
+﻿@model API.DTOs.Accounts.RegisterIdleDto
+
+@{
+    ViewData["Title"] = "CreateIdle";
+    Layout = "/Views/Shared/Admin/_Layout.cshtml";
+
+}
+
+<h1>CreateIdle</h1>
+
+<h4>RegisterIdleDto</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateIdle">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Gender" class="control-label"></label>
+                <input asp-for="Gender" class="form-control" />
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhoneNumber" class="control-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Grade" class="control-label"></label>
+                <input asp-for="Grade" class="form-control" />
+                <span asp-validation-for="Grade" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StatusEmployee" class="control-label"></label>
+                <input asp-for="StatusEmployee" class="form-control" />
+                <span asp-validation-for="StatusEmployee" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfirmPassword" class="control-label"></label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="ProfilePictureFile" class="control-label"></label>
+                <input asp-for="ProfilePictureFile" type="file" class="form-control" />
+                <span asp-validation-for="ProfilePictureFile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CvFile" class="control-label"></label>
+                <input asp-for="CvFile" type="file" class="form-control" />
+                <span asp-validation-for="CvFile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Skills" class="control-label"></label>
+                <input asp-for="Skills" class="form-control" />
+                <span asp-validation-for="Skills" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Experiences" class="control-label"></label>
+                <input asp-for="Experiences" class="form-control" />
+                <span asp-validation-for="Experiences" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-group">
+                <label for="Skills">Skills</label>
+                <button type="button" id="addSkillButton">Tambah Skill</button>
+                <div id="skillsContainer">
+                    <!-- Container for dynamically added Skill input fields -->
+                </div>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    
+    <script src="~/js/Account.js" asp-append-version="true"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

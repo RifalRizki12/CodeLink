@@ -3,57 +3,44 @@ using API.DTOs.Employees;
 using API.Utilities.Handler;
 using CLIENT.Contract;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol.Core.Types;
+using System.Collections.Generic;
 using System.Net;
 
 namespace CLIENT.Controllers
 {
-    public class EmployeeController : Controller
+    public class AccountController : Controller
     {
-        private readonly IEmployeeRepository repository;
+        private readonly IAccountRepository repository;
 
-        public EmployeeController(IEmployeeRepository repository)
+        public AccountController(IAccountRepository repository)
         {
             this.repository = repository;
         }
 
-        public async Task<IActionResult> List()
-        {
-            var result = await repository.Get();
-            var listEmployee = new List<EmployeeDetailDto>();
-            if (result != null)
-            {
-
-                listEmployee = result.Data.Select(x => (EmployeeDetailDto)x).ToList();
-            }
-
-            return View(listEmployee);
-        }
-
-        public async Task<IActionResult> Index()
+       
+        public async Task<IActionResult> CreateIdle()
         {
             return View();
         }
 
-        public async Task<JsonResult> GetEmployeeData()
-        {
-            var result = await repository.GetDetailIdle();
-            return Json(new { data = result.Data });
-        }
-
         [HttpPost]
-        public async Task<IActionResult> RegisterIdle(RegisterIdleDto registrationDto)
+        public async Task<IActionResult> CreateIdle(RegisterIdleDto registrationDto)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
                     // Kirim data ke metode RegisterIdle di repository
-                    var result = await repository.RegisterIdle(registrationDto);
-
-                    if (result != null)
+                    var result = await repository.Post(registrationDto);
+                    if (result.Code == 200)
                     {
-                        // Kembalikan respons dari repository dalam bentuk JSON
-                        return Json(result);
+                        return RedirectToAction(nameof(CreateIdle));
+                    }
+                    else if (result.Code == 409)
+                    {
+                        ModelState.AddModelError(string.Empty, result.Message);
+                        return View();
                     }
                 }
                 catch (Exception ex)
@@ -72,7 +59,7 @@ namespace CLIENT.Controllers
             {
                 Code = StatusCodes.Status400BadRequest,
                 Status = HttpStatusCode.BadRequest.ToString(),
-                Message = "Invalid request data."
+                Message = "Invalid request data." 
             });
         }
 
