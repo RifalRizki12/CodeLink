@@ -95,5 +95,19 @@ namespace CLIENT.Repository
                 }
             }
         }
+
+        public async Task<ResponseOKHandler<IEnumerable<ClientDetailDto>>> GuidClient(Guid guid)
+        {
+            string requestUrl = "getByGuid"; // Sesuaikan dengan URL endpoint yang benar
+            ResponseOKHandler<ClientDetailDto> entity = null;
+
+            using (var response = await httpClient.GetAsync(requestUrl + guid))
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                var entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<IEnumerable<ClientDetailDto>>>(apiResponse);
+
+                return entityVM;
+            }
+        }
     }
 }

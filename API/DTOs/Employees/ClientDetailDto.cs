@@ -4,6 +4,7 @@ namespace API.DTOs.Employees
 {
     public class ClientDetailDto
     {
+        public Guid Guid { get; set; }
         public string FullName { get; set; }
         public string Gender { get; set; }
         public string FotoEmployee { get; set; }
@@ -21,7 +22,7 @@ namespace API.DTOs.Employees
         {
             return new ClientDetailDto
             {
-                /*Guid = employee.Guid,*/
+                Guid = employee.Guid,
                 FullName = employee.FirstName + " " + employee.LastName,
                 Gender = employee.Gender.ToString(),
                 StatusEmployee = employee.StatusEmployee.ToString(),

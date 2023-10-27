@@ -96,7 +96,7 @@ namespace CLIENT.Controllers
 
 
 
-
+/*
         [HttpPut("updateClient")]
         public async Task<JsonResult> UpdateClient(UpdateClientDto updateDto)
         {
@@ -117,7 +117,7 @@ namespace CLIENT.Controllers
             {
                 return Json(new { error = "An error occurred while updating the employee." });
             }
-        }
+        }*/
 
 
         public async Task<IActionResult> GetClient()
@@ -134,11 +134,11 @@ namespace CLIENT.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(Guid guid)
+        public async Task<IActionResult> GuidClient(Guid guid)
         {
             var result = await repository.Get(guid);
-            var employee = new EmployeeDto();
-            if (result.Data?.Guid is null)
+            var employee = new ClientDetailDto();
+            if (result.Data is null)
             {
                 return View(employee);
             }
@@ -146,42 +146,40 @@ namespace CLIENT.Controllers
         }
 
 
+        /* [HttpPost]*/
 
-
-        [HttpPost]
-
-        public async Task<IActionResult> Edit(UpdateClientDto clientDto)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = await repository.Put(clientDto.AccountGuid, clientDto);
-                if (result != null)
-                {
-                    if (result.Code == 200) // Perubahan berhasil
-                    {
-                        return RedirectToAction(nameof(Index));
-                    }
-                    else if (result.Code == 409) // Konflik, misalnya ada entitas dengan ID yang sama
-                    {
-                        ModelState.AddModelError(string.Empty, result.Message);
-                        return View();
-                    }
-                    else
-                    {
-                        // Handle status kode lain sesuai kebutuhan Anda
-                        // Contoh:
-                        ModelState.AddModelError(string.Empty, "Terjadi kesalahan saat menyimpan perubahan.");
-                        return View();
-                    }
-                }
-                else
-                {
-                    // Handle ketika result adalah null, misalnya ada kesalahan saat melakukan permintaan HTTP
-                    ModelState.AddModelError(string.Empty, "Terjadi kesalahan saat menyimpan perubahan.");
-                    return View();
-                }
-            }
-            return View();
-        }
+        /* public async Task<IActionResult> Edit(UpdateClientDto clientDto)
+         {
+             if (ModelState.IsValid)
+             {
+                 var result = await repository.Put(clientDto.AccountGuid, clientDto);
+                 if (result != null)
+                 {
+                     if (result.Code == 200) // Perubahan berhasil
+                     {
+                         return RedirectToAction(nameof(Index));
+                     }
+                     else if (result.Code == 409) // Konflik, misalnya ada entitas dengan ID yang sama
+                     {
+                         ModelState.AddModelError(string.Empty, result.Message);
+                         return View();
+                     }
+                     else
+                     {
+                         // Handle status kode lain sesuai kebutuhan Anda
+                         // Contoh:
+                         ModelState.AddModelError(string.Empty, "Terjadi kesalahan saat menyimpan perubahan.");
+                         return View();
+                     }
+                 }
+                 else
+                 {
+                     // Handle ketika result adalah null, misalnya ada kesalahan saat melakukan permintaan HTTP
+                     ModelState.AddModelError(string.Empty, "Terjadi kesalahan saat menyimpan perubahan.");
+                     return View();
+                 }
+             }
+             return View();
+         }*/
     }
 }
