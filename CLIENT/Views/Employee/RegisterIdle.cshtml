@@ -1,0 +1,112 @@
+﻿@{
+    ViewData["Title"] = "Register";
+    Layout = "/Views/Shared/Admin/_Layout.cshtml";
+}
+
+
+<h1>Register Employee</h1>
+<div class="container">
+    <form id="registerForm">
+        <div class="form-group">
+            <label for="firstNameInput">First Name:</label>
+            <input type="text" class="form-control" id="firstNameInput" required />
+        </div>
+        <div class="form-group">
+            <label for="lastNameInput">Last Name:</label>
+            <input type="text" class="form-control" id="lastNameInput" required />
+        </div>
+        <div class="form-group">
+            <label for="genderInput">Gender:</label>
+            <input type="text" class="form-control" id="genderInput" />
+@*             <select class="form-control" id="genderInput" required>
+                <option value="0">Male</option>
+                <option value="1">Female</option>
+            </select> *@
+        </div>
+        <div class="form-group">
+            <label for="phoneNumberInput">Phone Number:</label>
+            <input type="tel" class="form-control" id="phoneNumberInput" required />
+        </div>
+        <div class="form-group">
+            <label for="emailInput">Email:</label>
+            <input type="email" class="form-control" id="emailInput" required />
+        </div>
+        <div class="form-group">
+            <label for="gradeInput">Grade:</label>
+            <input type="text" class="form-control" id="gradeInput" />
+@*             <select class="form-control" id="gradeInput" required>
+                <option value=0>A</option>
+                <option value=1>B</option>
+            </select> *@
+        </div>
+        <div class="form-group">
+            <label for="statusEmployeeInput">Status Employee:</label>
+            <input type="text" class="form-control" id="statusEmployeeInput" />
+@*             <select class="form-control" id="statusEmployeeInput" required>
+                <option value=0>Idle</option>
+                <option value=1>Owner</option>
+                <option value=3>OnSite</option>
+            </select> *@
+        </div>
+        <div class="form-group">
+            <label for="passwordInput">Password:</label>
+            <input type="password" class="form-control" id="passwordInput" required />
+        </div>
+        <div class="form-group">
+            <label for="confirmPasswordInput">Confirm Password:</label>
+            <input type="password" class="form-control" id="confirmPasswordInput" required />
+        </div>
+        <div class="form-group">
+            <label for="skillsInput">Skills:</label>
+            <select id="skillsInput" class="form-control" multiple="multiple"></select>
+        </div>
+
+        <div class="form-group">
+            <label for="profilePictureInput">Profile Picture:</label>
+            <input type="file" class="form-control-file" id="profilePictureInput" />
+        </div>
+        <div class="form-group">
+            <label for="cvInput">CV:</label>
+            <input type="file" class="form-control-file" id="cvInput" />
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+    <div id="errorMessage" class="text-danger"></div>
+</div>
+
+<!-- Modal for showing success message -->
+<div class="modal fade" id="modalCenter" tabindex="-1" role="dialog" aria-labelledby="modalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLongTitle">Registration Successful</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                You have successfully registered!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script src="~/js/Register.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+            $('#skillsInput').select2({
+                tags: true,
+                tokenSeparators: [',', ' '],
+                placeholder: "Select or add skills"
+            });
+        });
+    </script>
+}

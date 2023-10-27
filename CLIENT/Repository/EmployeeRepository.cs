@@ -4,8 +4,10 @@ using API.Models;
 using API.Utilities.Handler;
 using CLIENT.Contract;
 using Newtonsoft.Json;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Net.Http.Headers;
 
 namespace CLIENT.Repository
 {
@@ -52,16 +54,69 @@ namespace CLIENT.Repository
 
         public async Task<ResponseOKHandler<Employee>> RegisterIdle(RegisterIdleDto registrationDto)
         {
-            string requestUrl = "registerIdle"; // Sesuaikan dengan URL endpoint yang benar
-            var content = new StringContent(JsonConvert.SerializeObject(registrationDto), Encoding.UTF8, "application/json");
-
-            using (var response = await httpClient.PostAsync(request + requestUrl, content))
+            try
             {
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                var entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<Employee>>(apiResponse);
-                return entityVM;
+                using (var content = new MultipartFormDataContent())
+                {
+                    foreach (var prop in registrationDto.GetType().GetProperties())
+                    {
+                        var value = prop.GetValue(registrationDto);
+                        if (value != null)
+                        {
+                            if (value is IFormFile file)
+                            {
+                                var fileContent = new StreamContent(file.OpenReadStream())
+                                {
+                                    Headers =
+                            {
+                                ContentLength = file.Length,
+                                ContentType = new MediaTypeHeaderValue(file.ContentType)
+                            }
+                                };
+                                content.Add(fileContent, prop.Name, file.FileName);
+                            }
+                            else
+                            {
+                                content.Add(new StringContent(value.ToString()), prop.Name);
+                            }
+                        }
+                    }
+
+                    using (var response = await httpClient.PostAsync($"{request}RegisterIdle", content))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<Employee>>(apiResponse);
+                            return entityVM;
+                        }
+                        else
+                        {
+                            // Handle non-success status codes as needed
+                            if (response.StatusCode == HttpStatusCode.UnsupportedMediaType)
+                            {
+                                Console.WriteLine("415 Unsupported Media Type - Ensure the server accepts JSON.");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Request failed with status code {response.StatusCode}: {response.ReasonPhrase}");
+                            }
+                            Console.WriteLine($"Response Content: {apiResponse}");
+                            // You might want to return a specific response or throw an exception here
+                            return null;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine(ex);
+                throw; // Consider whether re-throwing the exception is the best course of action
             }
         }
+
 
         public async Task<ResponseOKHandler<IEnumerable<ClientDetailDto>>> GetDetailClient()
         {

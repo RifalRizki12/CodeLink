@@ -143,7 +143,7 @@ namespace API.Controllers
             });
         }
         
-        [HttpPut("updateClient/{companyGuid}")]
+        [HttpPut("updateClient")]
         public async Task<IActionResult> UpdateClient(Guid companyGuid, [FromForm] UpdateClientDto updateClientDto)
         {
             if (ModelState.IsValid)
@@ -305,7 +305,7 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost("registerIdle")]
+        [HttpPost("RegisterIdle")]
         public async Task<IActionResult> RegisterIdle([FromForm]RegisterIdleDto registrationDto)
         {
             if (ModelState.IsValid)

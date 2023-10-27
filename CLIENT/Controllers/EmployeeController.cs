@@ -36,40 +36,34 @@ namespace CLIENT.Controllers
             return Json(new { data = result.Data });
         }
 
+        public async Task<IActionResult> RegisterIdle()
+        {
+            return View();
+        }
+
         [HttpPost]
-        public async Task<IActionResult> RegisterIdle(RegisterIdleDto registrationDto)
+        public async Task<IActionResult> RegisterIdle([FromForm] RegisterIdleDto registrationDto)
         {
             if (ModelState.IsValid)
             {
-                try
-                {
-                    // Kirim data ke metode RegisterIdle di repository
-                    var result = await repository.RegisterIdle(registrationDto);
+                var result = await repository.RegisterIdle(registrationDto);
 
-                    if (result != null)
-                    {
-                        // Kembalikan respons dari repository dalam bentuk JSON
-                        return Json(result);
-                    }
-                }
-                catch (Exception ex)
+                if (result.Status == "OK")
                 {
-                    // Tangani kesalahan internal
-                    return Json(new ResponseErrorHandler
-                    {
-                        Code = StatusCodes.Status500InternalServerError,
-                        Status = HttpStatusCode.InternalServerError.ToString(),
-                        Message = "Internal server error: " + ex.Message
-                    });
+                    // Pendaftaran berhasil
+                    return Json(new { success = true, redirectTo = Url.Action("Index", "Employee") });
+                }
+                else
+                {
+                    // Pendaftaran gagal atau ada kesalahan
+                    return Json(new { success = false, message = "Pendaftaran gagal atau terjadi kesalahan." });
                 }
             }
-
-            return BadRequest(new ResponseErrorHandler
+            else
             {
-                Code = StatusCodes.Status400BadRequest,
-                Status = HttpStatusCode.BadRequest.ToString(),
-                Message = "Invalid request data."
-            });
+                // Data yang dikirim tidak valid
+                return Json(new { success = false, message = "Data tidak valid." });
+            }
         }
 
         [HttpPut("updateIdle")]
