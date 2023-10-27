@@ -8,6 +8,5 @@ namespace API.Contracts
         int GetCaount();
         Company GetCompany(Guid company);
 
-        Company GetCompaniesByEmployeeGuid(Guid employeeGuid);
     }
 }

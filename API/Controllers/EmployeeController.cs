@@ -564,7 +564,7 @@ namespace API.Controllers
         }
 
         [HttpGet("getByGuid")]
-        public IActionResult GetDetails(Guid employeeGuid)
+        public IActionResult GetEmployeeDetails(Guid employeeGuid)
         {
             // Get the employee by GUID
             Employee employee = _employeeRepository.GetByGuid(employeeGuid);
@@ -583,26 +583,7 @@ namespace API.Controllers
             List<Skill> skills = _skillRepository.GetSkillsByCvGuid(employee.Guid);
             CurriculumVitae curriculumVitae = _curriculumVitaeRepository.GetByGuid(employee.Guid);
 
-            // Find the company where the employee works
-            Company company = _companyRepository.GetCompaniesByEmployeeGuid(employee.Guid);
-
-            // Initialize variables to store company name and owner
-            string companyName = "N/A";
-            string ownerName = "N/A";
-
-            if (company != null)
-            {
-                companyName = company.Name;
-
-                // Find the owner of the company
-                Employee owner = _employeeRepository.GetByGuid(company?.EmployeeGuid ?? Guid.Empty);
-                if (owner != null)
-                {
-                    ownerName = owner.FirstName + " " + owner.LastName;
-                }
-            }
-
-            // Create a DTO to represent the desired data
+            // Initialize an EmployeeDetailDto with default values
             EmployeeDetailDto employeeDetail = new EmployeeDetailDto
             {
                 FullName = employee.FirstName + " " + employee.LastName,
@@ -614,13 +595,38 @@ namespace API.Controllers
                 Foto = employee.Foto,
                 Skill = skills.Select(skill => skill.Name).ToList(),
                 Cv = curriculumVitae?.Cv,
-                // Map other attributes accordingly
-                NameCompany = company?.Name ?? "N/A",
-                Address = company?.Address ?? "N/A",
-                OwnerGuid = company?.EmployeeGuid ?? Guid.Empty,
-                EmployeeOwner = ownerName,
+                NameCompany = null,
+                Address = null,
+                OwnerGuid = Guid.Empty,
+                EmployeeOwner = "N/A",
+                AverageRating = null,
                 // Add other attributes as needed
             };
+
+            // Find the company where the employee works
+            Company company = _companyRepository.GetByGuid(employee.CompanyGuid.GetValueOrDefault());
+            
+            if (company != null)
+            {
+                // Employee has a company, update company-related fields in EmployeeDetailDto
+                employeeDetail.NameCompany = company.Name;
+                employeeDetail.Address = company.Address;
+
+                // Find the owner of the company
+                Employee companyOwner = _employeeRepository.GetByGuid(company.EmployeeGuid.GetValueOrDefault());
+
+                employeeDetail.OwnerGuid = companyOwner?.Guid ?? Guid.Empty;
+                employeeDetail.EmployeeOwner = companyOwner?.FirstName + " " + companyOwner?.LastName ?? "N/A";
+            }
+
+            Interview interview = _interviewRepository.GetEmployeeGuid(employee.Guid);
+
+            if (interview != null)
+            {
+                // Get the rating for the interview
+                Rating rating = _ratingRepository.GetByGuid(interview.Guid);
+                employeeDetail.AverageRating = rating?.Rate;
+            }
 
             return Ok(new ResponseOKHandler<EmployeeDetailDto>(employeeDetail));
         }

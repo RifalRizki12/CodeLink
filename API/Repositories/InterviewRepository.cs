@@ -9,7 +9,10 @@ namespace API.Repositories
     {
         public InterviewRepository(CodeLinkDbContext context) : base(context) { }
 
-
+        public Interview GetEmployeeGuid(Guid employeeGuid)
+        {
+            return _context.Tests.FirstOrDefault(c => c.EmployeeGuid == employeeGuid);
+        }
 
     }
 }
