@@ -142,6 +142,7 @@ namespace API.Controllers
                 Message = "Invalid request data."
             });
         }
+        
         [HttpPut("updateClient/{companyGuid}")]
         public async Task<IActionResult> UpdateClient(Guid companyGuid, [FromForm] UpdateClientDto updateClientDto)
         {
@@ -241,7 +242,6 @@ namespace API.Controllers
                 Message = "Invalid request data."
             });
         }
-
 
         [HttpGet("allClient-details")]
         public IActionResult GetAllClientDetails()
@@ -387,8 +387,6 @@ namespace API.Controllers
             });
         }
 
-
-
         [HttpPut("updateIdle")]
         public async Task<IActionResult> UpdateIdle([FromForm] UpdateIdleDto updateDto)
         {
@@ -497,11 +495,6 @@ namespace API.Controllers
             });
         }
 
-
-
-
-
-
         [HttpGet("detailsIdle")]
         public IActionResult GetDetails()
         {
@@ -568,6 +561,68 @@ namespace API.Controllers
 
             return Ok(new ResponseOKHandler<IEnumerable<EmployeeDetailDto>>(employeeDetails));
 
+        }
+
+        [HttpGet("getByGuid")]
+        public IActionResult GetDetails(Guid employeeGuid)
+        {
+            // Get the employee by GUID
+            Employee employee = _employeeRepository.GetByGuid(employeeGuid);
+
+            if (employee == null)
+            {
+                return NotFound(new ResponseErrorHandler
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Employee not found."
+                });
+            }
+
+            // Get the related data (skills and curriculum vitae)
+            List<Skill> skills = _skillRepository.GetSkillsByCvGuid(employee.Guid);
+            CurriculumVitae curriculumVitae = _curriculumVitaeRepository.GetByGuid(employee.Guid);
+
+            // Find the company where the employee works
+            Company company = _companyRepository.GetCompaniesByEmployeeGuid(employee.Guid);
+
+            // Initialize variables to store company name and owner
+            string companyName = "N/A";
+            string ownerName = "N/A";
+
+            if (company != null)
+            {
+                companyName = company.Name;
+
+                // Find the owner of the company
+                Employee owner = _employeeRepository.GetByGuid(company?.EmployeeGuid ?? Guid.Empty);
+                if (owner != null)
+                {
+                    ownerName = owner.FirstName + " " + owner.LastName;
+                }
+            }
+
+            // Create a DTO to represent the desired data
+            EmployeeDetailDto employeeDetail = new EmployeeDetailDto
+            {
+                FullName = employee.FirstName + " " + employee.LastName,
+                Gender = employee.Gender.ToString(),
+                Email = employee.Email,
+                PhoneNumber = employee.PhoneNumber,
+                Grade = employee.Grade.ToString(),
+                StatusEmployee = employee.StatusEmployee.ToString(),
+                Foto = employee.Foto,
+                Skill = skills.Select(skill => skill.Name).ToList(),
+                Cv = curriculumVitae?.Cv,
+                // Map other attributes accordingly
+                NameCompany = company?.Name ?? "N/A",
+                Address = company?.Address ?? "N/A",
+                OwnerGuid = company?.EmployeeGuid ?? Guid.Empty,
+                EmployeeOwner = ownerName,
+                // Add other attributes as needed
+            };
+
+            return Ok(new ResponseOKHandler<EmployeeDetailDto>(employeeDetail));
         }
 
         // GET api/employee

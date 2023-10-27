@@ -22,5 +22,10 @@ namespace API.Repositories
             return _context.Companies
                 .FirstOrDefault(e => e.EmployeeGuid == company);
         }
+
+        public Company GetCompaniesByEmployeeGuid(Guid employeeGuid)
+        {
+            return _context.Companies.FirstOrDefault(c => c.EmployeeGuid == employeeGuid);
+        }
     }
 }
