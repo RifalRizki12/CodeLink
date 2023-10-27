@@ -191,8 +191,21 @@ namespace API.Controllers
                         // Handle update gambar profil jika ada
                         if (updateClientDto.ProfilePictureFile != null && updateClientDto.ProfilePictureFile.Length > 0)
                         {
+                            // Path ke direktori penyimpanan gambar profil
+                            string uploadPath = "Utilities/File/ProfilePictures/";
+
+                            // Jika gambar profil lama ada, hapus gambar lama
+                            if (!string.IsNullOrEmpty(existingEmployee.Foto))
+                            {
+                                string oldFilePath = Path.Combine(uploadPath, existingEmployee.Foto);
+                                if (System.IO.File.Exists(oldFilePath))
+                                {
+                                    System.IO.File.Delete(oldFilePath);
+                                }
+                            }
+
+                            // Generate nama unik untuk file gambar baru
                             string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}{Path.GetExtension(updateClientDto.ProfilePictureFile.FileName)}";
-                            string uploadPath = "Utilities/File/ProfilePictures/"; // Update to the appropriate directory
                             string filePath = Path.Combine(uploadPath, uniqueFileName);
 
                             using (var stream = new FileStream(filePath, FileMode.Create))
@@ -200,7 +213,7 @@ namespace API.Controllers
                                 await updateClientDto.ProfilePictureFile.CopyToAsync(stream);
                             }
 
-                            // Update the Foto attribute in the existingEmployee object
+                            // Update atribut Foto dalam objek existingEmployee
                             existingEmployee.Foto = uniqueFileName;
                         }
 
@@ -418,11 +431,24 @@ namespace API.Controllers
 
                         // Update other properties as needed
 
-                        // Handle the update of the profile picture (if necessary)
+                        // Handle update gambar profil jika ada
                         if (updateDto.ProfilePictureFile != null && updateDto.ProfilePictureFile.Length > 0)
                         {
-                            string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}{Path.GetExtension(updateDto.ProfilePictureFile.FileName)}";
+                            // Path ke direktori penyimpanan gambar profil
                             string uploadPath = "Utilities/File/ProfilePictures/"; // Update to the appropriate directory
+
+                            // Jika gambar profil lama ada, hapus gambar lama
+                            if (!string.IsNullOrEmpty(existingEmployee.Foto))
+                            {
+                                string oldFilePath = Path.Combine(uploadPath, existingEmployee.Foto);
+                                if (System.IO.File.Exists(oldFilePath))
+                                {
+                                    System.IO.File.Delete(oldFilePath);
+                                }
+                            }
+
+                            // Generate nama unik untuk file gambar baru
+                            string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}{Path.GetExtension(updateDto.ProfilePictureFile.FileName)}";
                             string filePath = Path.Combine(uploadPath, uniqueFileName);
 
                             using (var stream = new FileStream(filePath, FileMode.Create))
@@ -430,7 +456,7 @@ namespace API.Controllers
                                 await updateDto.ProfilePictureFile.CopyToAsync(stream);
                             }
 
-                            // Update the Foto attribute in the existingEmployee object
+                            // Update atribut Foto dalam objek existingEmployee
                             existingEmployee.Foto = uniqueFileName;
                         }
 
@@ -450,10 +476,25 @@ namespace API.Controllers
 
                         // Update CurriculumVitae (if needed)
                         CurriculumVitae existingCv = _curriculumVitaeRepository.GetByGuid(existingEmployee.Guid);
+
+                        // Handle update berkas CV jika ada
                         if (updateDto.CvFile != null && updateDto.CvFile.Length > 0)
                         {
-                            string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}{Path.GetExtension(updateDto.CvFile.FileName)}";
+                            // Path ke direktori penyimpanan berkas CV
                             string uploadPath = "Utilities/File/Cv/"; // Ganti dengan direktori yang sesuai
+
+                            // Jika berkas CV lama ada, hapus berkas lama
+                            if (!string.IsNullOrEmpty(existingCv.Cv))
+                            {
+                                string oldFilePath = Path.Combine(uploadPath, existingCv.Cv);
+                                if (System.IO.File.Exists(oldFilePath))
+                                {
+                                    System.IO.File.Delete(oldFilePath);
+                                }
+                            }
+
+                            // Generate nama unik untuk file CV baru
+                            string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}{Path.GetExtension(updateDto.CvFile.FileName)}";
                             string filePath = Path.Combine(uploadPath, uniqueFileName);
 
                             using (var stream = new FileStream(filePath, FileMode.Create))
@@ -461,12 +502,11 @@ namespace API.Controllers
                                 await updateDto.CvFile.CopyToAsync(stream);
                             }
 
-                            // Simpan nama berkas unik ke atribut CV pada objek CurriculumVitae
+                            // Simpan nama berkas unik ke atribut CV dalam objek CurriculumVitae
                             existingCv.Cv = uniqueFileName;
                         }
-                        _curriculumVitaeRepository.Update(existingCv);
 
-                       
+                        _curriculumVitaeRepository.Update(existingCv);
 
                         transactionScope.Complete();
 
@@ -563,7 +603,7 @@ namespace API.Controllers
 
         }
 
-        [HttpGet("getByGuid")]
+        [HttpGet("getByGuidIdle")]
         public IActionResult GetEmployeeDetails(Guid employeeGuid)
         {
             // Get the employee by GUID
@@ -593,8 +633,8 @@ namespace API.Controllers
                 Grade = employee.Grade.ToString(),
                 StatusEmployee = employee.StatusEmployee.ToString(),
                 Foto = employee.Foto,
-                Skill = skills.Select(skill => skill.Name).ToList(),
-                Cv = curriculumVitae?.Cv,
+                Skill = null,
+                Cv = null,
                 NameCompany = null,
                 Address = null,
                 OwnerGuid = Guid.Empty,
@@ -602,6 +642,16 @@ namespace API.Controllers
                 AverageRating = null,
                 // Add other attributes as needed
             };
+
+            if (skills.Count > 0 )
+            {
+                employeeDetail.Skill = skills.Select(skill => skill.Name).ToList();
+            }
+
+            if (curriculumVitae != null)
+            {
+                employeeDetail.Cv = curriculumVitae?.Cv;
+            }
 
             // Find the company where the employee works
             Company company = _companyRepository.GetByGuid(employee.CompanyGuid.GetValueOrDefault());
@@ -629,6 +679,57 @@ namespace API.Controllers
             }
 
             return Ok(new ResponseOKHandler<EmployeeDetailDto>(employeeDetail));
+        }
+
+        [HttpGet("getByGuidClient")]
+        public IActionResult GetAllClientDetails(Guid employeeGuid)
+        {
+            try
+            {
+                // Get the employee by GUID
+                Employee employee = _employeeRepository.GetByGuid(employeeGuid);
+
+                if (employee == null)
+                {
+                    return NotFound(new ResponseErrorHandler
+                    {
+                        Code = StatusCodes.Status404NotFound,
+                        Status = HttpStatusCode.NotFound.ToString(),
+                        Message = "Employee not found."
+                    });
+                }
+
+                // Get the company and account details
+                Company company = _companyRepository.GetCompany(employee.Guid);
+                Account account = _accountRepository.GetByGuid(employeeGuid);
+                Role role = _roleRepository.GetByGuid(account.RoleGuid);
+
+                // Create a ClientDetailDto to represent the client/owner details
+                ClientDetailDto clientDetail = new ClientDetailDto
+                {
+                    FullName = $"{employee.FirstName} {employee.LastName}",
+                    Gender = employee.Gender.ToString(),
+                    Email = employee.Email,
+                    FotoEmployee = employee.Foto,
+                    StatusAccount = account.Status.ToString(),
+                    PhoneNumber = employee.PhoneNumber,
+                    StatusEmployee = employee.StatusEmployee.ToString(),
+                    NameCompany = company?.Name,
+                    Address = company?.Address,
+                    RoleName = role?.Name
+                };
+
+                return Ok(new ResponseOKHandler<ClientDetailDto>(clientDetail));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseErrorHandler
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Message = "Failed to retrieve client details. " + ex.Message
+                });
+            }
         }
 
         // GET api/employee
