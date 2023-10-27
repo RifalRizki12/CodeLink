@@ -8,7 +8,7 @@ using System.Net;
 
 namespace CLIENT.Controllers
 {
-    [Authorize]
+    /*[Authorize]*/
     public class EmployeeController : Controller
     {
         private readonly IEmployeeRepository repository;
@@ -18,19 +18,6 @@ namespace CLIENT.Controllers
             this.repository = repository;
         }
 
-  /*      public async Task<IActionResult> List()
-        {
-            var result = await repository.Get();
-            var listEmployee = new List<EmployeeDetailDto>();
-            if (result != null)
-            {
-
-                listEmployee = result.Data.Select(x => (EmployeeDetailDto)x).ToList();
-            }
-
-            return View(listEmployee);
-        }*/
-
         public async Task<IActionResult> Index()
         {
             return View();
@@ -39,6 +26,11 @@ namespace CLIENT.Controllers
         public async Task<JsonResult> GetEmployeeData()
         {
             var result = await repository.GetDetailIdle();
+            var listEmployee = new List<EmployeeDetailDto>();
+            if (result != null)
+            {
+                listEmployee = result.Data.Select(x => (EmployeeDetailDto)x).ToList();
+            }
             return Json(new { data = result.Data });
         }
 
@@ -78,5 +70,26 @@ namespace CLIENT.Controllers
             });
         }
 
+        [HttpPut("updateIdle")]
+        public async Task<JsonResult> UpdateIdle(UpdateIdleDto employeeDto)
+        {
+            var response = await repository.UpdateIdle(employeeDto);
+
+            if (response != null)
+            {
+                if (response.Code == 200)
+                {
+                    return Json(new { data = response.Data });
+                }
+                else
+                {
+                    return Json(new { error = response.Message });
+                }
+            }
+            else
+            {
+                return Json(new { error = "An error occurred while updating the employee." });
+            }
+        }
     }
 }
