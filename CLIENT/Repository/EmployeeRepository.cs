@@ -63,5 +63,20 @@ namespace CLIENT.Repository
             }
         }
 
+        public async Task<ResponseOKHandler<IEnumerable<ClientDetailDto>>> GetDetailClient()
+        {
+            // Ganti request ke endpoint yang sesuai
+            var requestUrl = "allClient-details";
+
+            using (var response = await httpClient.GetAsync(request + requestUrl))
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                var entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<IEnumerable<ClientDetailDto>>>(apiResponse);
+                return entityVM;
+            }
+        }
+
+
+
     }
 }

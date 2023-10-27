@@ -12,5 +12,8 @@ namespace CLIENT.Contract
         Task<ResponseOKHandler<Employee>> RegisterIdle(RegisterIdleDto registrationDto);
 
         Task<ResponseOKHandler<UpdateIdleDto>> UpdateIdle(UpdateIdleDto employeeDto);
+
+        Task<ResponseOKHandler<IEnumerable<ClientDetailDto>>> GetDetailClient();
+
     }
 }

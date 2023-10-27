@@ -1,4 +1,6 @@
-﻿namespace API.DTOs.Employees
+﻿using API.Models;
+
+namespace API.DTOs.Employees
 {
     public class ClientDetailDto
     {
@@ -12,5 +14,41 @@
         public string NameCompany { get; set; }
         public string Address { get; set; }
         public string RoleName { get; set; }
+
+
+
+        public static explicit operator ClientDetailDto(Employee employee)
+        {
+            return new ClientDetailDto
+            {
+                /*Guid = employee.Guid,*/
+                FullName = employee.FirstName + " " + employee.LastName,
+                Gender = employee.Gender.ToString(),
+                StatusEmployee = employee.StatusEmployee.ToString(),
+                Email = employee.Email,
+                PhoneNumber = employee.PhoneNumber,
+            };
+        }
+
+        public static explicit operator ClientDetailDto(Account account)
+        {
+            return new ClientDetailDto
+            {
+                StatusAccount = account.Status.ToString(),
+            };
+        }
+
+        public static explicit operator ClientDetailDto(Company company)
+        {
+            return new ClientDetailDto
+            {
+
+                NameCompany = company.Name,
+                Address = company.Address,
+            };
+        }
+
+
+
     }
 }

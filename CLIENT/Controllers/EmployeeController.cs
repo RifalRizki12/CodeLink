@@ -91,5 +91,19 @@ namespace CLIENT.Controllers
                 return Json(new { error = "An error occurred while updating the employee." });
             }
         }
+
+        public async Task<IActionResult> GetClient()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetClientData()
+        {
+            var result = await repository.GetDetailClient();
+            return Json(new { data = result.Data });
+        }
+
+
     }
 }

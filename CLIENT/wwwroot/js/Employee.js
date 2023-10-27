@@ -144,3 +144,69 @@
     });
 
 });
+
+
+
+$(document).ready(function () {
+    $('#tableClient').DataTable({
+        ajax: {
+            url: '/Employee/GetClientData',
+            type: 'GET',
+            dataType: 'json',
+            dataSrc: 'data',
+
+        },
+        columns: [
+            {
+                data: null,
+                render: function (data, type, row, meta) {
+                    return meta.row + 1;
+                }
+            },
+            { data: 'fullName' },
+            { data: 'gender' },
+            { data: 'email' },
+            { data: 'statusAccount' },
+            { data: 'phoneNumber' },
+            { data: 'statusEmployee' },
+            { data: 'nameCompany' },
+            { data: 'address' },
+            {
+                data: null,
+                render: function (data, type, row, meta) {
+                    return `<button type="button" onclick="PreUpdateForm('${data.guid}')" class="btn btn-primary mr-3 rounded" >Approve</button>`;
+                }
+            },
+        ]
+    });
+});
+
+/*
+// Tambahkan event handler untuk tombol "Approve"
+$('#tableClient').on('click', '.approve-button', function () {
+    var guid = $(this).data('guid');
+    approveAccount(guid);
+});
+
+// Trigger event click pada tombol "Approve" secara otomatis
+$('.approve-button').trigger('click');
+});
+
+// Fungsi untuk mengirim permintaan ke server dan mengubah statusAccount menjadi 1
+function approveAccount(guid) {
+    $.ajax({
+        url: '/Employee/ApproveAccount', // Ganti dengan URL yang sesuai di sisi server
+        type: 'POST', // Atau metode yang sesuai
+        data: { guid: guid }, // Kirim data yang diperlukan, misalnya guid akun
+        success: function (response) {
+            // Permintaan berhasil, mungkin Anda ingin melakukan sesuatu setelah berhasil
+        },
+        error: function () {
+            // Handle kesalahan jika ada
+        }
+    });
+}
+*/
+
+
+
