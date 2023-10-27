@@ -14,6 +14,10 @@ namespace CLIENT.Contract
         Task<ResponseOKHandler<UpdateIdleDto>> UpdateIdle(UpdateIdleDto employeeDto);
 
         Task<ResponseOKHandler<IEnumerable<ClientDetailDto>>> GetDetailClient();
+       
+        Task<ResponseOKHandler<IEnumerable<ClientDetailDto>>> GuidClient(Guid guid);
+
+
 
     }
 }

@@ -279,6 +279,7 @@ namespace API.Controllers
                                      join r in role on acc.RoleGuid equals r.Guid
                                      select new ClientDetailDto
                                      {
+                                         Guid = emp.Guid,
                                          FullName = $"{emp.FirstName} {emp.LastName}",
                                          Gender = emp.Gender.ToString(),
                                          Email = emp.Email,

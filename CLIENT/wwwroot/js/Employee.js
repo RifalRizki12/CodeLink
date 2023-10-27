@@ -14,7 +14,7 @@
                     return meta.row + 1;
                 }
             },
-            { data: 'fullName'},
+            { data: 'fullName' },
             {
                 data: "gender",
                 render: function (data) {
@@ -49,7 +49,7 @@
     // Tambahkan event listener untuk tombol "Edit"
     $(document).on("click", ".edit-button", function () {
         var employeeGuid = $(this).data("guid");
-        
+
         $.ajax({
             url: '/Employee/GetEmployee/' + employeeGuid,
             type: 'GET',
@@ -154,7 +154,6 @@ $(document).ready(function () {
             type: 'GET',
             dataType: 'json',
             dataSrc: 'data',
-
         },
         columns: [
             {
@@ -174,39 +173,52 @@ $(document).ready(function () {
             {
                 data: null,
                 render: function (data, type, row, meta) {
-                    return `<button type="button" onclick="PreUpdateForm('${data.guid}')" class="btn btn-primary mr-3 rounded" >Approve</button>`;
+                    // Tambahkan atribut 'data-guid' untuk menyimpan GUID
+                    return `<button type="button" class="btn btn-primary mr-3 rounded approve-button" data-guid="${data.guid}">Approve</button>`;
                 }
             },
         ]
     });
+
+    // Tambahkan event handler untuk tombol "Approve"
+    $('#tableClient').on('click', '.approve-button', function () {
+        var guid = $(this).data('guid');
+        approveAccount(guid);
+    });
 });
 
-/*
-// Tambahkan event handler untuk tombol "Approve"
-$('#tableClient').on('click', '.approve-button', function () {
-    var guid = $(this).data('guid');
-    approveAccount(guid);
-});
-
-// Trigger event click pada tombol "Approve" secara otomatis
-$('.approve-button').trigger('click');
-});
-
-// Fungsi untuk mengirim permintaan ke server dan mengubah statusAccount menjadi 1
 function approveAccount(guid) {
+    
+    statusAccount = "approve";
     $.ajax({
-        url: '/Employee/ApproveAccount', // Ganti dengan URL yang sesuai di sisi server
-        type: 'POST', // Atau metode yang sesuai
-        data: { guid: guid }, // Kirim data yang diperlukan, misalnya guid akun
+        url: '/Employee/updateClient',
+        type: 'PUT',
+        data: JSON.stringify(employee),
+        contentType: 'application/json',
         success: function (response) {
-            // Permintaan berhasil, mungkin Anda ingin melakukan sesuatu setelah berhasil
+            // Tampilkan notifikasi sukses dengan SweetAlert2
+            Swal.fire({
+                icon: 'success',
+                title: 'Pembaruan berhasil',
+                text: 'Status akun klien telah diubah menjadi "approve".'
+            }).then(function () {
+                // Handle tindakan selanjutnya jika diperlukan
+            });
         },
         error: function () {
-            // Handle kesalahan jika ada
+            // Tampilkan notifikasi kesalahan dengan SweetAlert2
+            Swal.fire({
+                icon: 'error',
+                title: 'Pembaruan gagal',
+                text: 'Terjadi kesalahan saat mencoba mengubah status akun klien.'
+            });
         }
     });
-}
-*/
+
+};
+
+
+
 
 
 
