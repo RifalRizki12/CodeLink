@@ -4,6 +4,8 @@ using API.Utilities.Handler;
 using CLIENT.Contract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol.Core.Types;
+using System.Collections.Generic;
 using System.Net;
 
 namespace CLIENT.Controllers
@@ -92,10 +94,37 @@ namespace CLIENT.Controllers
             }
         }
 
+
+
+
+        [HttpPut("updateClient")]
+        public async Task<JsonResult> UpdateClient(UpdateClientDto updateDto)
+        {
+            var response = await repository.UpdateClient(updateDto);
+
+            if (response != null)
+            {
+                if (response.Code == 200)
+                {
+                    return Json(new { data = response.Data });
+                }
+                else
+                {
+                    return Json(new { error = response.Message });
+                }
+            }
+            else
+            {
+                return Json(new { error = "An error occurred while updating the employee." });
+            }
+        }
+
+
         public async Task<IActionResult> GetClient()
         {
             return View();
         }
+
 
         [HttpGet]
         public async Task<JsonResult> GetClientData()
@@ -104,6 +133,55 @@ namespace CLIENT.Controllers
             return Json(new { data = result.Data });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid guid)
+        {
+            var result = await repository.Get(guid);
+            var employee = new EmployeeDto();
+            if (result.Data?.Guid is null)
+            {
+                return View(employee);
+            }
+            return View(result.Data);
+        }
 
+
+
+
+        [HttpPost]
+
+        public async Task<IActionResult> Edit(UpdateClientDto clientDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await repository.Put(clientDto.AccountGuid, clientDto);
+                if (result != null)
+                {
+                    if (result.Code == 200) // Perubahan berhasil
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else if (result.Code == 409) // Konflik, misalnya ada entitas dengan ID yang sama
+                    {
+                        ModelState.AddModelError(string.Empty, result.Message);
+                        return View();
+                    }
+                    else
+                    {
+                        // Handle status kode lain sesuai kebutuhan Anda
+                        // Contoh:
+                        ModelState.AddModelError(string.Empty, "Terjadi kesalahan saat menyimpan perubahan.");
+                        return View();
+                    }
+                }
+                else
+                {
+                    // Handle ketika result adalah null, misalnya ada kesalahan saat melakukan permintaan HTTP
+                    ModelState.AddModelError(string.Empty, "Terjadi kesalahan saat menyimpan perubahan.");
+                    return View();
+                }
+            }
+            return View();
+        }
     }
 }

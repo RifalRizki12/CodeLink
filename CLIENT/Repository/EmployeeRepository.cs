@@ -76,7 +76,24 @@ namespace CLIENT.Repository
             }
         }
 
+        public async Task<ResponseOKHandler<UpdateClientDto>> UpdateClient(UpdateClientDto clientDto)
+        {
+            string requestUrl = "updateIdle"; // Sesuaikan dengan URL endpoint yang benar
+            var content = new StringContent(JsonConvert.SerializeObject(clientDto), Encoding.UTF8, "application/json");
 
-
+            using (var response = await httpClient.PutAsync(request + requestUrl, content))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var apiResponse = await response.Content.ReadAsStringAsync();
+                    var entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<UpdateClientDto>>(apiResponse);
+                    return entityVM;
+                }
+                else
+                {
+                    throw new HttpRequestException($"HTTP error: {response.StatusCode}");
+                }
+            }
+        }
     }
 }
