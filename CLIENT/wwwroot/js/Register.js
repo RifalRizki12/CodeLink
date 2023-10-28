@@ -7,11 +7,11 @@
         // Tambahkan data teks ke formData
         formData.append('firstName', $('#firstNameInput').val());
         formData.append('lastName', $('#lastNameInput').val());
-        formData.append('gender', $('#genderInput').val());
+        formData.append('gender', parseInt($('#genderInput').val()));
         formData.append('phoneNumber', $('#phoneNumberInput').val());
         formData.append('email', $('#emailInput').val());
-        formData.append('grade', $('#gradeInput').val());
-        formData.append('statusEmployee', $('#statusEmployeeInput').val());
+        formData.append('grade', parseInt($('#gradeInput').val()));
+        formData.append('statusEmployee', parseInt($('#statusEmployeeInput').val()));
         formData.append('password', $('#passwordInput').val());
         formData.append('confirmPassword', $('#confirmPasswordInput').val());
 
@@ -22,13 +22,20 @@
         formData.append('cvFile', cvFile);
 
         // Tambahkan skills (diasumsikan sebagai array string)
-
         var skills = $('#skillsInput').val();
-        if (skills) {
-            skills.forEach(skill => {
-                formData.append('skills', skill);
+        if (typeof skills === 'string') {
+            skills.split(',').forEach((skill, index) => {
+                formData.append('skills[' + index + ']', skill.trim());
             });
+        } else if (Array.isArray(skills)) {
+            skills.forEach((skill, index) => {
+                formData.append('skills[' + index + ']', skill.trim());
+            });
+        } else {
+            console.error('Skills harus berupa string atau array');
         }
+
+
 
         // Kirim data dengan metode AJAX ke server
         $.ajax({

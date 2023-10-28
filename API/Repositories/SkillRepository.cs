@@ -12,5 +12,10 @@ namespace API.Repositories
         {
             return _context.Skills.Where(s => s.CvGuid == cvGuid).ToList();
         }
+        public void Add(Skill skill)
+        {
+            _context.Skills.Add(skill);
+            _context.SaveChanges();
+        }
     }
 }
