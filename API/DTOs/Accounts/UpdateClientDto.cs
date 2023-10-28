@@ -19,6 +19,8 @@ namespace API.DTOs.Accounts
         public string AddressCompany { get; set; }
         public string Description { get; set; }
         public string Password { get; set; }
+        public StatusLevel Status { get; set; }
+
         public string ConfirmPassword { get; set; }
 
         // Konversi dari UpdateClientDto ke entitas yang relevan
@@ -27,6 +29,7 @@ namespace API.DTOs.Accounts
         {
             return new Account
             {
+                Status = dto.Status,
                 Password = dto.ConfirmPassword, 
             };
         }

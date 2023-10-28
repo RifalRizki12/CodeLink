@@ -9,6 +9,6 @@ namespace API.Contracts
 
         public int GetCountIdle();
         public int GetCaountHired();
-
+        Employee GetByGuid(Guid? employeeGuid);
     }
 }

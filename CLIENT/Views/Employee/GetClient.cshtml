@@ -42,6 +42,72 @@
         </table>
     </div>
 </div>
+
+<div class="modal fade" id="modalUpdateClient" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalCenterTitle">Edit Employee</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editEmployeeForm" class="needs-validation" novalidate>
+                    <input type="hidden" id="editEmployeeId" required>
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label for="editFirstName" class="form-label">First Name</label>
+                            <input type="text" id="editFirstName" class="form-control" placeholder="Enter First Name" required />
+                        </div>
+                        <div class="col mb-3">
+                            <label for="editLastName" class="form-label">Last Name</label>
+                            <input type="text" id="editLastName" class="form-control" placeholder="Enter Last Name" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label class="form-label" for="editGender">Gender</label>
+                            <select id="editGender" class="form-select">
+                                <option value="0">Male</option>
+                                <option value="1">Female</option>
+                            </select>
+                        </div>
+                        <div class="col mb-3">
+                            <label for="editEmail" class="form-label">Email</label>
+                            <input type="email" id="editEmail" class="form-control" placeholder="Enter Email" required />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label class="form-label" for="editPhoneNumber">Phone Number</label>
+                            <input type="text" id="editPhoneNumber" class="form-control" placeholder="Enter Phone Number" required />
+                        </div>
+                        <div class="col mb-3">
+                            <label class="form-label" for="editGrade">Grade</label>
+                            <input type="text" id="editGrade" class="form-control" placeholder="Enter Grade" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label class="form-label" for="editStatusEmployee">Status Employee</label>
+                            <input type="text" id="editStatusEmployee" class="form-control" placeholder="Enter Status Employee" />
+                        </div>
+                        <div class="col mb-3">
+                            <label class="form-label" for="editCompanyGuid">Company Guid</label>
+                            <input type="text" id="editCompanyGuid" class="form-control" placeholder="Enter Company Guid" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" id="editEmployeeButton" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 <!--/ Complex Headers -->
 @section scripts {
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>

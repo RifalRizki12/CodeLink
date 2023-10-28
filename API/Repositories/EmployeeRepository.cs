@@ -42,6 +42,9 @@ namespace API.Repositories
             return hiredEmployeeCount;
         }
 
-        
+        public Employee GetByGuid(Guid? employeeGuid)
+        {
+            return _context.Employees.FirstOrDefault(e => e.Guid == employeeGuid);
+        }
     }
 }

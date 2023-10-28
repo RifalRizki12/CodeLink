@@ -14,7 +14,7 @@
                     return meta.row + 1;
                 }
             },
-            { data: 'fullName' },
+            { data: 'fullName'},
             {
                 data: "gender",
                 render: function (data) {
@@ -49,7 +49,7 @@
     // Tambahkan event listener untuk tombol "Edit"
     $(document).on("click", ".edit-button", function () {
         var employeeGuid = $(this).data("guid");
-
+        
         $.ajax({
             url: '/Employee/GetEmployee/' + employeeGuid,
             type: 'GET',
@@ -143,11 +143,8 @@
         });
     });
 
-});
 
-
-
-$(document).ready(function () {
+    //Action Account (Approve, non aktif, reject)
     $('#tableClient').DataTable({
         ajax: {
             url: '/Employee/GetClientData',
@@ -173,40 +170,50 @@ $(document).ready(function () {
             {
                 data: null,
                 render: function (data, type, row, meta) {
-                    // Tambahkan atribut 'data-guid' untuk menyimpan GUID
-                    return `<button type="button" class="btn btn-primary mr-3 rounded approve-button" data-guid="${data.guid}">Approve</button>`;
+
+                    return `<div class="btn-group">
+                                <button type="button" class="btn btn-danger waves-effect waves-light">Actions</button>
+                                <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split waves-effect waves-light" data-bs-toggle="dropdown" aria-expanded="false">
+                                  <span class="visually-hidden">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu" style="">
+                                     <a class="dropdown-item" data-guid="${data.employeeGuid}" data-status="1">Approve</a>
+                                     <a class="dropdown-item" data-guid="${data.employeeGuid}" data-status="2">Reject</a>
+                                     <a class="dropdown-item" data-guid="${data.employeeGuid}" data-status="4">Non Active</a>
+                                </ul>
+                              </div>
+                             <button type="button" class="btn btn-primary" data-guid="${data.companyGuid}" data-bs-toggle="modal" data-bs-target="#modalUpdateClient">Update</button> `;
                 }
             },
         ]
     });
-
+    $('.dropdown-toggle').dropdown();
     // Tambahkan event handler untuk tombol "Approve"
-    $('#tableClient').on('click', '.approve-button', function () {
+    $('#tableClient').on('click', '.dropdown-item', function () {
         var guid = $(this).data('guid');
-        approveAccount(guid);
+        var status = $(this).data('status');
+        updateAccountStatus(guid, status);
     });
+
 });
 
-function approveAccount(guid) {
-    
-    statusAccount = "approve";
+
+function updateClientDetails(companyGuid) {
     $.ajax({
-        url: '/Employee/updateClient',
+        url: '/Account/UpdateClient/' + companyGuid,
         type: 'PUT',
-        data: JSON.stringify(employee),
+        data: JSON.stringify(dataToUpdate),
         contentType: 'application/json',
+
         success: function (response) {
-            // Tampilkan notifikasi sukses dengan SweetAlert2
+            $('#tableClient').DataTable().ajax.reload();
             Swal.fire({
                 icon: 'success',
                 title: 'Pembaruan berhasil',
-                text: 'Status akun klien telah diubah menjadi "approve".'
-            }).then(function () {
-                // Handle tindakan selanjutnya jika diperlukan
+                text: 'Status akun klien telah diubah.'
             });
         },
         error: function () {
-            // Tampilkan notifikasi kesalahan dengan SweetAlert2
             Swal.fire({
                 icon: 'error',
                 title: 'Pembaruan gagal',
@@ -214,8 +221,66 @@ function approveAccount(guid) {
             });
         }
     });
+}
+        
 
-};
+function updateAccountStatus(guid, status) {
+    $.ajax({
+        url: '/Account/GuidClient/' + guid,
+        type: 'GET',
+        dataType: 'json',
+        dataSrc: 'data',
+        success: function (data) {
+            if (data) {
+                var dataToUpdate = {
+                    guid: data.guid,
+                    expiredTime: data.expiredTime,
+                    isUsed: data.isUsed,
+                    otp: data.otp,
+                    password: data.password,
+                    roleGuid: data.roleGuid,
+                    status: status,
+                };
+
+                $.ajax({
+                    url: '/Account/UpdateClient/' + guid,
+                    type: 'PUT',
+                    data: JSON.stringify(dataToUpdate),
+                    contentType: 'application/json',
+
+                    success: function (response) {
+                        $('#tableClient').DataTable().ajax.reload();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Pembaruan berhasil',
+                            text: 'Status akun klien telah diubah.'
+                        });
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Pembaruan gagal',
+                            text: 'Terjadi kesalahan saat mencoba mengubah status akun klien.'
+                        });
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Data tidak ditemukan',
+                    text: 'Data akun klien tidak ditemukan.'
+                });
+            }
+        },
+        error: function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Kesalahan',
+                text: 'Terjadi kesalahan saat mencoba mendapatkan data akun klien.'
+            });
+        }
+    });
+}
 
 
 
