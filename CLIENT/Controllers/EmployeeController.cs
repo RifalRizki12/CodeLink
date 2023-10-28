@@ -46,6 +46,8 @@ namespace CLIENT.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Anda sekarang bisa mengakses registrationDto.Skills sebagai List<string>
+                var skills = registrationDto.Skills;
                 var result = await repository.RegisterIdle(registrationDto);
 
                 if (result.Status == "OK")
@@ -65,6 +67,41 @@ namespace CLIENT.Controllers
                 return Json(new { success = false, message = "Data tidak valid." });
             }
         }
+
+        public async Task<IActionResult> RegisterClient()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RegisterClient([FromForm] RegisterClientDto registrationCDto)
+        {
+            if (ModelState.IsValid)
+            {
+                // Anda sekarang bisa mengakses registrationDto.Skills sebagai List<string>
+
+                var result = await repository.RegisterClient(registrationCDto);
+
+                if (result.Status == "OK")
+                {
+                    // Pendaftaran berhasil
+                    return Json(new { success = true, redirectTo = Url.Action("Index", "Employee") });
+                }
+                else
+                {
+                    // Pendaftaran gagal atau ada kesalahan
+                    return Json(new { success = false, message = "Pendaftaran gagal atau terjadi kesalahan." });
+                }
+            }
+            else
+            {
+                // Data yang dikirim tidak valid
+                return Json(new { success = false, message = "Data tidak valid." });
+            }
+        }
+
+
+
 
         [HttpPut("updateIdle")]
         public async Task<JsonResult> UpdateIdle(UpdateIdleDto employeeDto)

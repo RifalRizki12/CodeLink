@@ -511,6 +511,27 @@ namespace API.Controllers
 
                         _curriculumVitaeRepository.Update(existingCv);
 
+
+                        List<Skill> existingSkills = _skillRepository.GetSkillsByCvGuid(existingCv.Guid);
+                        foreach (var skill in existingSkills)
+                        {
+                            _skillRepository.Delete(skill);
+                        }
+
+                        // Kemudian tambahkan skill baru dari updateDto
+                        if (updateDto.Skills != null && updateDto.Skills.Any())
+                        {
+                            foreach (var skillName in updateDto.Skills)
+                            {
+                                var newSkill = new Skill
+                                {
+                                    Name = skillName,
+                                    CvGuid = existingCv.Guid
+                                };
+                                _skillRepository.Add(newSkill);
+                            }
+                        }
+
                         transactionScope.Complete();
 
                         return Ok(new ResponseOKHandler<string>("Update successful!"));

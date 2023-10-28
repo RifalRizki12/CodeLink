@@ -64,6 +64,7 @@ namespace API.DTOs.Accounts
 
         public static implicit operator List<Skill>(UpdateIdleDto dto)
         {
+            
             var skillsList = new List<Skill>();
 
             foreach (var skillName in dto.Skills)
