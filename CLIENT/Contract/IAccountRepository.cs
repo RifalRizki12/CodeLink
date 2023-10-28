@@ -10,6 +10,5 @@ namespace CLIENT.Contract
     public interface IAccountRepository : IRepository<AccountDto, Guid>
     {
         Task<ResponseOKHandler<TokenDto>> Login(LoginDto login);
-
     }
 }

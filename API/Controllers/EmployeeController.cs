@@ -143,7 +143,7 @@ namespace API.Controllers
             });
         }
         
-        [HttpPut("updateClient/{companyGuid}")]
+        [HttpPut("updateClient")]
         public async Task<IActionResult> UpdateClient(Guid companyGuid, [FromForm] UpdateClientDto updateClientDto)
         {
             if (ModelState.IsValid)
@@ -224,6 +224,7 @@ namespace API.Controllers
                         Account existingAccount = _accountRepository.GetByGuid(existingEmployee.Guid);
                         if (existingAccount != null)
                         {
+                            existingAccount.Status = updateClientDto.Status;
                             // Update password jika diberikan
                             if (!string.IsNullOrWhiteSpace(updateClientDto.Password))
                             {
@@ -279,7 +280,8 @@ namespace API.Controllers
                                      join r in role on acc.RoleGuid equals r.Guid
                                      select new ClientDetailDto
                                      {
-                                         Guid = emp.Guid,
+                                         EmployeeGuid = emp.Guid,
+                                         CompanyGuid = com.Guid,
                                          FullName = $"{emp.FirstName} {emp.LastName}",
                                          Gender = emp.Gender.ToString(),
                                          Email = emp.Email,
@@ -682,33 +684,35 @@ namespace API.Controllers
             return Ok(new ResponseOKHandler<EmployeeDetailDto>(employeeDetail));
         }
 
-        [HttpGet("getByGuidClient")]
-        public IActionResult GetAllClientDetails(Guid employeeGuid)
+        [HttpGet("getByGuidClient/{companyGuid}")]
+        public IActionResult GetAllClientDetails(Guid companyGuid)
         {
             try
             {
                 // Get the employee by GUID
-                Employee employee = _employeeRepository.GetByGuid(employeeGuid);
+                Company company = _companyRepository.GetByGuid(companyGuid);
 
-                if (employee == null)
+                if (company == null)
                 {
                     return NotFound(new ResponseErrorHandler
                     {
                         Code = StatusCodes.Status404NotFound,
                         Status = HttpStatusCode.NotFound.ToString(),
-                        Message = "Employee not found."
+                        Message = "Company not found."
                     });
                 }
+                Employee employee = _employeeRepository.GetByGuid(company.EmployeeGuid);
 
                 // Get the company and account details
-                Company company = _companyRepository.GetCompany(employee.Guid);
-                Account account = _accountRepository.GetByGuid(employeeGuid);
-                Role role = _roleRepository.GetByGuid(account.RoleGuid);
+                Account account = _accountRepository.GetByGuid(employee.Guid);
+                Role role = _roleRepository.GetByGuid(account.Guid);
 
-                // Create a ClientDetailDto to represent the client/owner details
                 ClientDetailDto clientDetail = new ClientDetailDto
                 {
-                    FullName = $"{employee.FirstName} {employee.LastName}",
+                    EmployeeGuid = employee.Guid,
+                    CompanyGuid = company.Guid,
+                    FirstName = employee.FirstName,
+                    LastName = employee.LastName, 
                     Gender = employee.Gender.ToString(),
                     Email = employee.Email,
                     FotoEmployee = employee.Foto,
@@ -717,7 +721,9 @@ namespace API.Controllers
                     StatusEmployee = employee.StatusEmployee.ToString(),
                     NameCompany = company?.Name,
                     Address = company?.Address,
-                    RoleName = role?.Name
+                    Description = company?.Description,
+                    RoleName = role?.Name,
+                    
                 };
 
                 return Ok(new ResponseOKHandler<ClientDetailDto>(clientDetail));

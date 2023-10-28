@@ -4,7 +4,9 @@ namespace API.DTOs.Employees
 {
     public class ClientDetailDto
     {
-        public Guid Guid { get; set; }
+        public Guid EmployeeGuid { get; set; }
+        public string FirstName { get; set; }
+        public string? LastName { get; set; }
         public string FullName { get; set; }
         public string Gender { get; set; }
         public string FotoEmployee { get; set; }
@@ -15,6 +17,8 @@ namespace API.DTOs.Employees
         public string NameCompany { get; set; }
         public string Address { get; set; }
         public string RoleName { get; set; }
+        public Guid CompanyGuid { get; set; }
+        public string? Description { get; set; }
 
 
 
@@ -22,8 +26,10 @@ namespace API.DTOs.Employees
         {
             return new ClientDetailDto
             {
-                Guid = employee.Guid,
+                EmployeeGuid = employee.Guid,
                 FullName = employee.FirstName + " " + employee.LastName,
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
                 Gender = employee.Gender.ToString(),
                 StatusEmployee = employee.StatusEmployee.ToString(),
                 Email = employee.Email,
@@ -44,12 +50,21 @@ namespace API.DTOs.Employees
             return new ClientDetailDto
             {
 
+                CompanyGuid = company.Guid,
                 NameCompany = company.Name,
                 Address = company.Address,
+                Description = company.Description
             };
         }
 
+        public static explicit operator ClientDetailDto(Role role)
+        {
+            return new ClientDetailDto
+            {
 
+                RoleName = role.Name,
+            };
+        }
 
     }
 }

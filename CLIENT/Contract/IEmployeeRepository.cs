@@ -2,6 +2,7 @@
 using API.DTOs.Employees;
 using API.Models;
 using API.Utilities.Handler;
+using System.Security.Cryptography;
 
 namespace CLIENT.Contract
 {
@@ -15,7 +16,7 @@ namespace CLIENT.Contract
 
         Task<ResponseOKHandler<IEnumerable<ClientDetailDto>>> GetDetailClient();
        
-        Task<ResponseOKHandler<IEnumerable<ClientDetailDto>>> GuidClient(Guid guid);
+        Task<ResponseOKHandler<UpdateClientDto>> UpdateClient(Guid guid, UpdateClientDto clientDto);
 
 
 

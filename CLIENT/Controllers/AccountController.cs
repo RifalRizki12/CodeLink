@@ -6,6 +6,7 @@ using CLIENT.Contract;
 using CLIENT.Models;
 using CLIENT.Repository;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol.Core.Types;
 using System.Diagnostics;
 using System.Net;
 
@@ -51,6 +52,47 @@ namespace CLIENT.Controllers
         {
             HttpContext.Session.Clear();
             return RedirectToAction("Login", "Auth");
+        }
+
+
+        [HttpGet("Account/GuidClient/{guid}")]
+        public async Task<JsonResult> GuidClient(Guid guid)
+        {
+            var result = await _accountRepository.Get(guid);
+            var employee = new AccountDto();
+
+            if (result.Data?.Guid != null)
+            {
+                return Json(result.Data);
+            }
+            else
+            {
+                return Json(employee);
+            }
+        }
+
+
+
+        [HttpPut("Account/UpdateClient/{guid}")]
+        public async Task<JsonResult> UpdateClient(Guid guid, [FromBody] AccountDto accountDto)
+        {
+            var response = await _accountRepository.Put(guid, accountDto);
+
+            if (response != null)
+            {
+                if (response.Code == 200)
+                {
+                    return Json(new { data = response.Data });
+                }
+                else
+                {
+                    return Json(new { error = response.Message });
+                }
+            }
+            else
+            {
+                return Json(new { error = "An error occurred while updating the employee." });
+            }
         }
 
     }

@@ -76,9 +76,9 @@ namespace CLIENT.Repository
             }
         }
 
-        public async Task<ResponseOKHandler<UpdateClientDto>> UpdateClient(UpdateClientDto clientDto)
+        public async Task<ResponseOKHandler<UpdateClientDto>> UpdateClient(Guid guid, UpdateClientDto clientDto)
         {
-            string requestUrl = "updateIdle"; // Sesuaikan dengan URL endpoint yang benar
+            string requestUrl = "updateClient"; // Sesuaikan dengan URL endpoint yang benar
             var content = new StringContent(JsonConvert.SerializeObject(clientDto), Encoding.UTF8, "application/json");
 
             using (var response = await httpClient.PutAsync(request + requestUrl, content))
@@ -94,20 +94,8 @@ namespace CLIENT.Repository
                     throw new HttpRequestException($"HTTP error: {response.StatusCode}");
                 }
             }
+
         }
 
-        public async Task<ResponseOKHandler<IEnumerable<ClientDetailDto>>> GuidClient(Guid guid)
-        {
-            string requestUrl = "getByGuid"; // Sesuaikan dengan URL endpoint yang benar
-            ResponseOKHandler<ClientDetailDto> entity = null;
-
-            using (var response = await httpClient.GetAsync(requestUrl + guid))
-            {
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                var entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<IEnumerable<ClientDetailDto>>>(apiResponse);
-
-                return entityVM;
-            }
-        }
     }
 }
