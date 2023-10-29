@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "RegisterClient";
     Layout = "/Views/Shared/Admin/_Layout.cshtml";
 }
 
@@ -9,63 +9,50 @@
     <form id="registerForm">
         <div class="form-group">
             <label for="firstNameInput">First Name:</label>
-            <input type="text" class="form-control" id="firstNameInput" required />
+            <input type="text" class="form-control" id="firstNameInput" name="FirstName" required />
         </div>
         <div class="form-group">
             <label for="lastNameInput">Last Name:</label>
-            <input type="text" class="form-control" id="lastNameInput" required />
+            <input type="text" class="form-control" id="lastNameInput" name="LastName" />
         </div>
         <div class="form-group">
             <label for="genderInput">Gender:</label>
-@*             <input type="text" class="form-control" id="genderInput" /> *@
-            <select class="form-control" id="genderInput" required>
+            <select class="form-control" id="genderInput" name="Gender" required>
                 <option value="0">Male</option>
                 <option value="1">Female</option>
             </select>
         </div>
         <div class="form-group">
             <label for="phoneNumberInput">Phone Number:</label>
-            <input type="tel" class="form-control" id="phoneNumberInput" required />
+            <input type="tel" class="form-control" id="phoneNumberInput" name="PhoneNumber" required />
         </div>
         <div class="form-group">
             <label for="emailInput">Email:</label>
-            <input type="email" class="form-control" id="emailInput" required />
+            <input type="email" class="form-control" id="emailInput" name="Email" required />
         </div>
         <div class="form-group">
-            <label for="gradeInput">Grade:</label>
-            <select class="form-control" id="gradeInput" required>
-                <option value="0">A</option>
-                <option value="1">B</option>
-            </select>
+            <label for="nameCompanyInput">Name Company:</label>
+            <input type="text" class="form-control" id="nameCompanyInput" name="NameCompany" required />
         </div>
         <div class="form-group">
-            <label for="statusEmployeeInput">Status Employee:</label>
-            <select class="form-control" id="statusEmployeeInput" required>
-                <option value="0">Idle</option>
-                <option value="1">Owner</option>
-                <option value="2">OnSite</option>
-            </select>
+            <label for="addressCompanyInput">Address Company:</label>
+            <input type="text" class="form-control" id="addressCompanyInput" name="AddressCompany" required />
+        </div>
+        <div class="form-group">
+            <label for="descriptionInput">Description:</label>
+            <textarea class="form-control" id="descriptionInput" name="Description" rows="3" required></textarea>
         </div>
         <div class="form-group">
             <label for="passwordInput">Password:</label>
-            <input type="password" class="form-control" id="passwordInput" required />
+            <input type="password" class="form-control" id="passwordInput" name="Password" required />
         </div>
         <div class="form-group">
             <label for="confirmPasswordInput">Confirm Password:</label>
-            <input type="password" class="form-control" id="confirmPasswordInput" required />
+            <input type="password" class="form-control" id="confirmPasswordInput" name="ConfirmPassword" required />
         </div>
-        <div class="form-group">
-            <label for="skillsInput">Skills:</label>
-            <select id="skillsInput" class="form-control" multiple="multiple"></select>
-        </div>
-
         <div class="form-group">
             <label for="profilePictureInput">Profile Picture:</label>
-            <input type="file" class="form-control-file" id="profilePictureInput" />
-        </div>
-        <div class="form-group">
-            <label for="cvInput">CV:</label>
-            <input type="file" class="form-control-file" id="cvInput" />
+            <input type="file" class="form-control-file" id="profilePictureInput" name="ProfilePictureFile" />
         </div>
         <button type="submit" class="btn btn-primary">Register</button>
     </form>
@@ -94,17 +81,6 @@
 
 
 @section scripts {
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script src="~/js/Register.js" asp-append-version="true"></script>
-    <script>
-        $(document).ready(function () {
-            $('#skillsInput').select2({
-                tags: true,
-                tokenSeparators: [',', ' '],
-                placeholder: "Select or add skills"
-            });
-        });
-    </script>
 }

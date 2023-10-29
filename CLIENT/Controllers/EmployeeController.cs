@@ -4,6 +4,7 @@ using API.Utilities.Handler;
 using CLIENT.Contract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using NuGet.Protocol.Core.Types;
 using System.Collections.Generic;
 using System.Net;
@@ -164,12 +165,26 @@ namespace CLIENT.Controllers
             return Json(new { data = result.Data });
         }
 
+        public IActionResult GetChart()
+        {
+            // Pastikan Anda memasukkan data yang diperlukan ke dalam View jika diperlukan
+            return View();
+        }
 
+        [HttpGet]
+        public async Task<JsonResult> GetChartData()
+        {
+            try
+            {
+                var result = await repository.GetDetailChart();
+                return Json(new { data = result.Data });
+            }
+            catch (Exception ex)
+            {
+                // Tangani eksepsi yang mungkin terjadi
+                return Json(new { error = ex.Message });
+            }
+        }
 
-
-
-
-
-  
     }
 }

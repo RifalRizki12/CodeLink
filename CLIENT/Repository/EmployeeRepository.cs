@@ -32,6 +32,30 @@ namespace CLIENT.Repository
             }
         }
 
+        public async Task<ResponseOKHandler<ChartDto>> GetDetailChart()
+        {
+            // Ganti requestUrl dengan endpoint yang sesuai
+            var requestUrl = "GetChart";
+
+            using (var response = await httpClient.GetAsync(request + requestUrl))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    var entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<ChartDto>>(apiResponse);
+
+                    return entityVM;
+                }
+                else
+                {
+                    // Handle error response
+                    throw new HttpRequestException($"Request to {requestUrl} failed with status code {response.StatusCode}");
+                }
+            }
+        }
+
+
+
         public async Task<ResponseOKHandler<UpdateIdleDto>> UpdateIdle(UpdateIdleDto employeeDto)
         {
             string requestUrl = "updateIdle"; // Sesuaikan dengan URL endpoint yang benar
@@ -140,19 +164,12 @@ namespace CLIENT.Repository
                                 var fileContent = new StreamContent(file.OpenReadStream())
                                 {
                                     Headers =
-                        {
-                            ContentLength = file.Length,
-                            ContentType = new MediaTypeHeaderValue(file.ContentType)
-                        }
+                            {
+                                ContentLength = file.Length,
+                                ContentType = new MediaTypeHeaderValue(file.ContentType)
+                            }
                                 };
                                 content.Add(fileContent, prop.Name, file.FileName);
-                            }
-                            else if (prop.Name == "Skills" && value is List<string> skills)
-                            {
-                                for (int i = 0; i < skills.Count; i++)
-                                {
-                                    content.Add(new StringContent(skills[i]), $"Skills[{i}]");
-                                }
                             }
                             else
                             {
@@ -195,6 +212,7 @@ namespace CLIENT.Repository
                 throw; // Consider whether re-throwing the exception is the best course of action
             }
         }
+
 
 
 
