@@ -143,7 +143,7 @@ namespace API.Controllers
             });
         }
         
-        [HttpPut("updateClient")]
+        [HttpPut("updateClient/{companyGuid}")]
         public async Task<IActionResult> UpdateClient(Guid companyGuid, [FromForm] UpdateClientDto updateClientDto)
         {
             if (ModelState.IsValid)
@@ -220,19 +220,7 @@ namespace API.Controllers
                         // Update karyawan dalam repository
                         _employeeRepository.Update(existingEmployee);
 
-                        // Ambil akun berdasarkan Guid karyawan
-                        Account existingAccount = _accountRepository.GetByGuid(existingEmployee.Guid);
-                        if (existingAccount != null)
-                        {
-                            existingAccount.Status = updateClientDto.Status;
-                            // Update password jika diberikan
-                            if (!string.IsNullOrWhiteSpace(updateClientDto.Password))
-                            {
-                                existingAccount.Password = HashHandler.HashPassword(updateClientDto.Password);
-                                _accountRepository.Update(existingAccount);
-                            }
-                        }
-
+                     
                         transactionScope.Complete();
                         return Ok(new ResponseOKHandler<string>("Update successful!"));
                     }

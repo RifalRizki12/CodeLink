@@ -100,9 +100,6 @@ namespace CLIENT.Controllers
             }
         }
 
-
-
-
         [HttpPut("updateIdle")]
         public async Task<JsonResult> UpdateIdle(UpdateIdleDto employeeDto)
         {
@@ -125,17 +122,46 @@ namespace CLIENT.Controllers
             }
         }
 
+        public async Task<IActionResult> GetClient()
+        {
+            return View();
+        }
 
 
+        [HttpGet]
+        public async Task<JsonResult> GetClientData()
+        {
+            var result = await repository.GetDetailClient();
+            return Json(new { data = result.Data });
+        }
 
-        [HttpPut]
-        public async Task<JsonResult> UpdateClient(Guid guid, UpdateClientDto updateDto)
+
+        [HttpGet("Employee/GetGuidClient/{guid}")]
+        public async Task<JsonResult> GetGuidClient(Guid guid)
+        {
+            var result = await repository.GetGuidClient(guid);
+            var employee = new AccountDto();
+
+            if (result.Data?.CompanyGuid != null)
+            {
+                return Json(result.Data);
+            }
+            else
+            {
+                return Json(employee);
+            }
+        }
+
+        [HttpPut("Employee/UpdateClient/{guid}")]
+        public async Task<JsonResult> UpdateClient(Guid guid, [FromForm] UpdateClientDto updateDto)
         {
             var response = await repository.UpdateClient(guid, updateDto);
 
+            /* return Json(new { data = response.Data });*/
+
             if (response != null)
             {
-                if (response.Code == 200)
+                if (response.Status == "OK")
                 {
                     return Json(new { data = response.Data });
                 }
@@ -151,25 +177,11 @@ namespace CLIENT.Controllers
         }
 
 
-        public async Task<IActionResult> GetClient()
-        {
-            return View();
-        }
-
-
-        [HttpGet]
-        public async Task<JsonResult> GetClientData()
-        {
-            var result = await repository.GetDetailClient();
-            return Json(new { data = result.Data });
-        }
 
 
 
 
 
 
-
-  
     }
 }
