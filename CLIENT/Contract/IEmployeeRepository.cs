@@ -21,6 +21,8 @@ namespace CLIENT.Contract
 
 
         Task<ResponseOKHandler<UpdateClientDto>> UpdateClient(Guid guid, UpdateClientDto clientDto);
+        Task<ResponseOKHandler<ClientDetailDto>> GetGuidClient(Guid guid);
+
 
 
 
