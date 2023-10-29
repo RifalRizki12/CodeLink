@@ -260,22 +260,26 @@
         updateAccountStatus(guid, status);
     });
      //Action tombol Update
+    var updateGuid; // Variabel untuk menyimpan GUID yang akan digunakan saat menyimpan data
+
+    // Event handler untuk tombol "Update"
     $('#tableClient').on('click', '.btn-update', function () {
-        var guid = $(this).data('guid');
-        console.log('Company Guid update', guid)
-        getClientByGuid(guid);
+        updateGuid = $(this).data('guid'); // Mengambil GUID dari tombol "Update" yang diklik
+        console.log('Company Guid update', updateGuid);
+        getClientByGuid(updateGuid);
     });
-  
+
+    // Event handler untuk tombol "Save"
     $('#updateClientForm').submit(function (event) {
-        event.preventDefault(); // Ini untuk mencegah pengiriman form yang otomatis
+        event.preventDefault();
 
-        var guid = $(this).data('guid');
-        console.log("ini tombol save:", guid);
+        console.log("ini tombol save:", updateGuid);
 
-        updateClientDetails(guid); // Menggunakan guid yang telah diambil dari tombol "Save"
+        updateClientDetails(updateGuid); // Menggunakan GUID yang telah disimpan saat tombol "Save" diklik
     });
 
-});
+
+
 
 function updateAccountStatus(guid, status) {
     $.ajax({
@@ -342,6 +346,8 @@ var companyGuid;
 
 
 function getClientByGuid(guid) {
+    console.log("ini parameter guid " + guid);
+
     $.ajax({
         url: '/Employee/GetGuidClient/' + guid,
         type: 'GET',
@@ -382,21 +388,48 @@ function getClientByGuid(guid) {
 function updateClientDetails(guid) {
     console.log("ini di parameter update ", guid)
     // Inisialisasi objek data
-    var dataToUpdate = new FormData();
-    dataToUpdate.append('companyGuid', companyGuid);
-    dataToUpdate.append('employeeGuid', employeeGuid);
-    dataToUpdate.append('firstName', $('#editFirstName').val());
-    dataToUpdate.append('lastName', $('#editLastName').val());
-    dataToUpdate.append('phoneNumber', $('#editPhoneNumber').val());
-    dataToUpdate.append('email', $('#editEmail').val());
-    dataToUpdate.append('gender', ($('#editGender').val() === 'Male') ? 1 : 0); // Ubah Male ke 1, Female ke 0
-    dataToUpdate.append('nameCompany', $('#companyName').val());
-    dataToUpdate.append('addressCompany', $('#addressCompany').val());
+    // Ambil semua data dari elemen-elemen formulir
+    var companyGuid = $('#companyGuid').val();
+    var employeeGuid = $('#employeeGuid').val();
+    var firstName = $('#editFirstName').val();
+    var lastName = $('#editLastName').val();
+    var phoneNumber = $('#editPhoneNumber').val();
+    var email = $('#editEmail').val();
+    var gender = ($('#editGender').val() === 'Male') ? 1 : 0;
+    var nameCompany = $('#companyName').val();
+    var addressCompany = $('#addressCompany').val();
+    var description = $('#description').val();
 
-    dataToUpdate.append('description', $('#description').val());
+    // Ambil file gambar dari input
+    var profilePictureInput = document.getElementById('profilePictureInput');
+    var profilePictureFile = profilePictureInput.files[0];
 
-    var profilePictureFile = $('#profilePictureInput').prop('files')[0];
-    dataToUpdate.append('profilePictureFile', profilePictureFile);
+    // Cek apakah semua data yang dibutuhkan sudah diisi
+    if (!companyGuid || !employeeGuid || !firstName || !lastName || !phoneNumber || !email || !gender || !nameCompany || !addressCompany || !description) {
+        alert('Harap isi semua data yang diperlukan sebelum mengirimkan permintaan.');
+    }
+    else {
+        // Buat objek FormData dan tambahkan data
+        var dataToUpdate = new FormData();
+        dataToUpdate.append('companyGuid', companyGuid);
+        dataToUpdate.append('employeeGuid', employeeGuid);
+        dataToUpdate.append('firstName', firstName);
+        dataToUpdate.append('lastName', lastName);
+        dataToUpdate.append('phoneNumber', phoneNumber);
+        dataToUpdate.append('email', email);
+        dataToUpdate.append('gender', gender);
+        dataToUpdate.append('nameCompany', nameCompany);
+        dataToUpdate.append('addressCompany', addressCompany);
+        dataToUpdate.append('description', description);
+
+        // Cek apakah gambar sudah dipilih sebelum menambahkannya ke FormData
+        if (profilePictureFile) {
+            dataToUpdate.append('profilePictureFile', profilePictureFile);
+        } else {
+            alert('Harap pilih gambar profil sebelum mengirimkan permintaan.');
+        }
+    }
+     
 
     console.log(dataToUpdate);
 
@@ -424,4 +457,6 @@ function updateClientDetails(guid) {
             });
         }
     });
-}
+    }
+
+});
