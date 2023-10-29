@@ -380,20 +380,6 @@ function updateClientDetails(guid) {
     console.log("ini di parameter update ", guid)
     // Inisialisasi objek data
     var dataToUpdate = new FormData();
-/*    dataToUpdate.companyGuid = companyGuid;
-    dataToUpdate.employeeGuid = employeeGuid;
-    dataToUpdate.FirstName = $("#editFirstName").val();
-    dataToUpdate.LastName = $("#editLastName").val();
-    dataToUpdate.phoneNumber = $("#editPhoneNumber").val();
-    dataToUpdate.email = $("#editEmail").val();
-    dataToUpdate.gender = $("#editGender").val();
-    dataToUpdate.nameCompany = $("#companyName").val();
-    dataToUpdate.address = $("#addressCompany").val();
-    dataToUpdate.description = $("#description").val();
-    var profilePictureFile = $('#profilePictureInput').prop('files')[0];
-    dataToUpdate.profilePictureFile = profilePictureFile;
-
-*/
     dataToUpdate.append('companyGuid', companyGuid);
     dataToUpdate.append('employeeGuid', employeeGuid);
     dataToUpdate.append('firstName', $('#editFirstName').val());
@@ -412,7 +398,7 @@ function updateClientDetails(guid) {
     console.log(dataToUpdate);
 
     $.ajax({
-        url: '/Employee/UpdateClient/' + guid,
+        url: '/Employee/updateClient/' + guid,
         type: 'PUT',
         data: dataToUpdate,
         contentType: false,

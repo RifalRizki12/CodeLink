@@ -129,29 +129,6 @@ namespace CLIENT.Controllers
 
 
 
-        [HttpPut]
-        public async Task<JsonResult> UpdateClient(Guid guid, UpdateClientDto updateDto)
-        {
-            var response = await repository.UpdateClient(guid, updateDto);
-
-            if (response != null)
-            {
-                if (response.Code == 200)
-                {
-                    return Json(new { data = response.Data });
-                }
-                else
-                {
-                    return Json(new { error = response.Message });
-                }
-            }
-            else
-            {
-                return Json(new { error = "An error occurred while updating the employee." });
-            }
-        }
-
-
         public async Task<IActionResult> GetClient()
         {
             return View();
@@ -163,6 +140,55 @@ namespace CLIENT.Controllers
         {
             var result = await repository.GetDetailClient();
             return Json(new { data = result.Data });
+        }
+
+
+        [HttpGet("Employee/GetGuidClient/{guid}")]
+        public async Task<JsonResult> GetGuidClient(Guid guid)
+        {
+            var result = await repository.GetGuidClient(guid);
+            var employee = new AccountDto();
+
+            if (result.Data?.CompanyGuid != null)
+            {
+                return Json(result.Data);
+            }
+            else
+            {
+                return Json(employee);
+            }
+        }
+
+        [HttpPut("Employee/updateClient/{guid}")]
+        public async Task<JsonResult> updateClient(Guid guid, [FromForm] UpdateClientDto updateDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await repository.UpdateClient(guid, updateDto);
+
+                /* return Json(new { data = response.Data });*/
+
+                if (response != null)
+                {
+                    if (response.Status == "OK")
+                    {
+                        return Json(new { data = response.Data });
+                    }
+                    else
+                    {
+                        return Json(new { error = response.Message });
+                    }
+                }
+                else
+                {
+                    return Json(new { error = "An error occurred while updating the employee." });
+                }
+            }
+            else
+            {
+                // Data yang dikirim tidak valid
+                return Json(new { success = false, message = "Data tidak valid." });
+            }
         }
 
         public IActionResult GetChart()
