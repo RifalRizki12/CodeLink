@@ -10,14 +10,14 @@ namespace API.DTOs.Accounts
         public Guid EmployeeGuid { get; set; }
         public Guid CompanyGuid { get; set; }
         public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
         public GenderLevel Gender { get; set; }
-        public IFormFile ProfilePictureFile { get; set; }
+        public IFormFile? ProfilePictureFile { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string NameCompany { get; set; }
         public string AddressCompany { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public string Password { get; set; }
         public StatusLevel Status { get; set; }
 

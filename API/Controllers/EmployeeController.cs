@@ -47,24 +47,24 @@ namespace API.Controllers
             var idleEmp = _employeeRepository.GetCountIdle();
             var company = _companyRepository.GetCaount();
 
-            if ((hireEmp == null) && (idleEmp == null)  && (company == null))
+            if (hireEmp == null && idleEmp == null && company == null)
             {
                 return NotFound(new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
-                    Message = "Employee with Specific GUID Not Found"
+                    Message = "Data not found"
                 });
             }
-            var chartData = new
+
+            var chartData = new ChartDto
             {
                 HiredEmployeesCount = hireEmp,
                 IdleEmployeesCount = idleEmp,
                 CompaniesCount = company
             };
 
-            return Ok(new ResponseOKHandler<object>(chartData));
-
+            return Ok(new ResponseOKHandler<ChartDto>(chartData));
         }
 
         [HttpPost("registerClient")]
