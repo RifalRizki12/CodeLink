@@ -266,10 +266,13 @@
         getClientByGuid(guid);
     });
   
-    $('#updateClientForm').on('click', '.btn-save', function () {
+    $('#updateClientForm').submit(function (event) {
+        event.preventDefault(); // Ini untuk mencegah pengiriman form yang otomatis
+
         var guid = $(this).data('guid');
         console.log("ini tombol save:", guid);
-        updateClientDetails(companyGuid);
+
+        updateClientDetails(guid); // Menggunakan guid yang telah diambil dari tombol "Save"
     });
 
 });
