@@ -39,20 +39,19 @@
                 data: null,
                 render: function (data, type, row) {
                     return `<button type="button" class="btn btn-primary edit-button" data-guid="${data.guid}" data-bs-toggle="modal" data-bs-target="#modalEditEmployee">Update</button>
-                            <button type="button" class="btn btn-danger delete-button" data-guid="${row.guid}">-</button>`;
+                            <button type="button" class="btn btn-danger delete-button" data-guid="${data.guid}">-</button>`;
                 }
             },
         ]
     });
     $('.dt-buttons').removeClass('dt-buttons');
 
-
     $('#tableEmployee').on('click', '.edit-button', function () {
-        var updateGuid
-        updateGuid = $(this).data('guid'); // Mengambil GUID dari tombol "Update" yang diklik
-        console.log('Employee Guid update', updateGuid);
-        getIdleByGuid(updateGuid);
+        var guid = $(this).data('guid'); // Mengambil GUID dari tombol "Update" yang diklik
+        console.log('Employee Guid update', guid);
+        getIdleByGuid(guid);
     });
+   
     // Tambahkan event listener untuk tombol "Edit"
 
     function getIdleByGuid(guid) {
@@ -62,6 +61,7 @@
             dataType: 'json',
             dataSrc: 'data',
             success: function (data) {
+                console.log(data);
                 if (data) {
                     var imageUrl1 = 'https://localhost:7051/Utilities/File/ProfilePictures/' + data.foto;
                     var imageUrl2 = 'https://localhost:7051/Utilities/File/Cv/' + data.cv;
@@ -352,7 +352,12 @@
     var updateGuid; //menyimpan guid di tombol save
     var employeeGuid;
     var companyGuid;
-
+    //  //Action tombol Update
+    $('#tableClient').on('click', '.btn-update', function () {
+        updateGuid = $(this).data('guid'); // Mengambil GUID dari tombol "Update" yang diklik
+        console.log('Company Guid update', updateGuid);
+        getClientByGuid(updateGuid);
+    });
     //function untuk menampilkan data client di form modal update
     function getClientByGuid(guid) {
         console.log("ini parameter guid " + guid);
@@ -388,18 +393,13 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Kesalahan',
-                    text: 'Terjadi kesalahan saat mencoba mendapatkan data akun klien.'
+                    text: 'Terjadi kesalahan saat mencoba mendapatkan data klien.'
                 });
             }
         });
     }
 
-    //  //Action tombol Update
-    $('#tableClient').on('click', '.btn-update', function () {
-        updateGuid = $(this).data('guid'); // Mengambil GUID dari tombol "Update" yang diklik
-        console.log('Company Guid update', updateGuid);
-        getClientByGuid(updateGuid);
-    });
+
 
     // Event handler untuk tombol "Save"
     $('#updateClientForm').submit(function (event) {

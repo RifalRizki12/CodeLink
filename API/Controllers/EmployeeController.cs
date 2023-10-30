@@ -589,6 +589,7 @@ namespace API.Controllers
                                   where emp.StatusEmployee == StatusEmployee.idle
                                   select new EmployeeDetailDto
                                   {
+                                      Guid = emp.Guid,
                                       FullName = emp.FirstName + " " + emp.LastName,
                                       Gender = emp.Gender.ToString(),
                                       Email = emp.Email,
@@ -639,7 +640,7 @@ namespace API.Controllers
             // Initialize an EmployeeDetailDto with default values
             EmployeeDetailDto employeeDetail = new EmployeeDetailDto
             {
-                Guid = employeeGuid,
+                Guid = employee.Guid,
                 FirstName = employee.FirstName,
                 LastName = employee.LastName,
                 FullName = employee.FirstName + " " + employee.LastName,

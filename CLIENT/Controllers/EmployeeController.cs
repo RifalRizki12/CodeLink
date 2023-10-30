@@ -147,7 +147,7 @@ namespace CLIENT.Controllers
         public async Task<JsonResult> GetGuidClient(Guid guid)
         {
             var result = await repository.GetGuidClient(guid);
-            var employee = new AccountDto();
+            var employee = new ClientDetailDto();
 
             if (result.Data?.CompanyGuid != null)
             {
@@ -159,11 +159,11 @@ namespace CLIENT.Controllers
             }
         }
 
-        [HttpGet("Employee/GetGuidClient/{guid}")]
+        [HttpGet("Employee/GetGuidEmployee/{guid}")]
         public async Task<JsonResult> GetGuidEmployee(Guid guid)
         {
             var result = await repository.GetGuidEmployee(guid);
-            var employee = new AccountDto();
+            var employee = new EmployeeDetailDto();
 
             if (result.Data?.Guid != null)
             {
