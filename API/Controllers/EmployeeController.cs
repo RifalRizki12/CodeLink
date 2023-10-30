@@ -142,9 +142,9 @@ namespace API.Controllers
                 Message = "Invalid request data."
             });
         }
-        
-        [HttpPut("updateClient/{companyGuid}")]
-        public async Task<IActionResult> UpdateClient(Guid companyGuid, [FromForm] UpdateClientDto updateClientDto)
+
+        [HttpPut("updateClient")]
+        public async Task<IActionResult> UpdateClient([FromForm] UpdateClientDto updateClientDto)
         {
             if (ModelState.IsValid)
             {
@@ -153,7 +153,7 @@ namespace API.Controllers
                     try
                     {
                         // Ambil perusahaan berdasarkan GUID yang diberikan
-                        Company existingCompany = _companyRepository.GetByGuid(companyGuid);
+                        Company existingCompany = _companyRepository.GetByGuid(updateClientDto.CompanyGuid);
                         if (existingCompany == null)
                         {
                             return NotFound(new ResponseErrorHandler
@@ -186,6 +186,7 @@ namespace API.Controllers
                         existingEmployee.FirstName = updateClientDto.FirstName;
                         existingEmployee.LastName = updateClientDto.LastName;
                         existingEmployee.Email = updateClientDto.Email;
+                        existingEmployee.Gender = updateClientDto.Gender;
                         existingEmployee.PhoneNumber = updateClientDto.PhoneNumber;
 
                         // Handle update gambar profil jika ada
@@ -391,7 +392,7 @@ namespace API.Controllers
             });
         }
 
-        [HttpPut("updateIdle")]
+        [HttpPut("UpdateIdle")]
         public async Task<IActionResult> UpdateIdle([FromForm] UpdateIdleDto updateDto)
         {
             if (ModelState.IsValid)
