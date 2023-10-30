@@ -14,6 +14,7 @@ public class InterviewDto //untuk update interview yang biasa
     public Guid OwnerGuid { get; set; }
     public string Interviewer { get; set; }
     public string Idle {  get; set; }
+    public string StatusIdle {  get; set; }
 
     public static explicit operator InterviewDto(Employee employee)
     {
@@ -21,6 +22,8 @@ public class InterviewDto //untuk update interview yang biasa
         {
             Interviewer = employee.FirstName + " " + employee.LastName,
             Idle = employee.FirstName + " " + employee.LastName,
+            StatusIdle = employee.StatusEmployee.ToString(),
+
         };
     }
 

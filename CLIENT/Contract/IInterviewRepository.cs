@@ -8,8 +8,10 @@ using CLIENT.Models;
 
 namespace CLIENT.Contract
 {
-    public interface IInterviewRepository : IRepository<InterviewDto, Guid>
+    public interface IInterviewRepository : IRepository<Interview, Guid>
     {
-       
+        Task<ResponseOKHandler<IEnumerable<InterviewDto>>> GetAllInterview();
     }
 }
+
+

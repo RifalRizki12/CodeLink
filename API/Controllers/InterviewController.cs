@@ -274,14 +274,10 @@ public class InterviewController : ControllerBase
                                 Interviewer = empInterviewer.FirstName + " " + empInterviewer.LastName,
                                 Idle = empIdle.FirstName + " " + empIdle.LastName,
                                 OwnerGuid = interview.OwnerGuid,
+                                StatusIdle = empIdle.StatusEmployee.ToString(),    
                             }).ToList();
 
         return Ok(new ResponseOKHandler<IEnumerable<InterviewDto>>(interviewDto));
-/*        // Mengonversi hasil query ke objek DTO (Data Transfer Object) menggunakan Select.
-        var data = interviews.Select(x => (InterviewDto)x);
-
-        // Mengembalikan data yang ditemukan dalam respons OK.
-        return Ok(new ResponseOKHandler<IEnumerable<InterviewDto>>(data));*/
     }
 
     // GET api/interview/{guid}
