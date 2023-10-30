@@ -159,6 +159,22 @@ namespace CLIENT.Controllers
             }
         }
 
+        [HttpGet("Employee/GetGuidClient/{guid}")]
+        public async Task<JsonResult> GetGuidEmployee(Guid guid)
+        {
+            var result = await repository.GetGuidEmployee(guid);
+            var employee = new AccountDto();
+
+            if (result.Data?.Guid != null)
+            {
+                return Json(result.Data);
+            }
+            else
+            {
+                return Json(employee);
+            }
+        }
+
         [HttpPut]
         public async Task<IActionResult> UpdateClient([FromForm] UpdateClientDto updateDto)
         {

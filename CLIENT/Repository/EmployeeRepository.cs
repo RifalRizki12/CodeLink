@@ -373,5 +373,19 @@ namespace CLIENT.Repository
             }
             return entity;
         }
+
+        public async Task<ResponseOKHandler<EmployeeDetailDto>> GetGuidEmployee(Guid guid)
+        {
+            string requestUrl = "getByGuidIdle/"; // Sesuaikan dengan URL endpoint yang benar
+
+            ResponseOKHandler<EmployeeDetailDto> entity = null;
+
+            using (var response = await httpClient.GetAsync(request + requestUrl + guid))
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                entity = JsonConvert.DeserializeObject<ResponseOKHandler<EmployeeDetailDto>>(apiResponse);
+            }
+            return entity;
+        }
     }
 }

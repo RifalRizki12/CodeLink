@@ -31,7 +31,7 @@ namespace API.Utilities.Validations.Accounts
             RuleFor(e => e.StatusEmployee)
                 .NotNull();
 
-            RuleFor(e => e.Password)
+           /* RuleFor(e => e.Password)
                 .NotEmpty()         // Properti tidak boleh kosong
                 .MinimumLength(8) // Panjang minimal 8 karakter
                 .MaximumLength(16) //max lenght karakter 16
@@ -43,7 +43,7 @@ namespace API.Utilities.Validations.Accounts
                 .MinimumLength(8) // Panjang minimal 8 karakter
                 .MaximumLength(16) //max lenght karakter 16
                 .Matches(@"[A-Z]+") //harus berisi min 1 huruf kapital
-                .Matches(@"[a-z]+");//harus berisi min 1 huruf lowercase
+                .Matches(@"[a-z]+");//harus berisi min 1 huruf lowercase*/
 
         }
     }

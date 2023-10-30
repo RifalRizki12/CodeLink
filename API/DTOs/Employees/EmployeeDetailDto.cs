@@ -6,7 +6,10 @@ namespace API.DTOs.Employees
 {
     public class EmployeeDetailDto
     {
+        public Guid Guid { get; set; }
         public string FullName { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string Gender { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
@@ -27,7 +30,10 @@ namespace API.DTOs.Employees
         {
             return new EmployeeDetailDto
             {
+                Guid = employee.Guid,
                 FullName = employee.FirstName + " " + employee.LastName,
+                FirstName = employee.FirstName,
+                LastName= employee.LastName,
                 Gender = employee.Gender.ToString(),
                 Email = employee.Email,
                 PhoneNumber = employee.PhoneNumber,

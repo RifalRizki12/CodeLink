@@ -38,7 +38,7 @@
             {
                 data: null,
                 render: function (data, type, row) {
-                    return `<button type="button" class="btn btn-warning edit-button" data-guid="${row.guid}">Edit</button>
+                    return `<button type="button" class="btn btn-primary edit-button" data-guid="${data.guid}" data-bs-toggle="modal" data-bs-target="#modalEditEmployee">Update</button>
                             <button type="button" class="btn btn-danger delete-button" data-guid="${row.guid}">-</button>`;
                 }
             },
@@ -46,30 +46,46 @@
     });
     $('.dt-buttons').removeClass('dt-buttons');
 
-    // Tambahkan event listener untuk tombol "Edit"
-    $(document).on("click", ".edit-button", function () {
-        var employeeGuid = $(this).data("guid");
 
+    $('#tableEmployee').on('click', '.edit-button', function () {
+        var updateGuid
+        updateGuid = $(this).data('guid'); // Mengambil GUID dari tombol "Update" yang diklik
+        console.log('Employee Guid update', updateGuid);
+        getIdleByGuid(updateGuid);
+    });
+    // Tambahkan event listener untuk tombol "Edit"
+
+    function getIdleByGuid(guid) {
         $.ajax({
-            url: '/Employee/GetEmployee/' + employeeGuid,
+            url: '/Employee/GetGuidEmployee/' + guid,
             type: 'GET',
+            dataType: 'json',
+            dataSrc: 'data',
             success: function (data) {
                 if (data) {
-                    // Isi formulir modal dengan data karyawan yang diambil dari API
-                    $('#editEmployeeId').val(data.guid);
+                    var imageUrl1 = 'https://localhost:7051/Utilities/File/ProfilePictures/' + data.foto;
+                    var imageUrl2 = 'https://localhost:7051/Utilities/File/Cv/' + data.cv;
+                    // Isi formulir modal dengan data karyawan
+                    guid = data.updateGuid;
                     $('#editFirstName').val(data.firstName);
-                    $('#editLastName').val(data.lastName);
-                    $('#editGender').val(data.gender);
-                    $('#editEmail').val(data.email);
-                    $('#editPhoneNumber').val(data.phoneNumber);
-                    $('#editGrade').val(data.grade);
-                    $('#editStatusEmployee').val(data.statusEmployee);
-                    $('#editCompanyGuid').val(data.companyGuid);
+                    $("#editLastName").val(data.lastName);
+                    $("#editGender").val(data.gender);
+                    $("#editEmail").val(data.email);
+                    $("#editPhoneNumber").val(data.phoneNumber);
+                    $("#editGrade").val(data.grade);
+                    $("#editStatusEmploye").val(data.statusEmploye);
+                    $("#editSkills").val(data.skill);
 
-                    // Tampilkan modal edit
-                    $('#modalEditEmployee').modal('show');
+                    // Tampilkan nama file gambar sebelum diupdate
+                    $("#profilePictureInput").text(data.foto);
+
+                    $("#editProfilePicPreview").attr("src", imageUrl1);
+
+                    $("#cvInput").text(data.cv);
+
+                    $("#cvFile").attr("src", imageUrl2);
+
                 } else {
-                    console.error('Error: Unable to retrieve employee data.');
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -77,8 +93,7 @@
                     });
                 }
             },
-            error: function (xhr) {
-                console.error('Error: AJAX request failed.', xhr);
+            error: function () {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
@@ -86,7 +101,49 @@
                 });
             }
         });
+    }
+
+    // Event handler untuk tombol "Save" pada form edit
+    $('#editEmployeeForm').on('submit', function (event) {
+        event.preventDefault();
+
+        var updatedEmployee = {
+            Guid: $('#editEmployeeId').val(),
+            FirstName: $('#editFirstName').val(),
+            // ... (ambil nilai dari elemen formulir lainnya)
+        };
+
+        // Lakukan permintaan PUT ke API untuk memperbarui data karyawan
+        $.ajax({
+            url: '/Employee/UpdateIdle/' + updateGuid,
+            type: 'PUT',
+            dataType: 'json',
+            data: JSON.stringify(updatedEmployee),
+            contentType: 'application/json',
+            success: function () {
+                $('#modalEditEmployee').modal('hide');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Employee data updated successfully.'
+                });
+                // TODO: Perbarui tampilan (misalnya, tabel karyawan) di sini jika diperlukan
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while updating employee data.'
+                });
+                console.error(xhr.responseText);
+            }
+        });
     });
+
+
+
+
+
 
     $('#createEmployeeForm').on('submit', function (event) {
         event.preventDefault();
@@ -400,19 +457,6 @@
         // Ambil file gambar dari input
         var profilePictureInput = document.getElementById('profilePictureInput');
         var profilePictureFile = profilePictureInput.files[0];
-
-        // Log data untuk debugging
-        console.log('employeeGuid:', employeeGuid);
-        console.log('companyGuid:', companyGuid);
-        console.log('firstName:', firstName);
-        console.log('lastName:', lastName);
-        console.log('phoneNumber:', phoneNumber);
-        console.log('email:', email);
-        console.log('gender:', gender);
-        console.log('nameCompany:', nameCompany);
-        console.log('addressCompany:', addressCompany);
-        console.log('description:', description);
-        console.log('profilePictureInput:', profilePictureFile);
 
         // Buat objek FormData dan tambahkan data
         var dataToUpdate = new FormData();

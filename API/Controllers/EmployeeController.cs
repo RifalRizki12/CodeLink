@@ -616,7 +616,7 @@ namespace API.Controllers
 
         }
 
-        [HttpGet("getByGuidIdle")]
+        [HttpGet("getByGuidIdle/{employeeGuid}")]
         public IActionResult GetEmployeeDetails(Guid employeeGuid)
         {
             // Get the employee by GUID
@@ -639,6 +639,9 @@ namespace API.Controllers
             // Initialize an EmployeeDetailDto with default values
             EmployeeDetailDto employeeDetail = new EmployeeDetailDto
             {
+                Guid = employeeGuid,
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
                 FullName = employee.FirstName + " " + employee.LastName,
                 Gender = employee.Gender.ToString(),
                 Email = employee.Email,
