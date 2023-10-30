@@ -88,9 +88,9 @@
         });
     });
 
+    //MEMBUAT REGISTER IDLE
     $('#createEmployeeForm').on('submit', function (event) {
         event.preventDefault();
-
 
         var formData = new FormData();
 
@@ -123,7 +123,15 @@
                 formData.append('skills[' + index + ']', skill.trim());
             });
         } else {
-            console.error('Skills harus berupa string atau array');
+            Swal.fire({
+                title: 'Format Skill Salah !',
+                icon: 'info',
+                html: 'Skills harus berupa string atau array',
+                showCloseButton: true,
+                focusConfirm: false,
+                confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
+                confirmButtonAriaLabel: 'Thumbs up, great!',
+            });
         }
 
         // Kirim data dengan metode AJAX ke server
@@ -134,9 +142,8 @@
             processData: false,  // penting, jangan proses data
             contentType: false,  // penting, biarkan jQuery mengatur ini
             success: function (response) {
-                // Handle respons sukses atau pesan kesalahan
+                $('#modalCenter').modal('hide');
                 if (response.redirectTo) {
-                    // SweetAlert untuk login berhasil
                     Swal.fire({
                         icon: 'success',
                         title: 'Register Berhasil!',
@@ -144,11 +151,15 @@
                     }).then(function () {
                         window.location.href = response.redirectTo;
                     });
-
                 }
             },
             error: function () {
-                alert('Terjadi kesalahan koneksi.');
+                $('#modalCenter').modal('hide');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Pembaruan gagal',
+                    text: 'Terjadi kesalahan saat register data.'
+                });
             }
         });
     });
@@ -209,7 +220,7 @@
       });*/
 
 
-    //Action Account (Approve, non aktif, reject)
+    //Menampilkan data Client (Update Status client, Update Data Client)
     $('#tableClient').DataTable({
         ajax: {
             url: '/Employee/GetClientData',
@@ -259,10 +270,9 @@
         var status = $(this).data('status');
         updateAccountStatus(guid, status);
     });
-    //Action tombol Update
-    var updateGuid; // Variabel untuk menyimpan GUID yang akan digunakan saat menyimpan data
+   
 
-
+   // function update Account status
     function updateAccountStatus(guid, status) {
         $.ajax({
             url: '/Account/GuidClient/' + guid,
@@ -323,10 +333,12 @@
 
 
     //inisiasi variabel untuk nampung data sebelumnya
-    var employeeGuid;
+
+    var updateGuid; //menyimpan guid di tombol save
+    var employeeGuid; 
     var companyGuid;
 
-
+    //function untuk menampilkan data client di form modal update
     function getClientByGuid(guid) {
         console.log("ini parameter guid " + guid);
 
@@ -367,6 +379,7 @@
         });
     }
 
+    //  //Action tombol Update
     $('#tableClient').on('click', '.btn-update', function () {
         updateGuid = $(this).data('guid'); // Mengambil GUID dari tombol "Update" yang diklik
         console.log('Company Guid update', updateGuid);
@@ -384,6 +397,8 @@
         updateClientDetails(employeeGuid, companyGuid);
     });
 
+
+     // function update data Client
     function updateClientDetails(employeeGuid, companyGuid) {
         console.log("ini di parameter update ");
 
@@ -400,19 +415,6 @@
         // Ambil file gambar dari input
         var profilePictureInput = document.getElementById('profilePictureInput');
         var profilePictureFile = profilePictureInput.files[0];
-
-        // Log data untuk debugging
-        console.log('employeeGuid:', employeeGuid);
-        console.log('companyGuid:', companyGuid);
-        console.log('firstName:', firstName);
-        console.log('lastName:', lastName);
-        console.log('phoneNumber:', phoneNumber);
-        console.log('email:', email);
-        console.log('gender:', gender);
-        console.log('nameCompany:', nameCompany);
-        console.log('addressCompany:', addressCompany);
-        console.log('description:', description);
-        console.log('profilePictureInput:', profilePictureFile);
 
         // Buat objek FormData dan tambahkan data
         var dataToUpdate = new FormData();
@@ -442,19 +444,19 @@
             contentType: false,
             processData: false, // Diperlukan untuk FormData
             success: function (response) {
-                console.log(response);
+                $('#modalUpdateClient').modal('hide');
+                $('#tableClient').DataTable().ajax.reload();
                 Swal.fire({
                     icon: 'success',
                     title: 'Pembaruan berhasil',
-                    text: 'Status akun klien telah diubah.'
+                    text: 'Data client berhasil diperbarui.'
                 });
             },
             error: function (response) {
-                console.log(response);
                 Swal.fire({
                     icon: 'error',
                     title: 'Pembaruan gagal',
-                    text: 'Terjadi kesalahan saat mencoba mengubah status akun klien.'
+                    text: 'Terjadi kesalahan saat mencoba update data client.'
                 });
             }
         });
