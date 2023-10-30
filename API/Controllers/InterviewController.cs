@@ -1,9 +1,11 @@
 ﻿using API.Contracts;
+using API.DTOs.Employees;
 using API.DTOs.Interviews;
 using API.Models;
 using API.Utilities.Enums;
 using API.Utilities.Handler;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Net;
 
 namespace API.Controllers;
@@ -245,10 +247,11 @@ public class InterviewController : ControllerBase
     public IActionResult GetAll()
     {
         // Memanggil metode GetAll dari _interviewRepository untuk mendapatkan semua data Interview.
-        var result = _interviewRepository.GetAll();
+        var interviews = _interviewRepository.GetAll();
+        var employees = _employeeRepository.GetAll();
 
         // Memeriksa apakah hasil query tidak mengandung data.
-        if (!result.Any())
+        if (!interviews.Any())
         {
             // Mengembalikan respons Not Found jika tidak ada data Interview.
             return NotFound(new ResponseErrorHandler
@@ -258,12 +261,27 @@ public class InterviewController : ControllerBase
                 Message = "Data Interview Not Found"
             });
         }
+        // Gabungkan data dari tabel sesuai dengan hubungannya
+        var interviewDto = (from interview in interviews
+                            join empInterviewer in employees on interview.OwnerGuid equals empInterviewer.Guid
+                            join empIdle in employees on interview.EmployeeGuid equals empIdle.Guid
+                            select new InterviewDto
+                            {
+                                Guid = interview.Guid,
+                                EmployeeGuid = interview.EmployeeGuid,
+                                Name = interview.Name,
+                                Date = interview.Date,
+                                Interviewer = empInterviewer.FirstName + " " + empInterviewer.LastName,
+                                Idle = empIdle.FirstName + " " + empIdle.LastName,
+                                OwnerGuid = interview.OwnerGuid,
+                            }).ToList();
 
-        // Mengonversi hasil query ke objek DTO (Data Transfer Object) menggunakan Select.
-        var data = result.Select(x => (InterviewDto)x);
+        return Ok(new ResponseOKHandler<IEnumerable<InterviewDto>>(interviewDto));
+/*        // Mengonversi hasil query ke objek DTO (Data Transfer Object) menggunakan Select.
+        var data = interviews.Select(x => (InterviewDto)x);
 
         // Mengembalikan data yang ditemukan dalam respons OK.
-        return Ok(new ResponseOKHandler<IEnumerable<InterviewDto>>(data));
+        return Ok(new ResponseOKHandler<IEnumerable<InterviewDto>>(data));*/
     }
 
     // GET api/interview/{guid}

@@ -12,6 +12,17 @@ public class InterviewDto //untuk update interview yang biasa
     public DateTime? EndContract { get; set; }
     public Guid EmployeeGuid { get; set; }
     public Guid OwnerGuid { get; set; }
+    public string Interviewer { get; set; }
+    public string Idle {  get; set; }
+
+    public static explicit operator InterviewDto(Employee employee)
+    {
+        return new InterviewDto
+        {
+            Interviewer = employee.FirstName + " " + employee.LastName,
+            Idle = employee.FirstName + " " + employee.LastName,
+        };
+    }
 
     public static explicit operator InterviewDto(Interview interview)
     {
@@ -25,6 +36,7 @@ public class InterviewDto //untuk update interview yang biasa
             StartContract = interview.StartContract,
             EndContract = interview.EndContract,
             EmployeeGuid = interview.EmployeeGuid
+            
         };
     }
 
