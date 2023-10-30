@@ -159,29 +159,24 @@ namespace CLIENT.Controllers
             }
         }
 
-        [HttpPut("Employee/updateClient/{guid}")]
-        public async Task<JsonResult> updateClient(Guid guid, [FromForm] UpdateClientDto updateDto)
+        [HttpPut]
+        public async Task<IActionResult> UpdateClient([FromForm] UpdateClientDto updateDto)
         {
             if (ModelState.IsValid)
             {
-                var response = await repository.UpdateClient(guid, updateDto);
+                // Anda sekarang bisa mengakses updateDto.Skills sebagai List<string>
 
-                /* return Json(new { data = response.Data });*/
+                var result = await repository.UpdateClient(updateDto);
 
-                if (response != null)
+                if (result.Status == "OK")
                 {
-                    if (response.Status == "OK")
-                    {
-                        return Json(new { data = response.Data });
-                    }
-                    else
-                    {
-                        return Json(new { error = response.Message });
-                    }
+                    // Pembaruan berhasil
+                    return Json(new { success = true, redirectTo = Url.Action("Index", "Employee") });
                 }
                 else
                 {
-                    return Json(new { error = "An error occurred while updating the employee." });
+                    // Pembaruan gagal atau ada kesalahan
+                    return Json(new { success = false, message = "Pembaruan gagal atau terjadi kesalahan." });
                 }
             }
             else
@@ -190,6 +185,53 @@ namespace CLIENT.Controllers
                 return Json(new { success = false, message = "Data tidak valid." });
             }
         }
+
+        /*[HttpPut]
+        public async Task<JsonResult> UpdateClient([FromForm] UpdateClientDto updateDto)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    // Ambil Guid langsung dari updateDto
+                    var response = await repository.UpdateClient(updateDto);
+
+                    if (response != null)
+                    {
+                        if (response.Status == "OK")
+                        {
+                            return Json(new { data = response.Data });
+                        }
+                        else
+                        {
+                            // Catat pesan kesalahan dari respons jika perlu
+                            // Log.Error($"Error from repository: {response.Message}");
+                            return Json(new { error = response.Message });
+                        }
+                    }
+                    else
+                    {
+                        // Catat kejadian ini sebagai potensi masalah
+                        // Log.Warn("Repository response was null when updating client.");
+                        return Json(new { error = "Terjadi kesalahan saat memperbarui data karyawan." });
+                    }
+                }
+                else
+                {
+                    // Catat model yang tidak valid jika perlu untuk debugging
+                    // Log.Warn($"Invalid model data received: {JsonConvert.SerializeObject(updateDto)}");
+                    return Json(new { success = false, message = "Data tidak valid." });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Catat eksepsi untuk analisis lebih lanjut
+                // Log.Error($"Exception occurred while updating client: {ex.Message}", ex);
+                return Json(new { error = $"Terjadi eksepsi: {ex.Message}" });
+            }
+        }*/
+
+
 
         public IActionResult GetChart()
         {

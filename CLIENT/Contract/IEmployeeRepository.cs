@@ -20,7 +20,7 @@ namespace CLIENT.Contract
         Task<ResponseOKHandler<ChartDto>> GetDetailChart();
 
 
-        Task<ResponseOKHandler<UpdateClientDto>> UpdateClient(Guid guid, UpdateClientDto clientDto);
+        Task<ResponseOKHandler<Company>> UpdateClient(UpdateClientDto clientDto);
         Task<ResponseOKHandler<ClientDetailDto>> GetGuidClient(Guid guid);
 
 

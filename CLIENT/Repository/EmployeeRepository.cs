@@ -230,7 +230,7 @@ namespace CLIENT.Repository
             }
         }
 
-        public async Task<ResponseOKHandler<UpdateClientDto>> UpdateClient(Guid guid, UpdateClientDto clientDto)
+        public async Task<ResponseOKHandler<Company>> UpdateClient(UpdateClientDto clientDto)
         {
             try
             {
@@ -246,29 +246,27 @@ namespace CLIENT.Repository
                                 var fileContent = new StreamContent(file.OpenReadStream())
                                 {
                                     Headers =
-                    {
-                        ContentLength = file.Length,
-                        ContentType = new MediaTypeHeaderValue(file.ContentType)
-                    }
+                            {
+                                ContentLength = file.Length,
+                                ContentType = new MediaTypeHeaderValue(file.ContentType)
+                            }
                                 };
                                 content.Add(fileContent, prop.Name, file.FileName);
                             }
-
-                        }
-                        else
-                        {
-                            content.Add(new StringContent(value.ToString()), prop.Name);
+                            else
+                            {
+                                content.Add(new StringContent(value.ToString()), prop.Name);
+                            }
                         }
                     }
 
-                    
-                    using (var response = await httpClient.PostAsync($"{request}updateClient/" + guid, content))
+                    using (var response = await httpClient.PutAsync($"{request}updateClient", content))
                     {
                         string apiResponse = await response.Content.ReadAsStringAsync();
 
                         if (response.IsSuccessStatusCode)
                         {
-                            var entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<UpdateClientDto>>(apiResponse);
+                            var entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<Company>>(apiResponse);
                             return entityVM;
                         }
                         else
@@ -287,18 +285,80 @@ namespace CLIENT.Repository
                             return null;
                         }
                     }
-
                 }
             }
-
             catch (Exception ex)
             {
                 // Log the exception
                 Console.WriteLine(ex);
                 throw; // Consider whether re-throwing the exception is the best course of action
             }
-
         }
+        /* public async Task<ResponseOKHandler<Company>> UpdateClient(UpdateClientDto clientDto)
+         {
+             try
+             {
+                 using (var content = new MultipartFormDataContent())
+                 {
+                     foreach (var prop in clientDto.GetType().GetProperties())
+                     {
+                         var value = prop.GetValue(clientDto);
+                         if (value != null)
+                         {
+                             if (value is IFormFile file)
+                             {
+                                 var fileContent = new StreamContent(file.OpenReadStream())
+                                 {
+                                     Headers =
+                             {
+                                 ContentLength = file.Length,
+                                 ContentType = new MediaTypeHeaderValue(file.ContentType)
+                             }
+                                 };
+                                 content.Add(fileContent, prop.Name, file.FileName);
+                             }
+                             else
+                             {
+                                 content.Add(new StringContent(value.ToString()), prop.Name);
+                             }
+                         }
+                     }
+
+                     using (var response = await httpClient.PostAsync($"{request}UpdateClient/", content))
+                     {
+                         string apiResponse = await response.Content.ReadAsStringAsync();
+
+                         if (response.IsSuccessStatusCode)
+                         {
+                             var entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<Company>>(apiResponse);
+                             return entityVM;
+                         }
+                         else
+                         {
+                             // Handle non-success status codes as needed
+                             if (response.StatusCode == HttpStatusCode.UnsupportedMediaType)
+                             {
+                                 Console.WriteLine("415 Unsupported Media Type - Ensure the server accepts JSON.");
+                             }
+                             else
+                             {
+                                 Console.WriteLine($"Request failed with status code {response.StatusCode}: {response.ReasonPhrase}");
+                             }
+                             Console.WriteLine($"Response Content: {apiResponse}");
+                             // You might want to return a specific response or throw an exception here
+                             return null;
+                         }
+                     }
+                 }
+             }
+             catch (Exception ex)
+             {
+                 // Log the exception
+                 Console.WriteLine(ex);
+                 throw; // Consider whether re-throwing the exception is the best course of action
+             }
+         }*/
+
 
         public async Task<ResponseOKHandler<ClientDetailDto>> GetGuidClient(Guid guid)
         {

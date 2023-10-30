@@ -14,7 +14,7 @@
                     return meta.row + 1;
                 }
             },
-            { data: 'fullName'},
+            { data: 'fullName' },
             {
                 data: "gender",
                 render: function (data) {
@@ -49,7 +49,7 @@
     // Tambahkan event listener untuk tombol "Edit"
     $(document).on("click", ".edit-button", function () {
         var employeeGuid = $(this).data("guid");
-        
+
         $.ajax({
             url: '/Employee/GetEmployee/' + employeeGuid,
             type: 'GET',
@@ -153,60 +153,60 @@
         });
     });
     // Tambahkan event listener untuk tombol "Save"
-  /*  $('#editEmployeeButton').on('click', function () {
-        var updatedEmployee = {
-            Guid: $('#editEmployeeId').val(),
-            FirstName: $('#editFirstName').val(),
-            LastName: $('#editLastName').val(),
-            Gender: $('#editGender').val(),
-            Email: $('#editEmail').val(),
-            PhoneNumber: $('#editPhoneNumber').val(),
-            Grade: $('#editGrade').val(),
-            StatusEmployee: $('#editStatusEmployee').val(),
-            CompanyGuid: $('#editCompanyGuid').val()
-        };
-
-        // Lakukan permintaan PUT ke API untuk memperbarui data karyawan
-        $.ajax({
-            url: '/Employee/UpdateIdle',
-            type: 'PUT',
-            dataType: 'json',
-            data: JSON.stringify(updatedEmployee),
-            contentType: 'application/json',
-            success: function (data) {
-                console.log(data);
-                $('#modalEditEmployee').modal('hide');
-                // Tambahkan logika lainnya seperti memperbarui tampilan tabel atau memberikan notifikasi
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Employee data updated successfully.'
-                });
-            },
-            error: function (xhr, status, error) {
-                if (xhr.status === 400) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Validation Error',
-                        text: xhr.responseText
-                    });
-                } else if (xhr.status === 404) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Employee data not found.'
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'An error occurred while updating employee data.'
-                    });
-                }
-                console.error(xhr.responseText);
-            }
-        });
-    });*/
+    /*  $('#editEmployeeButton').on('click', function () {
+          var updatedEmployee = {
+              Guid: $('#editEmployeeId').val(),
+              FirstName: $('#editFirstName').val(),
+              LastName: $('#editLastName').val(),
+              Gender: $('#editGender').val(),
+              Email: $('#editEmail').val(),
+              PhoneNumber: $('#editPhoneNumber').val(),
+              Grade: $('#editGrade').val(),
+              StatusEmployee: $('#editStatusEmployee').val(),
+              CompanyGuid: $('#editCompanyGuid').val()
+          };
+  
+          // Lakukan permintaan PUT ke API untuk memperbarui data karyawan
+          $.ajax({
+              url: '/Employee/UpdateIdle',
+              type: 'PUT',
+              dataType: 'json',
+              data: JSON.stringify(updatedEmployee),
+              contentType: 'application/json',
+              success: function (data) {
+                  console.log(data);
+                  $('#modalEditEmployee').modal('hide');
+                  // Tambahkan logika lainnya seperti memperbarui tampilan tabel atau memberikan notifikasi
+                  Swal.fire({
+                      icon: 'success',
+                      title: 'Success',
+                      text: 'Employee data updated successfully.'
+                  });
+              },
+              error: function (xhr, status, error) {
+                  if (xhr.status === 400) {
+                      Swal.fire({
+                          icon: 'error',
+                          title: 'Validation Error',
+                          text: xhr.responseText
+                      });
+                  } else if (xhr.status === 404) {
+                      Swal.fire({
+                          icon: 'error',
+                          title: 'Error',
+                          text: 'Employee data not found.'
+                      });
+                  } else {
+                      Swal.fire({
+                          icon: 'error',
+                          title: 'Error',
+                          text: 'An error occurred while updating employee data.'
+                      });
+                  }
+                  console.error(xhr.responseText);
+              }
+          });
+      });*/
 
 
     //Action Account (Approve, non aktif, reject)
@@ -259,10 +259,114 @@
         var status = $(this).data('status');
         updateAccountStatus(guid, status);
     });
-     //Action tombol Update
+    //Action tombol Update
     var updateGuid; // Variabel untuk menyimpan GUID yang akan digunakan saat menyimpan data
 
-    // Event handler untuk tombol "Update"
+
+    function updateAccountStatus(guid, status) {
+        $.ajax({
+            url: '/Account/GuidClient/' + guid,
+            type: 'GET',
+            dataType: 'json',
+            dataSrc: 'data',
+            success: function (data) {
+                if (data) {
+                    var dataToUpdate = {
+                        guid: data.guid,
+                        expiredTime: data.expiredTime,
+                        isUsed: data.isUsed,
+                        otp: data.otp,
+                        password: data.password,
+                        roleGuid: data.roleGuid,
+                        status: status,
+                    };
+
+                    $.ajax({
+                        url: '/Account/UpdateClient/' + guid,
+                        type: 'PUT',
+                        data: JSON.stringify(dataToUpdate),
+                        contentType: 'application/json',
+
+                        success: function (response) {
+                            $('#tableClient').DataTable().ajax.reload();
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Pembaruan berhasil',
+                                text: 'Status akun klien telah diubah.'
+                            });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Pembaruan gagal',
+                                text: 'Terjadi kesalahan saat mencoba mengubah status akun klien.'
+                            });
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Data tidak ditemukan',
+                        text: 'Data akun klien tidak ditemukan.'
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Kesalahan',
+                    text: 'Terjadi kesalahan saat mencoba mendapatkan data akun klien.'
+                });
+            }
+        });
+    }
+
+
+    //inisiasi variabel untuk nampung data sebelumnya
+    var employeeGuid;
+    var companyGuid;
+
+
+    function getClientByGuid(guid) {
+        console.log("ini parameter guid " + guid);
+
+        $.ajax({
+            url: '/Employee/GetGuidClient/' + guid,
+            type: 'GET',
+            dataType: 'json',
+            dataSrc: 'data',
+            success: function (response) {
+                var imageUrl = 'https://localhost:7051/Utilities/File/ProfilePictures/' + response.fotoEmployee;
+                console.log(response);
+                employeeGuid = response.employeeGuid;
+                companyGuid = response.companyGuid;
+                console.log("ini employee guid " + employeeGuid);
+                console.log("ini companyGuid " + companyGuid);
+                $("#editFirstName").val(response.firstName);
+                $("#editLastName").val(response.lastName);
+                $("#editGender").val(response.gender);
+                $("#editEmail").val(response.email);
+                $("#editPhoneNumber").val(response.phoneNumber);
+                $("#companyName").val(response.nameCompany);
+                $("#addressCompany").val(response.address);
+                $("#description").val(response.description);
+
+                // Tampilkan nama file gambar sebelum diupdate
+                $("#profilePictureInput").text(response.fotoEmployee);
+
+                $("#editProfilePicPreview").attr("src", imageUrl);
+
+            },
+            error: function (response) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Kesalahan',
+                    text: 'Terjadi kesalahan saat mencoba mendapatkan data akun klien.'
+                });
+            }
+        });
+    }
+
     $('#tableClient').on('click', '.btn-update', function () {
         updateGuid = $(this).data('guid'); // Mengambil GUID dari tombol "Update" yang diklik
         console.log('Company Guid update', updateGuid);
@@ -272,147 +376,48 @@
     // Event handler untuk tombol "Save"
     $('#updateClientForm').submit(function (event) {
         event.preventDefault();
-
-        console.log("ini tombol save:", updateGuid);
-
-        updateClientDetails(updateGuid); // Menggunakan GUID yang telah disimpan saat tombol "Save" diklik
-    });
-
-
-
-
-function updateAccountStatus(guid, status) {
-    $.ajax({
-        url: '/Account/GuidClient/' + guid,
-        type: 'GET',
-        dataType: 'json',
-        dataSrc: 'data',
-        success: function (data) {
-            if (data) {
-                var dataToUpdate = {
-                    guid: data.guid,
-                    expiredTime: data.expiredTime,
-                    isUsed: data.isUsed,
-                    otp: data.otp,
-                    password: data.password,
-                    roleGuid: data.roleGuid,
-                    status: status,
-                };
-
-                $.ajax({
-                    url: '/Account/UpdateClient/' + guid,
-                    type: 'PUT',
-                    data: JSON.stringify(dataToUpdate),
-                    contentType: 'application/json',
-
-                    success: function (response) {
-                        $('#tableClient').DataTable().ajax.reload();
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Pembaruan berhasil',
-                            text: 'Status akun klien telah diubah.'
-                        });
-                    },
-                    error: function () {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Pembaruan gagal',
-                            text: 'Terjadi kesalahan saat mencoba mengubah status akun klien.'
-                        });
-                    }
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Data tidak ditemukan',
-                    text: 'Data akun klien tidak ditemukan.'
-                });
-            }
-        },
-        error: function () {
-            Swal.fire({
-                icon: 'error',
-                title: 'Kesalahan',
-                text: 'Terjadi kesalahan saat mencoba mendapatkan data akun klien.'
-            });
+        // Pastikan employeeGuid dan companyGuid telah di-set
+        if (!employeeGuid || !companyGuid) {
+            console.error("employeeGuid atau companyGuid belum di-set.");
+            return;
         }
+        updateClientDetails(employeeGuid, companyGuid);
     });
-}
 
+    function updateClientDetails(employeeGuid, companyGuid) {
+        console.log("ini di parameter update ");
 
-//inisiasi variabel untuk nampung data sebelumnya
-var employeeGuid;
-var companyGuid;
+        // Ambil semua data dari elemen-elemen formulir
+        var firstName = $('#editFirstName').val();
+        var lastName = $('#editLastName').val();
+        var phoneNumber = $('#editPhoneNumber').val();
+        var email = $('#editEmail').val();
+        var gender = ($('#editGender').val() === 'Male') ? 1 : 0;
+        var nameCompany = $('#companyName').val();
+        var addressCompany = $('#addressCompany').val();
+        var description = $('#description').val();
 
+        // Ambil file gambar dari input
+        var profilePictureInput = document.getElementById('profilePictureInput');
+        var profilePictureFile = profilePictureInput.files[0];
 
-function getClientByGuid(guid) {
-    console.log("ini parameter guid " + guid);
+        // Log data untuk debugging
+        console.log('employeeGuid:', employeeGuid);
+        console.log('companyGuid:', companyGuid);
+        console.log('firstName:', firstName);
+        console.log('lastName:', lastName);
+        console.log('phoneNumber:', phoneNumber);
+        console.log('email:', email);
+        console.log('gender:', gender);
+        console.log('nameCompany:', nameCompany);
+        console.log('addressCompany:', addressCompany);
+        console.log('description:', description);
+        console.log('profilePictureInput:', profilePictureFile);
 
-    $.ajax({
-        url: '/Employee/GetGuidClient/' + guid,
-        type: 'GET',
-        dataType: 'json',
-        dataSrc: 'data',
-        success: function (response) {
-            var imageUrl = 'https://localhost:7051/Utilities/File/ProfilePictures/' + response.fotoEmployee;
-            console.log(response);
-            employeeGuid = response.employeeGuid;
-            companyGuid = response.companyGuid;
-            console.log("ini employee guid " + employeeGuid);
-            console.log("ini companyGuid " + companyGuid);
-            $("#editFirstName").val(response.firstName);
-            $("#editLastName").val(response.lastName);
-            $("#editGender").val(response.gender);
-            $("#editEmail").val(response.email);
-            $("#editPhoneNumber").val(response.phoneNumber);
-            $("#companyName").val(response.nameCompany);
-            $("#addressCompany").val(response.address);
-            $("#description").val(response.description);
-
-            // Tampilkan nama file gambar sebelum diupdate
-            $("#profilePictureInput").text(response.fotoEmployee);
-
-            $("#editProfilePicPreview").attr("src", imageUrl);
-
-        },
-        error: function (response) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Kesalahan',
-                text: 'Terjadi kesalahan saat mencoba mendapatkan data akun klien.'
-            });
-        }
-    });
-}
-
-function updateClientDetails(guid) {
-    console.log("ini di parameter update ", guid)
-    // Inisialisasi objek data
-    // Ambil semua data dari elemen-elemen formulir
-    var companyGuid = $('#companyGuid').val();
-    var employeeGuid = $('#employeeGuid').val();
-    var firstName = $('#editFirstName').val();
-    var lastName = $('#editLastName').val();
-    var phoneNumber = $('#editPhoneNumber').val();
-    var email = $('#editEmail').val();
-    var gender = ($('#editGender').val() === 'Male') ? 1 : 0;
-    var nameCompany = $('#companyName').val();
-    var addressCompany = $('#addressCompany').val();
-    var description = $('#description').val();
-
-    // Ambil file gambar dari input
-    var profilePictureInput = document.getElementById('profilePictureInput');
-    var profilePictureFile = profilePictureInput.files[0];
-
-    // Cek apakah semua data yang dibutuhkan sudah diisi
-    if (!companyGuid || !employeeGuid || !firstName || !lastName || !phoneNumber || !email || !gender || !nameCompany || !addressCompany || !description) {
-        alert('Harap isi semua data yang diperlukan sebelum mengirimkan permintaan.');
-    }
-    else {
         // Buat objek FormData dan tambahkan data
         var dataToUpdate = new FormData();
-        dataToUpdate.append('companyGuid', companyGuid);
         dataToUpdate.append('employeeGuid', employeeGuid);
+        dataToUpdate.append('companyGuid', companyGuid);
         dataToUpdate.append('firstName', firstName);
         dataToUpdate.append('lastName', lastName);
         dataToUpdate.append('phoneNumber', phoneNumber);
@@ -424,39 +429,35 @@ function updateClientDetails(guid) {
 
         // Cek apakah gambar sudah dipilih sebelum menambahkannya ke FormData
         if (profilePictureFile) {
-            dataToUpdate.append('profilePictureFile', profilePictureFile);
+            dataToUpdate.append('ProfilePictureFile', profilePictureFile);
         } else {
             alert('Harap pilih gambar profil sebelum mengirimkan permintaan.');
+            return;
         }
-    }
-     
 
-    console.log(dataToUpdate);
-
-    $.ajax({
-        url: '/Employee/updateClient/' + guid,
-        type: 'PUT',
-        data: dataToUpdate,
-        contentType: false,
-        processData: false, // Diperlukan untuk FormData
-        success: function (response) {
-            console.log(response);
-            Swal.fire({
-                icon: 'success',
-                title: 'Pembaruan berhasil',
-                text: 'Status akun klien telah diubah.'
-            });
-        },
-        error: function (response) {
-            
-            console.log(response);
-            Swal.fire({
-                icon: 'error',
-                title: 'Pembaruan gagal',
-                text: 'Terjadi kesalahan saat mencoba mengubah status akun klien.'
-            });
-        }
-    });
+        $.ajax({
+            url: '/Employee/UpdateClient',
+            type: 'PUT',
+            data: dataToUpdate,
+            contentType: false,
+            processData: false, // Diperlukan untuk FormData
+            success: function (response) {
+                console.log(response);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pembaruan berhasil',
+                    text: 'Status akun klien telah diubah.'
+                });
+            },
+            error: function (response) {
+                console.log(response);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Pembaruan gagal',
+                    text: 'Terjadi kesalahan saat mencoba mengubah status akun klien.'
+                });
+            }
+        });
     }
 
 });
