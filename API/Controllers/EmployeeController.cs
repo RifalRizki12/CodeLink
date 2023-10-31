@@ -421,7 +421,7 @@ namespace API.Controllers
                         existingEmployee.Email = updateDto.Email;
                         existingEmployee.PhoneNumber = updateDto.PhoneNumber;
                         existingEmployee.StatusEmployee = updateDto.StatusEmployee;
-                        existingEmployee.CompanyGuid = updateDto.CompanyGuid;
+/*                        existingEmployee.CompanyGuid = updateDto.CompanyGuid;*/
 
 
                         // Update other properties as needed
@@ -459,14 +459,7 @@ namespace API.Controllers
                         _employeeRepository.Update(existingEmployee);
 
                         // Update the Account in the repository (if needed)
-                        Account existingAccount = _accountRepository.GetByGuid(existingEmployee.Guid);
-                        if (existingAccount != null)
-                        {
-                            // Update account properties as needed
-                            existingAccount.Password = HashHandler.HashPassword(updateDto.Password);
-
-                            _accountRepository.Update(existingAccount);
-                        }
+                       
 
 
                         // Update CurriculumVitae (if needed)

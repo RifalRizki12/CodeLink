@@ -39,19 +39,23 @@
                 data: null,
                 render: function (data, type, row) {
                     return `<button type="button" class="btn btn-primary edit-button" data-guid="${data.guid}" data-bs-toggle="modal" data-bs-target="#modalEditEmployee">Update</button>
-                            <button type="button" class="btn btn-danger delete-button" data-guid="${data.guid}">-</button>`;
+                            <button type="button" class="btn btn-danger delete-button" data-guid="${row.guid}">-</button>`;
                 }
             },
         ]
     });
     $('.dt-buttons').removeClass('dt-buttons');
 
+
+    var updateIdleGuid; //menyimpan guid di tombol save
+    var employeeGuid;
+
     $('#tableEmployee').on('click', '.edit-button', function () {
-        var guid = $(this).data('guid'); // Mengambil GUID dari tombol "Update" yang diklik
-        console.log('Employee Guid update', guid);
-        getIdleByGuid(guid);
+        updateIdleGuid = $(this).data('guid'); // Mengambil GUID dari tombol "Update" yang diklik
+        console.log('Employee Guid update', updateIdleGuid);
+        getIdleByGuid(updateIdleGuid);
     });
-   
+
     // Tambahkan event listener untuk tombol "Edit"
 
     function getIdleByGuid(guid) {
@@ -66,24 +70,53 @@
                     var imageUrl1 = 'https://localhost:7051/Utilities/File/ProfilePictures/' + data.foto;
                     var imageUrl2 = 'https://localhost:7051/Utilities/File/Cv/' + data.cv;
                     // Isi formulir modal dengan data karyawan
-                    guid = data.updateGuid;
+                    employeeGuid = data.guid;
                     $('#editFirstName').val(data.firstName);
                     $("#editLastName").val(data.lastName);
                     $("#editGender").val(data.gender);
                     $("#editEmail").val(data.email);
                     $("#editPhoneNumber").val(data.phoneNumber);
                     $("#editGrade").val(data.grade);
-                    $("#editStatusEmploye").val(data.statusEmploye);
-                    $("#editSkills").val(data.skill);
+                    $("#editStatusEmploye").val(data.statusEmployee);
+                    // Inisialisasi select2
 
-                    // Tampilkan nama file gambar sebelum diupdate
+                    // Saat menerima data dari AJAX:
+                    if (!$('#editSkills').data('select2')) {
+                        $('#editSkills').select2({
+                            tags: true,
+                            tokenSeparators: [',', ' '],
+                            placeholder: "Select or add skills"
+                        });
+                    }
+
+                    var skillSelect = $('#editSkills');
+                    skillSelect.empty(); // Bersihkan opsi yang ada
+
+                    // Menambahkan skill ke dropdown dari data AJAX
+                    if (data && data.skill) {
+                        var selectedSkills = [];
+
+                        data.skill.forEach(function (skill) {
+                            var newOption = new Option(skill, skill, false, true); // Parameter ke-4 diset true agar option tersebut otomatis terpilih
+                            skillSelect.append(newOption);
+                            selectedSkills.push(skill);
+                        });
+
+                        skillSelect.val(selectedSkills).trigger('change'); // Set skill yang telah dipilih
+                    }
+
+                    // Jika Anda ingin menandai beberapa skill tertentu sebagai dipilih (misalnya dari data lain), Anda dapat menggunakan bagian kode ini
+                    if (data && data.selectedSkills) {
+                        skillSelect.val(data.selectedSkills).trigger('change');
+                    }
+
                     $("#profilePictureInput").text(data.foto);
 
                     $("#editProfilePicPreview").attr("src", imageUrl1);
 
                     $("#cvInput").text(data.cv);
 
-                    $("#cvFile").attr("src", imageUrl2);
+                    $("#cvPreview").attr("src", imageUrl2);
 
                 } else {
                     Swal.fire({
@@ -102,6 +135,116 @@
             }
         });
     }
+    $('#updateIdleForm').submit(function (event) {
+        event.preventDefault();
+        // Pastikan employeeGuid dan companyGuid telah di-set
+        if (!employeeGuid) {
+            console.error("employeeGuid belum di-set.");
+            return;
+        }
+        updateIdleDetails(employeeGuid);
+    });
+
+
+    // function update data Client
+    function updateIdleDetails(employeeGuid) {
+        console.log("ini di parameter update ");
+
+        // Ambil semua data dari elemen-elemen formulir
+        var firstName = $('#editFirstName').val();
+        var lastName = $('#editLastName').val();
+        var phoneNumber = $('#editPhoneNumber').val();
+        var email = $('#editEmail').val();
+        var gender = ($('#editGender').val() === 'Male') ? 1 : 0;
+        var grade = ($("#editGrade").val() === 'B') ? 1 : 0;
+        var statusEmployee = ($("#editStatusEmploye").val() === 'owner') ? 1 : 0;
+        var skills = $('#editSkills').val(); // Menambahkan data skill ke variabel
+
+        // Ambil file gambar dari input
+        var profilePictureInput = document.getElementById('profilePictureInput');
+        console.log(profilePictureInput.files);
+        var profilePictureFile = profilePictureInput.files[0];
+
+        var cvInput = document.getElementById('cvInput');
+        var cvFile = cvInput.files[0];
+
+        console.log(firstName);
+        console.log(lastName);
+        console.log(phoneNumber);
+        console.log(email);
+        console.log(gender);
+        console.log(grade);
+        console.log(statusEmployee);
+        console.log(skills);
+
+
+        // Buat objek FormData dan tambahkan data
+        var dataToUpdate = new FormData();
+        dataToUpdate.append('guid', employeeGuid);
+        dataToUpdate.append('firstName', firstName);
+        dataToUpdate.append('lastName', lastName);
+        dataToUpdate.append('phoneNumber', phoneNumber);
+        dataToUpdate.append('email', email);
+        dataToUpdate.append('gender', gender);
+        dataToUpdate.append('grade', grade);
+        dataToUpdate.append('statusEmployee', statusEmployee);
+        if (typeof skills === 'string') {
+            skills.split(',').forEach((skill, index) => {
+                dataToUpdate.append('skills[' + index + ']', skill.trim());
+            });
+        } else if (Array.isArray(skills)) {
+            skills.forEach((skill, index) => {
+                dataToUpdate.append('skills[' + index + ']', skill.trim());
+            });
+        } else {
+            Swal.fire({
+                title: 'Format Skill Salah !',
+                icon: 'info',
+                html: 'Skills harus berupa string atau array',
+                showCloseButton: true,
+                focusConfirm: false,
+                confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
+                confirmButtonAriaLabel: 'Thumbs up, great!',
+            });
+        }
+
+        if (profilePictureFile) {
+            dataToUpdate.append('ProfilePictureFile', profilePictureFile);
+        } else {
+            console.log("No profile picture file selected");
+        }
+        if (cvFile) {
+            dataToUpdate.append('cvFile', cvFile);
+        } else {
+            console.log("No CV file selected");
+        }
+
+        $.ajax({
+            url: '/Employee/updateIdle',
+            type: 'PUT',
+            data: dataToUpdate,
+            contentType: false,
+            processData: false, // Diperlukan untuk FormData
+            success: function (response) {
+                $('#modalEditEmployee').modal('hide');
+                $('#tableEmployee').DataTable().ajax.reload();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pembaruan berhasil',
+                    text: 'Data Idle berhasil diperbarui.'
+                });
+            },
+            error: function (response) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Pembaruan gagal',
+                    text: 'Terjadi kesalahan saat mencoba update data Idle.'
+                });
+            }
+        });
+    }
+});
+$(document).ready(function () {
 
     //MEMBUAT REGISTER IDLE
     $('#createEmployeeForm').on('submit', function (event) {
@@ -122,8 +265,10 @@
 
         // Tambahkan file ke formData
         var profilePictureFile = $('#profilePictureInput').prop('files')[0];
-        var cvFile = $('#cvInput').prop('files')[0];
         formData.append('profilePictureFile', profilePictureFile);
+
+        var cvFile = $('#cvInput').prop('files')[0];
+
         formData.append('cvFile', cvFile);
 
         // Tambahkan skills (diasumsikan sebagai array string)
@@ -236,6 +381,10 @@
 
 
     //Menampilkan data Client (Update Status client, Update Data Client)
+
+});
+
+$(document).ready(function () {
     $('#tableClient').DataTable({
         ajax: {
             url: '/Employee/GetClientData',
@@ -263,17 +412,17 @@
                 render: function (data, type, row, meta) {
 
                     return `<div class="btn-group">
-                                <button type="button" class="btn btn-danger waves-effect waves-light">Actions</button>
-                                <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split waves-effect waves-light" data-bs-toggle="dropdown" aria-expanded="false">
-                                  <span class="visually-hidden">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" style="">
-                                     <a class="dropdown-item" data-guid="${data.employeeGuid}" data-status="1">Approve</a>
-                                     <a class="dropdown-item" data-guid="${data.employeeGuid}" data-status="2">Reject</a>
-                                     <a class="dropdown-item" data-guid="${data.employeeGuid}" data-status="4">Non Active</a>
-                                </ul>
-                              </div>
-                             <button type="button" class="btn btn-primary btn-update" data-guid="${data.companyGuid}" data-bs-toggle="modal" data-bs-target="#modalUpdateClient">Update</button> `;
+                            <button type="button" class="btn btn-danger waves-effect waves-light">Actions</button>
+                            <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split waves-effect waves-light" data-bs-toggle="dropdown" aria-expanded="false">
+                              <span class="visually-hidden">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu" style="">
+                                 <a class="dropdown-item" data-guid="${data.employeeGuid}" data-status="1">Approve</a>
+                                 <a class="dropdown-item" data-guid="${data.employeeGuid}" data-status="2">Reject</a>
+                                 <a class="dropdown-item" data-guid="${data.employeeGuid}" data-status="4">Non Active</a>
+                            </ul>
+                          </div>
+                         <button type="button" class="btn btn-primary btn-update" data-guid="${data.companyGuid}" data-bs-toggle="modal" data-bs-target="#modalUpdateClient">Update</button> `;
                 }
             },
         ]
@@ -430,6 +579,7 @@
         // Ambil file gambar dari input
         var profilePictureInput = document.getElementById('profilePictureInput');
         var profilePictureFile = profilePictureInput.files[0];
+        console.log(profilePictureFile);
 
         // Buat objek FormData dan tambahkan data
         var dataToUpdate = new FormData();
@@ -476,5 +626,4 @@
             }
         });
     }
-
 });

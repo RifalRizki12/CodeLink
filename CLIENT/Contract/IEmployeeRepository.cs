@@ -14,13 +14,14 @@ namespace CLIENT.Contract
         Task<ResponseOKHandler<Company>> RegisterClient(RegisterClientDto registrationCDto);
 
 
-        Task<ResponseOKHandler<UpdateIdleDto>> UpdateIdle(UpdateIdleDto employeeDto);
+   /*     Task<ResponseOKHandler<UpdateIdleDto>> UpdateIdle(UpdateIdleDto employeeDto);*/
 
         Task<ResponseOKHandler<IEnumerable<ClientDetailDto>>> GetDetailClient();
         Task<ResponseOKHandler<ChartDto>> GetDetailChart();
 
 
         Task<ResponseOKHandler<Company>> UpdateClient(UpdateClientDto clientDto);
+        Task<ResponseOKHandler<Employee>> UpdateIdle(UpdateIdleDto idleDto);
         Task<ResponseOKHandler<ClientDetailDto>> GetGuidClient(Guid guid);
         Task<ResponseOKHandler<EmployeeDetailDto>> GetGuidEmployee(Guid guid);
 
