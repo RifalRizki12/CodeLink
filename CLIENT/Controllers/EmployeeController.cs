@@ -101,9 +101,6 @@ namespace CLIENT.Controllers
             }
         }
 
-
-
-
         /*[HttpPut("updateIdle")]
         public async Task<JsonResult> UpdateIdle(UpdateIdleDto employeeDto)
         {
@@ -125,9 +122,6 @@ namespace CLIENT.Controllers
                 return Json(new { error = "An error occurred while updating the employee." });
             }
         }*/
-
-
-
 
         public async Task<IActionResult> GetClient()
         {

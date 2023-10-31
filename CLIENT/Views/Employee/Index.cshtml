@@ -24,12 +24,11 @@
             <thead>
                 <tr>
                     <th rowspan="2">No</th>
-                    <th colspan="3" style="text-align: center;">Biodata</th>
+                    <th colspan="2" style="text-align: center;">Biodata</th>
                     <th colspan="4" style="text-align: center;">Info</th>
                     <th class="no-export" rowspan="2" style="text-align: center;">Action</th>
                 </tr>
                 <tr>
-                    <th>Profile</th>
                     <th>Full Name</th>
                     <th>Gender</th>
                     <th>Email</th>
@@ -42,6 +41,7 @@
     </div>
 </div>
 <!--/ Complex Headers -->
+
 <!-- Modal Create -->
 <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -69,17 +69,19 @@
                                 <option value="1">Male</option>
                             </select>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col mb-3">
                             <label for="profilePictureInput" class="form-label">Profile Picture</label>
                             <input type="file" id="profilePictureInput" class="form-control" />
                         </div>
-                    </div>
-
-                    <div class="row">
+                        
                         <div class="col mb-3">
                             <label for="cvInput" class="form-label">CV File</label>
                             <input type="file" id="cvInput" class="form-control" />
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col mb-3">
                             <label for="emailInput" class="form-label">Email</label>
                             <input type="email" id="emailInput" class="form-control" placeholder="xxxx@xxx.xx" required />
@@ -118,10 +120,10 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="row">
                         <div class="col mb-3">
-                            <label for="skillsInput">Skills:</label>
-                            <select id="skillsInput" class="form-control" multiple="multiple" style="width: 300px;"></select>
+                            <label for="skillsInput" class="form-label">Skills</label><br />
+                            <select id="skillsInput" class="form-control" multiple="multiple" style="width: 500px;"></select>
                         </div>
                     </div>
 
