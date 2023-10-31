@@ -46,7 +46,6 @@
     });
     $('.dt-buttons').removeClass('dt-buttons');
 
-
     var updateIdleGuid; //menyimpan guid di tombol save
     var employeeGuid;
 
@@ -495,7 +494,6 @@ $(document).ready(function () {
         });
     }
 
-
     //inisiasi variabel untuk nampung data sebelumnya
 
     var updateGuid; //menyimpan guid di tombol save
@@ -547,8 +545,6 @@ $(document).ready(function () {
             }
         });
     }
-
-
 
     // Event handler untuk tombol "Save"
     $('#updateClientForm').submit(function (event) {

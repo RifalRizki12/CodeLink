@@ -213,10 +213,6 @@ namespace CLIENT.Repository
             }
         }
 
-
-
-
-
         public async Task<ResponseOKHandler<IEnumerable<ClientDetailDto>>> GetDetailClient()
         {
             // Ganti request ke endpoint yang sesuai

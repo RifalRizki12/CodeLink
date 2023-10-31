@@ -1,4 +1,5 @@
-﻿using API.DTOs.Interviews;
+﻿using API.DTOs.Accounts;
+using API.DTOs.Interviews;
 using CLIENT.Contract;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol.Core.Types;
@@ -41,7 +42,7 @@ namespace CLIENT.Controllers
                 return Json(new { error = result.Message });
             }
         }
-        [HttpPut]
+    /*    [HttpPut]
         public async Task<JsonResult> ScheduleUpdate(ScheduleInterviewDto scheduleUpdate)
         {
             try
@@ -61,6 +62,28 @@ namespace CLIENT.Controllers
             {
                 // Log pesan kesalahan atau tangani kesalahan sesuai kebutuhan Anda
                 return Json(new { success = false, message = "Terjadi kesalahan saat memproses pembaruan: " + ex.Message });
+            }
+        }*/
+
+        [HttpPut("Interview/ScheduleUpdate/{guid}")]
+        public async Task<JsonResult> ScheduleUpdate(Guid guid, [FromBody] ScheduleInterviewDto scheduleUpdate)
+        {
+            var response = await _repository.ScheduleUpdate(guid, scheduleUpdate);
+
+            if (response != null)
+            {
+                if (response.Code == 200)
+                {
+                    return Json(new { data = response.Data });
+                }
+                else
+                {
+                    return Json(new { error = response.Message });
+                }
+            }
+            else
+            {
+                return Json(new { error = "An error occurred while updating the employee." });
             }
         }
 
