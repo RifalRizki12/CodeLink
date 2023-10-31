@@ -1,4 +1,5 @@
 ﻿using API.Models;
+using API.Utilities.Enums;
 
 namespace API.DTOs.Interviews; 
 
@@ -15,6 +16,8 @@ public class InterviewDto //untuk update interview yang biasa
     public string Interviewer { get; set; }
     public string Idle {  get; set; }
     public string StatusIdle {  get; set; }
+    public TypeInterview? Type {  get; set; }
+    public string Location { get; set; }
 
     public static explicit operator InterviewDto(Employee employee)
     {
@@ -38,7 +41,9 @@ public class InterviewDto //untuk update interview yang biasa
             OwnerGuid = interview.OwnerGuid,
             StartContract = interview.StartContract,
             EndContract = interview.EndContract,
-            EmployeeGuid = interview.EmployeeGuid
+            EmployeeGuid = interview.EmployeeGuid,
+            Type = interview.Type,
+            Location = interview.Location
             
         };
     }

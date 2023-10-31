@@ -1,15 +1,14 @@
 ﻿using API.Models;
 using API.Utilities.Enums;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace API.DTOs.Interviews
 {
     public class ScheduleInterviewDto //untuk admin kirim email detail schedule interview
     {
         public Guid Guid { get; set; }
-        public string Location { get; set; }
+        public string? Location { get; set; }
         public TypeInterview? Type { get; set; }
-        public string Remarks { get; set; }
+        public string? Remarks { get; set; }
         public Guid EmployeeGuid { get; set; }
         public Guid OwnerGuid { get; set; }
 
@@ -40,7 +39,6 @@ namespace API.DTOs.Interviews
                 Remarks = interviewDto.Remarks,
                 EmployeeGuid = interviewDto.EmployeeGuid,
                 OwnerGuid = interviewDto.OwnerGuid,
-                ModifiedDate = DateTime.Now
             };
         }
     }
