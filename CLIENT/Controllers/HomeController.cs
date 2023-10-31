@@ -1,8 +1,10 @@
-﻿using CLIENT.Models;
+﻿
+using CLIENT.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace CLIENT.Controllers
+namespace Client.Controllers
 {
     public class HomeController : Controller
     {
@@ -18,15 +20,40 @@ namespace CLIENT.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        [HttpGet("/Unauthorized")]
+        public IActionResult Unauthorized()
+        {
+            return View("401");
+        }
+
+        [AllowAnonymous]
+        [Route("/NotFound")]
+        public IActionResult Notfound()
+        {
+            return View("404");
+        }
+
+        [AllowAnonymous]
+        [Route("/Forbidden")]
+        public IActionResult Forbidden()
+        {
+            return View("403");
+        }
+
         public IActionResult Privacy()
         {
             return View();
         }
+
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
     }
 }
