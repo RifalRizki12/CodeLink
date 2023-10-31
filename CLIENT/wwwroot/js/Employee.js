@@ -39,7 +39,7 @@
                 data: null,
                 render: function (data, type, row) {
                     return `<button type="button" class="btn btn-primary edit-button" data-guid="${data.guid}" data-bs-toggle="modal" data-bs-target="#modalEditEmployee">Update</button>
-                            <button type="button" class="btn btn-danger delete-button" data-guid="${row.guid}">-</button>`;
+                            <button type="button" class="btn btn-warning detail-button" data-guid="${row.guid}">-</button>`;
                 }
             },
         ]

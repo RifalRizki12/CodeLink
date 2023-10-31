@@ -268,8 +268,6 @@ namespace CLIENT.Controllers
             }
         }*/
 
-
-
         public IActionResult GetChart()
         {
             // Pastikan Anda memasukkan data yang diperlukan ke dalam View jika diperlukan
@@ -289,6 +287,11 @@ namespace CLIENT.Controllers
                 // Tangani eksepsi yang mungkin terjadi
                 return Json(new { error = ex.Message });
             }
+        }
+
+        public async Task<IActionResult> DetailIdle()
+        {
+            return View();
         }
 
     }
