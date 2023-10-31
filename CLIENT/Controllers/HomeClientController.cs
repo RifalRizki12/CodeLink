@@ -27,5 +27,10 @@ namespace CLIENT.Controllers
             return View();
         }
 
+        public IActionResult DetailHomeIdle()
+        {
+            return View();
+        }
+
     }
 }
