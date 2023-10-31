@@ -10,6 +10,7 @@ namespace CLIENT.Contract
 {
     public interface IInterviewRepository : IRepository<Interview, Guid>
     {
+        Task<ResponseOKHandler<Interview>> ScheduleUpdate(ScheduleInterviewDto scheduleUpdate);
         Task<ResponseOKHandler<IEnumerable<InterviewDto>>> GetAllInterview();
     }
 }

@@ -212,6 +212,7 @@ public class InterviewController : ControllerBase
                                      $"End Contract          : {announcment.EndContract}\n";
 
                         specificEmployee.StatusEmployee = (StatusEmployee)2;
+                        specificEmployee.CompanyGuid = company.Guid;
                         _employeeRepository.Update(specificEmployee);
 
                     }
@@ -274,7 +275,9 @@ public class InterviewController : ControllerBase
                                 Interviewer = empInterviewer.FirstName + " " + empInterviewer.LastName,
                                 Idle = empIdle.FirstName + " " + empIdle.LastName,
                                 OwnerGuid = interview.OwnerGuid,
-                                StatusIdle = empIdle.StatusEmployee.ToString(),    
+                                StatusIdle = empIdle.StatusEmployee.ToString(),
+                                Type = interview.Type,
+                                Location = interview.Location,
                             }).ToList();
 
         return Ok(new ResponseOKHandler<IEnumerable<InterviewDto>>(interviewDto));
