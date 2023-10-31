@@ -46,7 +46,6 @@
     });
     $('.dt-buttons').removeClass('dt-buttons');
 
-
     var updateIdleGuid; //menyimpan guid di tombol save
     var employeeGuid;
 
