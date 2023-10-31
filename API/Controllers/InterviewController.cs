@@ -132,7 +132,7 @@ public class InterviewController : ControllerBase
             var adminEmployee = _employeeRepository.GetAdminEmployee();
 
 
-            if (entity is null)
+            if (entity is null || adminEmployee is null)
             {
                 return NotFound(new ResponseErrorHandler
                 {
@@ -168,44 +168,12 @@ public class InterviewController : ControllerBase
 
             if (specificEmployee != null)
             {
-
-
-                if (entity.EndContract.Value.Date == dateNow.Date)
-                {
-                    _emailHandler.Send("Contract Finished ",
-                       $"Kami menguncapkan terimakasi pada saudara/i yang telah bergabung bersama kami. " +
-                       $"Semoga dilain waktu kita bisa jumpa kembali " +
-                       $"Salam Hormat {company.Name}", specificEmployee.Email);
-
-                    _emailHandler.Send("Contract Finished ",
-                       $"Kami menguncapkan terimakasi pada saudara/i yang telah bergabung bersama kami. " +
-                       $"Semoga dilain waktu kita bisa jumpa kembali " +
-                       $"Salam Hormat {company.Name}", adminEmployee.Email);
-
-                    specificEmployee.StatusEmployee = 0;
-                    _employeeRepository.Update(specificEmployee);
-
-                }
-                else if (announcment.EndContract != null && announcment.EndContract.Value.Date == dateNow.Date)
-                {
-                    _emailHandler.Send("Contract Termination ", $"Kami menguncapkan mohon maaf atas ketidaknyamanannya" +
-                        $"kami terpaksa harus memutuskan kontrak untuk saudara/i {specificEmployee.FirstName} {specificEmployee.LastName} " +
-                        $"dikarenakan  {announcment.Remarks} Terimakasi atas kerjasamanya", specificEmployee.Email);
-
-                    _emailHandler.Send("Contract Termination ", $"Kami menguncapkan mohon maaf atas ketidaknyamanannya" +
-                      $"kami terpaksa harus memutuskan kontrak untuk saudara/i {specificEmployee.FirstName} {specificEmployee.LastName} " +
-                      $"dikarenakan  {announcment.Remarks} Terimakasi atas kerjasamanya", adminEmployee.Email);
-
-
-                    specificEmployee.StatusEmployee = 0;
-                    _employeeRepository.Update(specificEmployee);
-                }
-                else
+                if(entity.EndContract == null) // annaouncment lolos / tidak 
                 {
                     string emailBody = $"Terimakasih atas partisipasinya telah mengikuti proses {toUpdate.Name} pada\n" +
                                       $"Date                  : {toUpdate.Date}\n" +
                                       $"kami nyatakan anda    : {announcment.StatusIntervew} \n";
-
+                    //ini untuk if lolos
                     if (announcment.StartContract != null && announcment.EndContract != null)
                     {
                         emailBody += $"Start Contract        : {announcment.StartContract} \n" +
@@ -220,6 +188,40 @@ public class InterviewController : ControllerBase
                                  $"{announcment.FeedBack}";
 
                     _emailHandler.Send("Announcment Interview", emailBody, specificEmployee.Email);
+                }
+                //ini untuk contract termination
+                if (announcment.EndContract != null && announcment.EndContract.Value.Date == dateNow.Date)
+                {
+                    _emailHandler.Send("Contract Termination ", $"Kami menguncapkan mohon maaf atas ketidaknyamanannya" +
+                        $"kami terpaksa harus memutuskan kontrak untuk saudara/i {specificEmployee.FirstName} {specificEmployee.LastName} " +
+                        $"dikarenakan  {announcment.Remarks} Terimakasi atas kerjasamanya", specificEmployee.Email);
+
+                    _emailHandler.Send("Contract Termination ", $"Kami menguncapkan mohon maaf atas ketidaknyamanannya" +
+                      $"kami terpaksa harus memutuskan kontrak untuk saudara/i {specificEmployee.FirstName} {specificEmployee.LastName} " +
+                      $"dikarenakan  {announcment.Remarks} Terimakasi atas kerjasamanya", adminEmployee.Email);
+
+
+                    specificEmployee.StatusEmployee = 0;
+                    specificEmployee.CompanyGuid = null;
+                    _employeeRepository.Update(specificEmployee);
+                }
+                //ini untuk finish contact
+                if (entity.Guid != null && entity.EndContract.Value.Date == dateNow.Date)
+                {
+                    _emailHandler.Send("Contract Finished ",
+                       $"Kami menguncapkan terimakasi pada saudara/i yang telah bergabung bersama kami. " +
+                       $"Semoga dilain waktu kita bisa jumpa kembali " +
+                       $"Salam Hormat {company.Name}", specificEmployee.Email);
+
+                    _emailHandler.Send("Contract Finished ",
+                       $"Kami menguncapkan terimakasi pada saudara/i yang telah bergabung bersama kami. " +
+                       $"Semoga dilain waktu kita bisa jumpa kembali " +
+                       $"Salam Hormat {company.Name}", adminEmployee.Email);
+
+                    specificEmployee.StatusEmployee = 0;
+                    specificEmployee.CompanyGuid = null;
+                    _employeeRepository.Update(specificEmployee);
+
                 }
 
             }

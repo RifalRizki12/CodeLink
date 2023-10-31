@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
     var guidUpdate;
-    var intGuid
+    var intGuid;
     var empGuid;
     var ownGuid;
 
@@ -18,13 +18,17 @@
                     return meta.row + 1;
                 }
             },
-            { data: 'guid' },
             { data: 'idle' },
             { data: 'interviewer' },
             { data: 'name' },
             { data: 'date' },
             { data: 'statusIdle' },
-            { data: 'type' },
+            {
+                data: "type",
+                render: function (data, type, row) {
+                    return row.type == "0" ? "Online" : "Offline";
+                }
+            },
             { data: 'location' },
 
             {
@@ -45,15 +49,8 @@
 
     $('#scheduleUpdateForm').submit(function (event) {
         event.preventDefault();
-
-        if (!intGuid || !empGuid || !ownGuid) {
-            console.error("employeeGuid atau companyGuid belum di-set.");
-            return;
-        }
-
-        updateInterview(intGuid, empGuid, ownGuid);
+        updateInterview(intGuid);
     });
-    // ... (your existing code)
 
     function getInterviewByGuid(guid) {
         console.log(guid);
@@ -70,6 +67,8 @@
 
                 // Set the value of location from the response
                 $("#location").val(response.location);
+                $("#type").val(response.type);
+                $("#remarks").val(response.remarks);
             },
             error: function (response) {
                 Swal.fire({
@@ -80,48 +79,38 @@
             }
         });
     }
+    function updateInterview(intGuid) {
+        console.log("ini guid di update", intGuid);
 
-    function updateInterview(intGuid, empGuid, ownGuid) {
-        console.log("ini guid di update", intGuid, empGuid, ownGuid);
+        var updateType = parseInt($("#updateType").val());
+        var locUpdate = $("#location").val();
+        var remarksUpate = $("#remarks").val();
 
-        var type = parseInt($("#updateType").val());
-        var location = $("#location").val();
-        var remarks = $("#remarks").val();
-
-        // Check if intGuid, empGuid, and ownGuid are not null
         if (intGuid && empGuid && ownGuid) {
             var obj = {
                 guid: intGuid,
                 employeeGuid: empGuid,
                 ownerGuid: ownGuid,
-                type: type,
-                location: location,
-                remarks: remarks
+                type: updateType,
+                location: locUpdate,
+                remarks: remarksUpate
             };
 
             console.log(obj);
             $.ajax({
-                url: '/Interview/ScheduleUpdate',
+                url: '/Interview/ScheduleUpdate/' + intGuid,
                 type: 'PUT',
-                data: JSON.stringify(obj), // Set the correct content type
+                data: JSON.stringify(obj),
                 contentType: 'application/json',
                 success: function (response) {
-                    if (response.success) {
+                    
                         $('#updateInterview').modal('hide');
-                        $('#tableClient').DataTable().ajax.reload();
+                        $('#tableInterview').DataTable().ajax.reload();
                         Swal.fire({
                             icon: 'success',
                             title: 'Pembaruan berhasil',
                             text: 'Data client berhasil diperbarui.'
                         });
-                    } else {
-                        $('#updateInterview').modal('hide');
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Pembaruan gagal',
-                            text: 'Terjadi kesalahan saat mencoba update data client: ' + response.message
-                        });
-                    }
                 },
                 error: function (response) {
                     $('#updateInterview').modal('hide');
@@ -133,7 +122,6 @@
                 }
             });
         } else {
-            // Handle the case where intGuid, empGuid, or ownGuid is null
             Swal.fire({
                 icon: 'error',
                 title: 'Pembaruan gagal',
@@ -141,8 +129,4 @@
             });
         }
     }
-
-// ... (the rest of your code)
-
-
 });
