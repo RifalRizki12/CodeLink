@@ -131,26 +131,12 @@
                         </a>
                         @if (User.IsInRole("admin"))
                         {
-                            <ul class="menu-sub">
-                                <li class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Role" ? "active open" : "")">
-                                    <a href="javascript:void(0);" class="menu-link menu-toggle">
-                                        <i class="menu-icon tf-icons ti ti-files"></i>
-                                        <div data-i18n="Role">Role</div>
-                                    </a>
-                                    <ul class="menu-sub">
-                                        <li class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Role" && ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "active open" : "")">
-                                            <a class="menu-link" asp-area="" asp-controller="Role" asp-action="Index">
-                                                <div data-i18n="Role List">Data Role</div>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
+                            
                         }
                     </li>
                     <li class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Employee" ? "active open" : "")">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon tf-icons ti ti-files"></i>
+                            <i class="menu-icon tf-icons ti-user-dollar ti ti-tada ti-md"></i>
                             <div data-i18n="Data Client">Client</div>
                         </a>
                         <ul class="menu-sub">
@@ -164,13 +150,27 @@
                     
                     <li class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Employee" ? "active open" : "")">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon tf-icons ti ti-files"></i>
+                            <i class="menu-icon tf-icons ti-user-code ti ti-tada ti-md"></i>
                             <div data-i18n="Data Idle">Idle</div>
                         </a>
                         <ul class="menu-sub">
                             <li class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Employee" && ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "active open" : "")">
                                 <a class="menu-link" asp-area="" asp-controller="Employee" asp-action="Index">
                                     <div data-i18n="List Idle">List Idle</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <li class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Interview" ? "active open" : "")">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons ti ti-files ti-tada ti-md"></i>
+                            <div data-i18n="Data Interview">Interview</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Interview" && ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "active open" : "")">
+                                <a class="menu-link" asp-area="" asp-controller="Interview" asp-action="Index">
+                                    <div data-i18n="List Interview">List Interview</div>
                                 </a>
                             </li>
                         </ul>

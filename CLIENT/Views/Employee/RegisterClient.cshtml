@@ -1,84 +1,99 @@
 ﻿@{
     ViewData["Title"] = "RegisterClient";
-    Layout = "/Views/Shared/Admin/_Layout.cshtml";
+    Layout = "/Views/Shared/Admin/_StyleLayout.cshtml";
 }
 
+<!-- Content -->
 
-<h1>Register Employee</h1>
-<div class="container">
-    <form id="registerForm">
-        <div class="form-group">
-            <label for="firstNameInput">First Name:</label>
-            <input type="text" class="form-control" id="firstNameInput" name="FirstName" required />
-        </div>
-        <div class="form-group">
-            <label for="lastNameInput">Last Name:</label>
-            <input type="text" class="form-control" id="lastNameInput" name="LastName" />
-        </div>
-        <div class="form-group">
-            <label for="genderInput">Gender:</label>
-            <select class="form-control" id="genderInput" name="Gender" required>
-                <option value="0">Female</option>
-                <option value="1">Male</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="phoneNumberInput">Phone Number:</label>
-            <input type="tel" class="form-control" id="phoneNumberInput" name="PhoneNumber" required />
-        </div>
-        <div class="form-group">
-            <label for="emailInput">Email:</label>
-            <input type="email" class="form-control" id="emailInput" name="Email" required />
-        </div>
-        <div class="form-group">
-            <label for="nameCompanyInput">Name Company:</label>
-            <input type="text" class="form-control" id="nameCompanyInput" name="NameCompany" required />
-        </div>
-        <div class="form-group">
-            <label for="addressCompanyInput">Address Company:</label>
-            <input type="text" class="form-control" id="addressCompanyInput" name="AddressCompany" required />
-        </div>
-        <div class="form-group">
-            <label for="descriptionInput">Description:</label>
-            <textarea class="form-control" id="descriptionInput" name="Description" rows="3" required></textarea>
-        </div>
-        <div class="form-group">
-            <label for="passwordInput">Password:</label>
-            <input type="password" class="form-control" id="passwordInput" name="Password" required />
-        </div>
-        <div class="form-group">
-            <label for="confirmPasswordInput">Confirm Password:</label>
-            <input type="password" class="form-control" id="confirmPasswordInput" name="ConfirmPassword" required />
-        </div>
-        <div class="form-group">
-            <label for="profilePictureInput">Profile Picture:</label>
-            <input type="file" class="form-control-file" id="profilePictureInput" name="ProfilePictureFile" />
-        </div>
-        <button type="submit" class="btn btn-primary">Register</button>
-    </form>
-    <div id="errorMessage" class="text-danger"></div>
-</div>
+<div class="authentication-wrapper authentication-cover authentication-bg">
+    <div class="authentication-inner row">
 
-<!-- Modal for showing success message -->
-<div class="modal fade" id="modalCenter" tabindex="-1" role="dialog" aria-labelledby="modalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalLongTitle">Registration Successful</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                You have successfully registered!
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <!-- Left Text -->
+        <div class="d-none d-lg-flex col-lg-4 align-items-center justify-content-center p-5 auth-cover-bg-color position-relative auth-multisteps-bg-height">
+            <img src="../../TAdmin/assets/img/illustrations/auth-register-multisteps-illustration.png" alt="auth-register-multisteps" class="img-fluid" width="280">
+
+            <img src="../../TAdmin/assets/img/illustrations/bg-shape-image-light.png" alt="auth-register-multisteps" class="platform-bg" data-app-light-img="illustrations/bg-shape-image-light.png" data-app-dark-img="illustrations/bg-shape-image-dark.html">
+        </div>
+        <!-- /Left Text -->
+        <!--  Multi Steps Registration -->
+        <div class="d-flex col-lg-8 align-items-center justify-content-center p-sm-5 p-3">
+            <div class="w-px-700">
+                <div class="bs-stepper-content">
+                    <form id="registerForm" onSubmit="return false">
+                        <!-- Account Details -->
+                        <div class="content-header mb-4">
+                                <h3 class="mb-1">Account Information</h3>
+                                <p>Enter Your Account Details</p>
+                            </div>
+                        <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="emailInput">Email</label>
+                                    <input type="email" name="multiStepsEmail" id="emailInput" class="form-control" placeholder="john.doe@email.com" aria-label="john.doe" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="phoneNumberInput">Phone Number</label>
+                                    <input type="text" name="multiStepsPhone" id="phoneNumberInput" class="form-control" />
+                                </div>
+                                <div class="col-sm-6 form-password-toggle">
+                                    <label class="form-label" for="passwordInput">Password</label>
+                                    <div class="input-group input-group-merge">
+                                        <input type="password" id="passwordInput" name="multiStepsPass" class="form-control" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="multiStepsPass2" />
+                                        <span class="input-group-text cursor-pointer" id="passwordInput"><i class="ti ti-eye-off"></i></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 form-password-toggle">
+                                    <label class="form-label" for="confirmPasswordInput">Confirm Password</label>
+                                    <div class="input-group input-group-merge">
+                                        <input type="password" id="confirmPasswordInput" name="multiStepsConfirmPass" class="form-control" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="multiStepsConfirmPass2" />
+                                        <span class="input-group-text cursor-pointer" id="confirmPasswordInput"><i class="ti ti-eye-off"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        <!-- Personal Info -->
+                        <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="firstNameInput">First Name</label>
+                                    <input type="text" id="firstNameInput" name="multiStepsFirstName" class="form-control" placeholder="John" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="lastNameInput">Last Name</label>
+                                    <input type="text" id="lastNameInput" name="multiStepsLastName" class="form-control" placeholder="Doe" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="genderInput">Gender:</label>
+                                    <select class="form-control" id="genderInput" name="Gender" required>
+                                        <option value="0">Female</option>
+                                        <option value="1">Male</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="profilePictureInput" class="form-label">Profile Picture</label>
+                                    <input class="form-control" type="file" id="profilePictureInput">
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="nameCompanyInput">Name Company</label>
+                                    <input type="text" class="form-control" id="nameCompanyInput" name="NameCompany" required />
+                                </div>
+                                <div class="col-sm-12">
+                                    <label for="addressCompanyInput">Address Company</label>
+                                    <input type="text" class="form-control" id="addressCompanyInput" name="AddressCompany" required />
+                                </div>
+                                <div class="col-sm-12">
+                                    <label for="descriptionInput">Description</label>
+                                    <textarea class="form-control" id="descriptionInput" name="Description" rows="3" required></textarea>
+                                </div>
+                                <div class="col-sm-12 justify-content-between mt-4">
+                                    <button type="submit" class="btn btn-success btn-next btn-submit">Submit</button>
+                                </div>
+                            </div>
+                    </form>
+                </div>
             </div>
         </div>
+        <!-- / Multi Steps Registration -->
     </div>
 </div>
-
+<!-- / Content -->
 
 @section scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
