@@ -84,7 +84,8 @@ namespace API.Controllers
                         // Handle pengunggahan foto
                         if (registrationDto.ProfilePictureFile != null && registrationDto.ProfilePictureFile.Length > 0)
                         {
-                            string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}{Path.GetExtension(registrationDto.ProfilePictureFile.FileName)}";
+                            string originalFileName = Path.GetFileName(registrationDto.ProfilePictureFile.FileName);
+                            string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}_{originalFileName}";
                             string uploadPath = "Utilities/File/ProfilePictures/"; // Ganti dengan direktori yang sesuai
                             string filePath = Path.Combine(uploadPath, uniqueFileName);
 
@@ -205,7 +206,7 @@ namespace API.Controllers
                             }
 
                             // Generate nama unik untuk file gambar baru
-                            string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}{Path.GetExtension(updateClientDto.ProfilePictureFile.FileName)}";
+                            string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}{Path.GetFileName(updateClientDto.ProfilePictureFile.FileName)}";
                             string filePath = Path.Combine(uploadPath, uniqueFileName);
 
                             using (var stream = new FileStream(filePath, FileMode.Create))
@@ -313,7 +314,8 @@ namespace API.Controllers
                         // Handle pengunggahan foto (jika diperlukan)
                         if (registrationDto.ProfilePictureFile != null && registrationDto.ProfilePictureFile.Length > 0)
                         {
-                            string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}{Path.GetExtension(registrationDto.ProfilePictureFile.FileName)}";
+                            string originalFileName = Path.GetFileName(registrationDto.ProfilePictureFile.FileName);
+                            string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}_{originalFileName}";
                             string uploadPath = "Utilities/File/ProfilePictures/"; // Ganti dengan direktori yang sesuai
                             string filePath = Path.Combine(uploadPath, uniqueFileName);
 
@@ -329,7 +331,8 @@ namespace API.Controllers
                         // Handle pengunggahan CV (jika diperlukan)
                         if (registrationDto.CvFile != null && registrationDto.CvFile.Length > 0)
                         {
-                            string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}{Path.GetExtension(registrationDto.CvFile.FileName)}";
+                            string originalFileName = Path.GetFileName(registrationDto.CvFile.FileName);
+                            string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}_{originalFileName}";
                             string uploadPath = "Utilities/File/Cv/"; // Ganti dengan direktori yang sesuai
                             string filePath = Path.Combine(uploadPath, uniqueFileName);
 
@@ -439,7 +442,7 @@ namespace API.Controllers
                             }
 
                             // Generate nama unik untuk file gambar baru
-                            string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}{Path.GetExtension(updateDto.ProfilePictureFile.FileName)}";
+                            string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}{Path.GetFileName(updateDto.ProfilePictureFile.FileName)}";
                             string filePath = Path.Combine(uploadPath, uniqueFileName);
 
                             using (var stream = new FileStream(filePath, FileMode.Create))
@@ -485,7 +488,7 @@ namespace API.Controllers
                             }
 
                             // Generate nama unik untuk file CV baru
-                            string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}{Path.GetExtension(updateDto.CvFile.FileName)}";
+                            string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}{Path.GetFileName(updateDto.CvFile.FileName)}";
                             string filePath = Path.Combine(uploadPath, uniqueFileName);
 
                             using (var stream = new FileStream(filePath, FileMode.Create))
@@ -594,25 +597,34 @@ namespace API.Controllers
                                       PhoneNumber = emp.PhoneNumber,
                                       Grade = emp.Grade.ToString(),
                                       StatusEmployee = emp.StatusEmployee.ToString(),
-                                      Foto = emp.Foto,
+                                      Foto = GetPhotoUrl(emp.Foto), // Memanggil fungsi GetPhotoUrl
                                       AverageRating = avgRatingResult?.AvgRating ?? 0,
                                       Skill = skills
                                               .Where(skill => skill.CvGuid == cuVitResult?.Guid)
                                               .Select(skill => skill.Name)
                                               .ToList(),
-                                      Cv = cuVitResult?.Cv, // Change this line
+                                      Cv = cuVitResult?.Cv,
                                       NameCompany = company?.Name ?? "N/A",
                                       Address = company?.Address ?? "N/A",
                                       OwnerGuid = company?.EmployeeGuid ?? Guid.Empty,
                                       EmployeeOwner = companyOwner?.FirstName + " " + companyOwner?.LastName ?? "N/A",
-                                      
                                   };
 
-
-
-
             return Ok(new ResponseOKHandler<IEnumerable<EmployeeDetailDto>>(employeeDetails));
+        }
 
+        // Fungsi untuk mendapatkan URL gambar profil
+        private string GetPhotoUrl(string photoFileName)
+        {
+            if (string.IsNullOrEmpty(photoFileName))
+            {
+                return string.Empty;
+            }
+
+            // Ganti baseURL sesuai dengan URL dasar Anda
+            string baseURL = "https://localhost:7051/";
+            string photoPath = "API/Utilities/File/ProfilePictures/" + photoFileName;
+            return baseURL + photoPath;
         }
 
         [HttpGet("getByGuidIdle")]

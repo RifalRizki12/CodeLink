@@ -14,6 +14,15 @@
                     return meta.row + 1;
                 }
             },
+            {
+                data: 'foto',
+                render: function (data, type, row) {
+                    if (type === 'display' && data) {
+                        return `<img src="${data}" alt="Foto" style="max-width: 100px; max-height: 100px;" />`;
+                    }
+                    return 'N/A';
+                }
+            },
             { data: 'fullName'},
             {
                 data: "gender",
