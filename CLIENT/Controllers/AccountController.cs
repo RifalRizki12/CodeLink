@@ -22,13 +22,13 @@ namespace CLIENT.Controllers
             _accountRepository = accountRepository;
         }
 
-        public IActionResult Login()
+        public IActionResult Logins()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] LoginDto login)
+        public async Task<IActionResult> Logins([FromBody] LoginDto login)
         {
             if (ModelState.IsValid)
             {
@@ -42,16 +42,15 @@ namespace CLIENT.Controllers
             }
 
             // Jika login gagal atau data yang dikirimkan tidak valid
-            return Json(new { redirectTo = Url.Action("Login", "Account") });
+            return Json(new { redirectTo = Url.Action("Logins", "Account") });
         }
-
 
 
         [HttpGet("Logout/")]
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-            return RedirectToAction("Login", "Auth");
+            return RedirectToAction("Logins", "Auth");
         }
 
 
@@ -93,6 +92,57 @@ namespace CLIENT.Controllers
             {
                 return Json(new { error = "An error occurred while updating the employee." });
             }
+        }
+
+
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+
+        [HttpPut("Account/ForgotPassword/{email}")]
+        public async Task<IActionResult> ForgotPassword(string email, [FromBody] ForgotPasswordDto forgotDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _accountRepository.ForgotPassword(email, forgotDto);
+
+                if (result.Status == "OK")
+                {
+                    //return Json(new { redirectTo = Url.Action("ChangePassword", "Account") });
+                    return Json(new { redirectTo = Url.Action("PasswordChange", "Account") });
+                }
+            }
+
+            // Jika login gagal atau data yang dikirimkan tidak valid
+            return Json(new { redirectTo = Url.Action("ChangePassword", "Account") });
+        }
+
+        [HttpGet]
+        public IActionResult PasswordChange()
+        {
+            return View();
+        }
+
+        [HttpPut("Account/PasswordChange/{email}")]
+        public async Task<IActionResult> PasswordChange(string email, [FromBody] ChangePasswordDto changePsswdDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _accountRepository.ChangePassword(email, changePsswdDto);
+
+                if (result.Status == "OK")
+                {
+                    return Json(new { success = true, redirectTo = Url.Action("Logins", "Account") });
+
+                }
+            }
+
+            // Jika login gagal atau data yang dikirimkan tidak valid
+            return Json(new { redirectTo = Url.Action("Logins", "Account") });
         }
 
     }

@@ -1,4 +1,5 @@
-﻿$(document).ready(function () {
+﻿//Login
+$(document).ready(function () {
     $('#loginButton').click(function () {
         var email = $('#emailInput').val();
         var password = $('#passwordInput').val();
@@ -9,7 +10,7 @@
         };
 
         $.ajax({
-            url: '/Account/Login', // Ganti dengan URL API yang sesuai
+            url: '/Account/Logins', // Ganti dengan URL API yang sesuai
             type: 'POST',
             dataType: 'json',
             data: JSON.stringify(data),
@@ -24,7 +25,7 @@
                     }).then(function () {
                         window.location.href = response.redirectTo;
                     });
-               
+
                 }
             },
             error: function (xhr, status, error) {
@@ -35,7 +36,89 @@
                         title: 'Login Gagal!',
                         text: 'Pastikan email dan password Anda benar.',
                     });
-                
+
+                }
+            }
+        });
+    });
+});
+
+//Forgot Password
+$(document).ready(function () {
+    $('#btnForgotPassword').click(function () {
+        var email = $('#emailInput').val();
+
+        var data = {
+            Email: email,
+        };
+
+        $.ajax({
+            url: '/Account/ForgotPassword/' + email, 
+            type: 'PUT',
+            dataType: 'json',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            success: function (response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Forgot Password Berhasil!',
+                    text: 'Silahkan Cek Email Anda!!!.',
+                }).then(function () {
+                    window.location.href = response.redirectTo;
+                });
+            },
+            error: function (xhr, status, error) {
+                if (xhr.status === 500) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Forgot Password Gagal!',
+                        text: 'Pastikan email  Anda benar.',
+                    });
+
+                }
+            }
+        });
+    });
+});
+
+//CHANGE PASSWORD
+$(document).ready(function () {
+    $('#btnChangePassword').click(function () {
+        var email = $('#emailInput').val();
+        var otp = $('#otpInput').val();
+        var password = $('#passwordInput').val();
+        var confirmPassword = $('#confirmPsswdInput').val();
+
+        var data = {
+            Email: email,
+            Otp: otp,
+            NewPassword: password,
+            ConfirmPassword: confirmPassword
+        };
+
+        $.ajax({
+            url: '/Account/PasswordChange/' + email,
+            type: 'PUT',
+            dataType: 'json',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            success: function (response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Change Password Berhasil!',
+                    text: 'Silahkan Login Kembali!!!.',
+                }).then(function () {
+                    window.location.href = response.redirectTo;
+                });
+            },
+            error: function (xhr, status, error) {
+                if (xhr.status === 500) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Change Password Gagal!',
+                        text: 'Pastikan email  Anda benar.',
+                    });
+
                 }
             }
         });

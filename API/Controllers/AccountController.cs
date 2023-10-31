@@ -94,7 +94,7 @@ namespace API.Controllers
 
 
         // Metode untuk mengirim OTP melalui email dalam kasus lupa kata sandi
-        [HttpPut("forgot-password")]
+        [HttpPut("forgot-password/{email}")]
         [AllowAnonymous]
         public IActionResult ForgotPassword(string email)
         {

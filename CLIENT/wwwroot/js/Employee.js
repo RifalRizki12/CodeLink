@@ -617,13 +617,29 @@ $(document).ready(function () {
                     text: 'Data client berhasil diperbarui.'
                 });
             },
-            error: function (response) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Pembaruan gagal',
-                    text: 'Terjadi kesalahan saat mencoba update data client.'
-                });
+            error: function (xhr, status, error) {
+                if (xhr.status === 400) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        text: xhr.responseText
+                    });
+                } else if (xhr.status === 404) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Employee data not found.'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred while updating employee data.'
+                    });
+                }
+                console.error(xhr.responseText);
             }
         });
+
     }
 });
