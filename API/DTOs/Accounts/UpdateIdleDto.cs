@@ -16,9 +16,7 @@ namespace API.DTOs.Accounts
         public string Email { get; set; }
         public GradeLevel Grade { get; set; }
         public StatusEmployee StatusEmployee { get; set; }
-        public string? Password { get; set; }
-        public string? ConfirmPassword { get; set; }
-        public Guid? CompanyGuid { get; set; }
+/*        public Guid? CompanyGuid { get; set; }*/
         public List<string>? Skills { get; set; }
 
         public static implicit operator Employee(UpdateIdleDto dto)
@@ -34,25 +32,11 @@ namespace API.DTOs.Accounts
                 Grade = dto.Grade,
                 Email = dto.Email,
                 StatusEmployee = dto.StatusEmployee,
-                CompanyGuid= dto.CompanyGuid
+/*                CompanyGuid= dto.CompanyGuid*/
             };
         }
 
-        public static implicit operator Account(UpdateIdleDto dto)
-        {
-            return new Account
-            {
-
-                Password = dto.ConfirmPassword,
-                Otp = 0,
-                IsUsed = true,
-                Status = StatusLevel.Approved,
-                ExpiredTime = DateTime.Now,
-                CreatedDate = DateTime.Now,
-                ModifiedDate = DateTime.Now
-            };
-        }
-
+        
         public static implicit operator CurriculumVitae(UpdateIdleDto dto)
         {
             return new CurriculumVitae

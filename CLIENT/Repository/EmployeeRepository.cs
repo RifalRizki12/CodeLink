@@ -56,7 +56,7 @@ namespace CLIENT.Repository
 
 
 
-        public async Task<ResponseOKHandler<UpdateIdleDto>> UpdateIdle(UpdateIdleDto employeeDto)
+      /*  public async Task<ResponseOKHandler<UpdateIdleDto>> UpdateIdle(UpdateIdleDto employeeDto)
         {
             string requestUrl = "updateIdle"; // Sesuaikan dengan URL endpoint yang benar
             var content = new StringContent(JsonConvert.SerializeObject(employeeDto), Encoding.UTF8, "application/json");
@@ -74,7 +74,7 @@ namespace CLIENT.Repository
                     throw new HttpRequestException($"HTTP error: {response.StatusCode}");
                 }
             }
-        }
+        }*/
 
         public async Task<ResponseOKHandler<Employee>> RegisterIdle(RegisterIdleDto registrationDto)
         {
@@ -386,6 +386,78 @@ namespace CLIENT.Repository
                 entity = JsonConvert.DeserializeObject<ResponseOKHandler<EmployeeDetailDto>>(apiResponse);
             }
             return entity;
+        }
+
+        public async Task<ResponseOKHandler<Employee>> UpdateIdle(UpdateIdleDto idleDto)
+        {
+            try
+            {
+                using (var content = new MultipartFormDataContent())
+                {
+                    foreach (var prop in idleDto.GetType().GetProperties())
+                    {
+                        var value = prop.GetValue(idleDto);
+                        if (value != null)
+                        {
+                            if (value is IFormFile file)
+                            {
+                                var fileContent = new StreamContent(file.OpenReadStream())
+                                {
+                                    Headers =
+                        {
+                            ContentLength = file.Length,
+                            ContentType = new MediaTypeHeaderValue(file.ContentType)
+                        }
+                                };
+                                content.Add(fileContent, prop.Name, file.FileName);
+                            }
+                            else if (prop.Name == "Skills" && value is List<string> skills)
+                            {
+                                for (int i = 0; i < skills.Count; i++)
+                                {
+                                    content.Add(new StringContent(skills[i]), $"Skills[{i}]");
+                                }
+                            }
+                            else
+                            {
+                                content.Add(new StringContent(value.ToString()), prop.Name);
+                            }
+                        }
+                    }
+
+                    using (var response = await httpClient.PutAsync($"{request}UpdateIdle", content))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<Employee>>(apiResponse);
+                            return entityVM;
+                        }
+                        else
+                        {
+                            // Handle non-success status codes as needed
+                            if (response.StatusCode == HttpStatusCode.UnsupportedMediaType)
+                            {
+                                Console.WriteLine("415 Unsupported Media Type - Ensure the server accepts JSON.");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Request failed with status code {response.StatusCode}: {response.ReasonPhrase}");
+                            }
+                            Console.WriteLine($"Response Content: {apiResponse}");
+                            // You might want to return a specific response or throw an exception here
+                            return null;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine(ex);
+                throw; // Consider whether re-throwing the exception is the best course of action
+            }
         }
     }
 }

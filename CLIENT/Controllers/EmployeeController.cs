@@ -104,7 +104,7 @@ namespace CLIENT.Controllers
 
 
 
-        [HttpPut("updateIdle")]
+        /*[HttpPut("updateIdle")]
         public async Task<JsonResult> UpdateIdle(UpdateIdleDto employeeDto)
         {
             var response = await repository.UpdateIdle(employeeDto);
@@ -124,7 +124,7 @@ namespace CLIENT.Controllers
             {
                 return Json(new { error = "An error occurred while updating the employee." });
             }
-        }
+        }*/
 
 
 
@@ -183,6 +183,33 @@ namespace CLIENT.Controllers
                 // Anda sekarang bisa mengakses updateDto.Skills sebagai List<string>
 
                 var result = await repository.UpdateClient(updateDto);
+
+                if (result.Status == "OK")
+                {
+                    // Pembaruan berhasil
+                    return Json(new { success = true, redirectTo = Url.Action("Index", "Employee") });
+                }
+                else
+                {
+                    // Pembaruan gagal atau ada kesalahan
+                    return Json(new { success = false, message = "Pembaruan gagal atau terjadi kesalahan." });
+                }
+            }
+            else
+            {
+                // Data yang dikirim tidak valid
+                return Json(new { success = false, message = "Data tidak valid." });
+            }
+        }
+        
+        [HttpPut]
+        public async Task<IActionResult> UpdateIdle([FromForm] UpdateIdleDto updateDto)
+        {
+            if (ModelState.IsValid)
+            {
+                // Anda sekarang bisa mengakses updateDto.Skills sebagai List<string>
+
+              var result = await repository.UpdateIdle(updateDto);
 
                 if (result.Status == "OK")
                 {

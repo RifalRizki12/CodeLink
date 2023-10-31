@@ -143,7 +143,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="updateClientForm" class="needs-validation" novalidate>
+                <form id="updateIdleForm" class="needs-validation" novalidate>
                     <div class="row">
                         <div class="col mb-3">
                             <label for="editFirstName" class="form-label">First Name</label>
@@ -156,8 +156,17 @@
                     </div>
                     <div class="row">
                         <div class="col mb-3">
+                            <label class="form-label" for="editPhoneNumber">Phone Number</label>
+                            <input type="text" id="editPhoneNumber" class="form-control" placeholder="Enter Phone Number" required />
+                        </div>
+                        <div class="col mb-3">
+                            <label for="editEmail" class="form-label">Email</label>
+                            <input type="text" id="editEmail" class="form-control" placeholder="Enter Email" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col mb-3">
                             <label class="form-label" for="editGender">Gender</label>
-
                             <select id="editGender" class="form-control">
                                 <option value="">Select Option</option>
                                 <option value="Female">Female</option>
@@ -165,50 +174,38 @@
                             </select>
                         </div>
                         <div class="col mb-3">
-                            <label class="form-label" for="editGrade">Gender</label>
+                            <label class="form-label" for="editGrade">Grade</label>
                             <select id="editGrade" class="form-control">
                                 <option value="">Select Option</option>
                                 <option value="A">A</option>
                                 <option value="B">B</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <div class="col mb-3">
-                                <label for="skillsInput">Skills:</label>
-                                <select id="skillsInput" class="form-control" multiple="multiple" style="width: 300px;"></select>
-                            </div>
+                    </div>
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label for="profilePictureInput" class="form-label">Profile Picture</label>
+                            <input type="file" id="profilePictureInput" class="form-control" />
+                        </div>
+                        <div class="col mb-3">
+                            <label for="cvInput" class="form-label">CV File</label>
+                            <input type="file" id="cvInput" class="form-control" />
                         </div>
                     </div>
                     <div class="row">
                         <div class="col mb-3">
-                            <label class="form-label" for="editPhoneNumber">Phone Number</label>
-                            <input type="text" id="editPhoneNumber" class="form-control" placeholder="Enter Phone Number" required />
-                        </div>
-                        <div class="col mb-3">
-                            <img id="editProfilePicPreview" src="" alt="Profile Picture">
-                            <label for="profilePictureInput">Profile Picture:</label>
-                            <input type="file" class="form-control-file" id="profilePictureInput" accept="image/*" />
-                            <!-- Tambahkan elemen span untuk menampilkan nama file gambar -->
-                            <span id="profilePicFileName"></span>
-                        </div>
-                        <div class="col mb-3">
-                            <img id="cvFile" src="" alt="Profile Picture">
-                            <label for="cvInput">Profile Picture:</label>
-                            <input type="file" class="form-control-file" id="cvInput" accept="image/*" />
-                            <!-- Tambahkan elemen span untuk menampilkan nama file gambar -->
-                            <span id="CVFile"></span>
-                        </div>
-
-                    </div>
-                    <div class="row">
-                        <div class="col mb-3">
-                            <label class="form-label" for="editGender">Gender</label>
-
+                            <label class="form-label" for="editStatusEmploye">Status Employee</label>
                             <select id="editStatusEmploye" class="form-control">
                                 <option value="">Select Option</option>
                                 <option value="idle">Idle</option>
                                 <option value="owner">Owner</option>
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <div class="col mb-3">
+                                <label for="editSkills">Skills:</label>
+                                <select id="editSkills" class="form-control" multiple="multiple" style="width: 300px; height: 200px;"></select>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -234,7 +231,17 @@
                 placeholder: "Select or add skills"
             });
         });
-    </script>
+    </script>    
+    @* <script>
+        $(document).ready(function () {
+            $('#editSkills').select2({
+                tags: true,
+                tokenSeparators: [',', ' '],
+                placeholder: "Select or add skills"
+            });
+
+        });
+    </script> *@
     <!-- DataTables JavaScript -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <!-- DataTables Buttons JavaScript -->
