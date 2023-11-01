@@ -22,7 +22,6 @@ namespace CLIENT.Repository
                 BaseAddress = new Uri("https://localhost:7051/api/")
             };
             contextAccessor = new HttpContextAccessor();
-            // Ini yg bawah skip dulu
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", contextAccessor.HttpContext?.Session.GetString("JWToken"));
         }
 

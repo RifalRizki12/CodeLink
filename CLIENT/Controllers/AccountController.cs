@@ -38,13 +38,21 @@ namespace CLIENT.Controllers
                 {
                     HttpContext.Session.SetString("JWToken", result.Data.Token);
 
-                    // Periksa peran pengguna
-                    var user = HttpContext.User;
-                    var roleClaim = user.Claims.FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
+                    // Mengambil klaim pengguna dari JWT
+                    var claims = await _accountRepository.GetClaimsAsync(result.Data.Token);
 
-                    if (roleClaim != null)
+                    if (claims != null)
                     {
-                        string role = roleClaim.Value;
+                        // Simpan klaim dalam session
+                        HttpContext.Session.SetString("FullName", claims.Data.FullName);
+                        HttpContext.Session.SetString("EmployeeGuid", claims.Data.EmployeeGuid.ToString());
+                        HttpContext.Session.SetString("Email", claims.Data.Email);
+                        // Anda juga bisa menyimpan peran (role) sesuai kebutuhan aplikasi Anda.
+                        HttpContext.Session.SetString("Role", claims.Data.Role.FirstOrDefault());
+
+                        string role = HttpContext.Session.GetString("Role"); // Ambil peran dari session
+
+                        // Lakukan pengalihan berdasarkan peran
                         if (role == "admin")
                         {
                             // Pengguna memiliki peran "admin", lakukan tindakan admin
@@ -55,11 +63,12 @@ namespace CLIENT.Controllers
                             // Pengguna memiliki peran "client", lakukan tindakan client
                             return Json(new { redirectTo = Url.Action("HomeClient", "HomeClient") });
                         }
+                        // Anda juga bisa menambahkan peran lain sesuai dengan kebutuhan Anda
                     }
                     else
                     {
-                        // Jika login gagal, kirim respons yang berisi pesan kesalahan
-                        return Json(new { status = "BadRequest", message = result.Message });
+                        // Jika klaim pengguna tidak tersedia
+                        return Json(new { status = "BadRequest", message = "User claims not available." });
                     }
                 }
             }

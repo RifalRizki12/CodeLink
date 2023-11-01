@@ -1,5 +1,6 @@
 ﻿using API.DTOs.Accounts;
 using API.DTOs.Employees;
+using API.DTOs.Tokens;
 using API.Models;
 using API.Utilities.Handler;
 using CLIENT.Contract;
@@ -7,8 +8,10 @@ using CLIENT.Models;
 using CLIENT.Repository;
 using FluentValidation;
 using Newtonsoft.Json;
+using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 
 
@@ -19,6 +22,26 @@ namespace CLIENT.Repository
         public AccountRepository(string request = "Account/") : base(request)
         {
 
+        }
+
+        public async Task<ResponseOKHandler<ClaimsDto>> GetClaimsAsync(string token)
+        {
+            var requestUrl = "GetClaims/";
+
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await httpClient.GetAsync(request + requestUrl + token);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var claims = JsonConvert.DeserializeObject<ResponseOKHandler<ClaimsDto>>(content);
+                return claims;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve claims.");
+            }
         }
 
         public async Task<ResponseOKHandler<ChangePasswordDto>> ChangePassword(string email, ChangePasswordDto changePsswdDto)
