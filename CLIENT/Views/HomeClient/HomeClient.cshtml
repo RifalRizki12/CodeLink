@@ -32,22 +32,52 @@
 </button> *@
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="modalDetail" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">Detail Employee</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div id="employeeModal" class="modal-body">
+            <div id="employeeModal" class="modal-body modalBodyDetail">
                
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Save changes</button>
+                <button type="button" class="btn btn-outline-primary btn-hire" data-bs-dismiss="modal">Hire</button>
             </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalInterview" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Add Schedule Interview</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    <div class="form-group">
+                        <label>Name of Interview</label>
+                        <input type="text" required="" id="nameInput" placeholder="Username or Email " />
+                    </div>
+                    <div class="form-group">
+                        <label>Date Interview</label>
+                        <input required="" type="date" id="dateInput" placeholder="Your password *" />
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-heading btn-block hover-up" name="login">Submit</button>
+                    </div>
+                </form>
+            </div>
+           
         </div>
     </div>
 </div>
