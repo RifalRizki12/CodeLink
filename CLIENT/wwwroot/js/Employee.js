@@ -14,6 +14,17 @@
                     return meta.row + 1;
                 }
             },
+            {
+                data: 'foto',
+                render: function (data, type, row) {
+                    if (type === 'display' && data) {
+                        const baseURL = "https://localhost:7051/"; // Gantilah URL dasar sesuai dengan kebutuhan Anda
+                        const photoURL = `${baseURL}ProfilePictures/${data}`; // Gabungkan baseURL dengan path gambar
+                        return `<img src="${photoURL}" alt="Employee Photo" style="max-width: 100px; max-height: 100px;">`;
+                    }
+                    return 'N/A'; // Pesan jika URL gambar tidak tersedia
+                }
+            },
             { data: 'fullName' },
             {
                 data: "gender",
@@ -396,6 +407,17 @@ $(document).ready(function () {
                 data: null,
                 render: function (data, type, row, meta) {
                     return meta.row + 1;
+                }
+            },
+            {
+                data: 'fotoEmployee',
+                render: function (data, type, row) {
+                    if (type === 'display' && data) {
+                        const baseURL = "https://localhost:7051/"; // Gantilah URL dasar sesuai dengan kebutuhan Anda
+                        const photoURL = `${baseURL}ProfilePictures/${data}`; // Gabungkan baseURL dengan path gambar
+                        return `<img src="${photoURL}" alt="Employee Photo" style="max-width: 100px; max-height: 100px;">`;
+                    }
+                    return 'N/A'; // Pesan jika URL gambar tidak tersedia
                 }
             },
             { data: 'fullName' },
