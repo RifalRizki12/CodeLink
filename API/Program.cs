@@ -143,6 +143,13 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/ProfilePictures"
 });
 
+//ini untuk akses stasis folder cv
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Utilities/File/Cv")),
+    RequestPath = "/Cv"
+});
+
 
 app.UseHttpsRedirection();
 
