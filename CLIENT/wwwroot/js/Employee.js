@@ -20,7 +20,10 @@
                     if (type === 'display' && data) {
                         const baseURL = "https://localhost:7051/"; // Gantilah URL dasar sesuai dengan kebutuhan Anda
                         const photoURL = `${baseURL}ProfilePictures/${data}`; // Gabungkan baseURL dengan path gambar
-                        return `<img src="${photoURL}" alt="Employee Photo" style="max-width: 100px; max-height: 100px;">`;
+                        return `
+                        <div class="text-center">
+                            <img src="${photoURL}" alt="Employee Photo" style="max-width: 100px; max-height: 100px;">
+                        </div>`;
                     }
                     return 'N/A'; // Pesan jika URL gambar tidak tersedia
                 }
@@ -45,14 +48,36 @@
                     }
                 }
             },
-            { data: 'statusEmployee' },
+            {
+                data: 'statusEmployee',
+                render: function (data) {
+                    return `<div class="text-center">${data}</div>`;
+                }
+            },
+            {
+                data: 'cv',
+                render: function (data, type, row) {
+                    if (type === 'display' && data) {
+                        const baseURL = "https://localhost:7051/";
+                        const cvURL = `${baseURL}Cv/${data}`; // Gabungkan baseURL dengan path cv
+                        return `
+                        <div class="text-center">
+                            <a href="${cvURL}" target="_blank"><button class="btn btn-info btn-sm"><i class="fa-solid fa-eye"></i></button></a>
+                        </div>`;
+                    }
+                    return 'N/A'; // Pesan jika URL gambar tidak tersedia
+                }
+            },
             {
                 data: null,
                 render: function (data, type, row) {
-                    return `<button type="button" class="btn btn-primary edit-button" data-guid="${data.guid}" data-bs-toggle="modal" data-bs-target="#modalEditEmployee">Update</button>
-                            <button type="button" class="btn btn-warning detail-button" data-guid="${row.guid}">-</button>`;
+                    return `
+                    <div class="text-center">
+                        <button type="button" class="btn btn-warning edit-button" data-guid="${data.guid}" data-bs-toggle="modal" data-bs-target="#modalEditEmployee">Update</button>
+                    </div>`;
                 }
             },
+            
         ]
     });
     $('.dt-buttons').removeClass('dt-buttons');
