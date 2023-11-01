@@ -12,6 +12,7 @@
         $.each(result.data, (key, val) => {
             const baseURL = "https://localhost:7051/"; // Gantilah URL dasar sesuai dengan kebutuhan Anda
             const photoURL = `${baseURL}ProfilePictures/${val.foto}`; // Gabungkan baseURL dengan path gambar
+            const cvURL = `${baseURL}Cv/${val.cv}`;
             
             // Membuat tampilan grid untuk setiap karyawan
             const employeeItem = `
@@ -47,8 +48,9 @@
                         <div class="add-cart">
                             <button type="button" class=" btn btn-outline-success btn-detail" data-guid="${val.guid}" data-bs-toggle="modal" data-bs-target="#modalDetail" ><i class="mr-1 btn-detail" data-guid="${val.guid}"></i>Detail</button>
                         </div>
-                        <button type="button" class="btn btn-outline-info" data-guid="${val.guid}" data-bs-toggle="modal" data-bs-target="#modalDetail"> Show CV </button> 
-
+                        <a href="${cvURL}" target="_blank">
+                            <button type="button" class="btn btn-outline-info" data-guid="${val.guid}"> Show CV </button> 
+                        </a>
                     </div>
                 </div>
             </div>

@@ -26,6 +26,7 @@ namespace CLIENT.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         public async Task<JsonResult> GetEmployeeData()
         {
             var result = await repository.GetDetailIdle();
@@ -132,6 +133,7 @@ namespace CLIENT.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet("Employee/GetGuidEmployee/{guid}")]
         public async Task<JsonResult> GetGuidEmployee(Guid guid)
         {

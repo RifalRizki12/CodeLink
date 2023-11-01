@@ -74,6 +74,9 @@ namespace API.Controllers
                     claims.Add(new Claim(ClaimTypes.Role, role.Name));
                 }
 
+                // Menambahkan klaim GUID karyawan ke dalam token
+                var employeeGuidClaim = new Claim("EmployeeGuid", employee.Guid.ToString());
+                claims.Add(employeeGuidClaim);
                 var generateToken = _tokenHandler.Generate(claims);
 
                 // Jika validasi berhasil, kirim respons OK dengan pesan login berhasil
