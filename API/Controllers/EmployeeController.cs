@@ -592,7 +592,7 @@ namespace API.Controllers
                                       PhoneNumber = emp.PhoneNumber,
                                       Grade = emp.Grade.ToString(),
                                       StatusEmployee = emp.StatusEmployee.ToString(),
-                                      Foto = GetPhotoUrl(emp.Foto), // Memanggil fungsi GetPhotoUrl
+                                      Foto = emp.Foto, // Memanggil fungsi GetPhotoUrl
                                       AverageRating = avgRatingResult?.AvgRating ?? 0,
                                       Skill = skills
                                               .Where(skill => skill.CvGuid == cuVitResult?.Guid)
@@ -606,20 +606,6 @@ namespace API.Controllers
                                   };
 
             return Ok(new ResponseOKHandler<IEnumerable<EmployeeDetailDto>>(employeeDetails));
-        }
-
-        // Fungsi untuk mendapatkan URL gambar profil
-        private string GetPhotoUrl(string photoFileName)
-        {
-            if (string.IsNullOrEmpty(photoFileName))
-            {
-                return string.Empty;
-            }
-
-            // Ganti baseURL sesuai dengan URL dasar Anda
-            string baseURL = "https://localhost:7051/";
-            string photoPath = "API/Utilities/File/ProfilePictures/" + photoFileName;
-            return baseURL + photoPath;
         }
 
         [HttpGet("getByGuidIdle/{employeeGuid}")]

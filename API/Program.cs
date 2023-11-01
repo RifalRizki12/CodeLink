@@ -135,15 +135,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+//ini untuk akses gambar
+app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "Utilities/File/ProfilePictures")),
-    RequestPath = "/ProfilePictures" 
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Utilities/File/ProfilePictures")),
+    RequestPath = "/ProfilePictures"
 });
 
-
-app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 
