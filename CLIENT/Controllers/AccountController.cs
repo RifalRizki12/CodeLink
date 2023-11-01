@@ -37,7 +37,30 @@ namespace CLIENT.Controllers
                 if (result.Status == "OK")
                 {
                     HttpContext.Session.SetString("JWToken", result.Data.Token);
-                    return Json(new { redirectTo = Url.Action("Index", "Employee") });
+
+                    // Periksa peran pengguna
+                    var user = HttpContext.User;
+                    var roleClaim = user.Claims.FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
+
+                    if (roleClaim != null)
+                    {
+                        string role = roleClaim.Value;
+                        if (role == "admin")
+                        {
+                            // Pengguna memiliki peran "admin", lakukan tindakan admin
+                            return Json(new { redirectTo = Url.Action("Index", "Employee") });
+                        }
+                        else if (role == "client" || role == "idle")
+                        {
+                            // Pengguna memiliki peran "client", lakukan tindakan client
+                            return Json(new { redirectTo = Url.Action("HomeClient", "HomeClient") });
+                        }
+                    }
+                    else
+                    {
+                        // Jika login gagal, kirim respons yang berisi pesan kesalahan
+                        return Json(new { status = "BadRequest", message = result.Message });
+                    }
                 }
             }
 
@@ -50,7 +73,7 @@ namespace CLIENT.Controllers
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-            return RedirectToAction("Logins", "Auth");
+            return RedirectToAction("Logins", "Account");
         }
 
 
