@@ -32,6 +32,11 @@ namespace CLIENT.Controllers
         {
             return View();
         }
+        
+        public IActionResult ListHireIdle()
+        {
+            return View();
+        }
 
     }
 }
