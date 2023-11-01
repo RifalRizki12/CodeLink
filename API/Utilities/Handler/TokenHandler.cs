@@ -1,4 +1,5 @@
 ﻿using API.Contracts;
+using API.DTOs.Tokens;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -26,6 +27,51 @@ namespace API.Utilities.Handler
                 signingCredentials: signingCredentials);
             var encodedToken = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
             return encodedToken;
+        }
+
+        public ClaimsDto ExtractClaimsFromJwt(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                return new ClaimsDto();
+            }
+
+            try
+            {
+                var tokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = true,
+                    ValidAudience = _configuration["JWTService:Audience"],
+                    ValidateIssuer = true,
+                    ValidIssuer = _configuration["JWTService:Issuer"],
+                    ValidateLifetime = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTService:SecretKey"]))
+                };
+
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var claimsPrincipal = tokenHandler.ValidateToken(token, tokenValidationParameters, out _);
+
+                if (claimsPrincipal.Identity is ClaimsIdentity identity)
+                {
+                    var claims = new ClaimsDto
+                    {
+                        EmployeeGuid = Guid.Parse(identity.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? ""),
+                        FullName = identity.FindFirst(ClaimTypes.Name)?.Value,
+                        Email = identity.FindFirst(ClaimTypes.Email)?.Value
+                    };
+
+                    var roles = identity.Claims.Where(c => c.Type == ClaimTypes.Role).Select(claim => claim.Value).ToList();
+                    claims.Role = roles;
+
+                    return claims;
+                }
+            }
+            catch
+            {
+                return new ClaimsDto();
+            }
+
+            return new ClaimsDto();
         }
     }
 }
