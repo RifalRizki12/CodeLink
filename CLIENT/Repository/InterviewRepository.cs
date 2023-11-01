@@ -30,6 +30,7 @@ namespace CLIENT.Repository
             }
         }
 
+
         public async Task<ResponseOKHandler<ScheduleInterviewDto>> ScheduleUpdate(Guid guid, ScheduleInterviewDto scheduleUpdate)
         {
             string requestUrl = "ScheduleInterview";
@@ -41,6 +42,20 @@ namespace CLIENT.Repository
                 entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<ScheduleInterviewDto>>(apiResponse);
             }
             return entityVM;
+        }        
+        
+        public async Task<ResponseOKHandler<GetInterviewDto>> GetByCompanyGuid(Guid guid)
+        {
+            string requestUrl = "GetAllByClientGuid/"; // Sesuaikan dengan URL endpoint yang benar
+
+            ResponseOKHandler<GetInterviewDto> entity = null;
+
+            using (var response = await httpClient.GetAsync(request + requestUrl + guid))
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                entity = JsonConvert.DeserializeObject<ResponseOKHandler<GetInterviewDto>>(apiResponse);
+            }
+            return entity;
         }
     }
 }

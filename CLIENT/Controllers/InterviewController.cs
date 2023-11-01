@@ -42,28 +42,28 @@ namespace CLIENT.Controllers
                 return Json(new { error = result.Message });
             }
         }
-    /*    [HttpPut]
-        public async Task<JsonResult> ScheduleUpdate(ScheduleInterviewDto scheduleUpdate)
-        {
-            try
+        /*    [HttpPut]
+            public async Task<JsonResult> ScheduleUpdate(ScheduleInterviewDto scheduleUpdate)
             {
-                var result = await _repository.ScheduleUpdate(scheduleUpdate);
+                try
+                {
+                    var result = await _repository.ScheduleUpdate(scheduleUpdate);
 
-                if (result.Status == "OK")
-                {
-                    return Json(new { success = true });
+                    if (result.Status == "OK")
+                    {
+                        return Json(new { success = true });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Pembaruan gagal: " + result.Message });
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    return Json(new { success = false, message = "Pembaruan gagal: " + result.Message });
+                    // Log pesan kesalahan atau tangani kesalahan sesuai kebutuhan Anda
+                    return Json(new { success = false, message = "Terjadi kesalahan saat memproses pembaruan: " + ex.Message });
                 }
-            }
-            catch (Exception ex)
-            {
-                // Log pesan kesalahan atau tangani kesalahan sesuai kebutuhan Anda
-                return Json(new { success = false, message = "Terjadi kesalahan saat memproses pembaruan: " + ex.Message });
-            }
-        }*/
+            }*/
 
         [HttpPut("Interview/ScheduleUpdate/{guid}")]
         public async Task<JsonResult> ScheduleUpdate(Guid guid, [FromBody] ScheduleInterviewDto scheduleUpdate)
@@ -86,6 +86,24 @@ namespace CLIENT.Controllers
                 return Json(new { error = "An error occurred while updating the employee." });
             }
         }
+        public IActionResult ListHireIdle()
+        {
+            return View();
+        }
 
+        [HttpGet("GetAllByClientGuid/{companyGuid}")]
+        public async Task<JsonResult> ListHireIdle(Guid guid)
+        {
+            var result = await _repository.Get(guid);
+            if (result.Data?.Guid != null)
+            {
+                return Json(result.Data);
+            }
+            else
+            {
+                return Json(new { error = result.Message });
+            }
+
+        }
     }
 }
