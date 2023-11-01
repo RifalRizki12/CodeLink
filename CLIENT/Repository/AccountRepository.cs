@@ -5,7 +5,9 @@ using API.Utilities.Handler;
 using CLIENT.Contract;
 using CLIENT.Models;
 using CLIENT.Repository;
+using FluentValidation;
 using Newtonsoft.Json;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 
@@ -45,7 +47,7 @@ namespace CLIENT.Repository
             return entityVM;
         }
 
-        public async Task<ResponseOKHandler<TokenDto>> Login(LoginDto login)
+        /*public async Task<ResponseOKHandler<TokenDto>> Login(LoginDto login)
         {
             string jsonEntity = JsonConvert.SerializeObject(login);
             StringContent content = new StringContent(jsonEntity, Encoding.UTF8, "application/json");
@@ -57,6 +59,40 @@ namespace CLIENT.Repository
                 var entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<TokenDto>>(apiResponse);
                 return entityVM;
             }
+        }*/
+
+        public async Task<ResponseOKHandler<TokenDto>> Login(LoginDto login)
+        {
+            string jsonEntity = JsonConvert.SerializeObject(login);
+            StringContent content = new StringContent(jsonEntity, Encoding.UTF8, "application/json");
+
+            using (var response = await httpClient.PostAsync($"{request}login", content))
+            {
+                if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    // Respons status adalah 400 (Bad Request), baca pesan kesalahan validasi
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    var validationErrors = JsonConvert.DeserializeObject<ResponseErrorHandler>(apiResponse).Error;
+
+                    // Handle pesan kesalahan validasi di sini
+                    string validationErrorMessage = "Validasi gagal: " + string.Join(", ", validationErrors);
+
+                    // Anda dapat melemparkan pengecualian dengan pesan kesalahan validasi
+                    throw new ValidationException(validationErrorMessage);
+
+                    // Atau jika Anda ingin mengembalikan pesan kesalahan kepada pengguna, Anda bisa mengembalikan respons khusus
+                    // Misalnya: return new ResponseErrorHandler { Code = StatusCodes.Status400BadRequest, Status = HttpStatusCode.BadRequest.ToString(), Message = validationErrorMessage };
+                }
+                else
+                {
+                    // Respons status lainnya (status 200 OK), proses respons seperti biasa
+                    response.EnsureSuccessStatusCode();
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    var entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<TokenDto>>(apiResponse);
+                    return entityVM;
+                }
+            }
         }
+
     }
 }
