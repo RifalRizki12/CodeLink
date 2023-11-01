@@ -76,27 +76,25 @@
             dataSrc: 'data',
         }).done((result) => {
             console.log("Data dari server:", result);
-            var employeeModal = $("#exampleModalCenter");
-
-            $.each(result.data, (key, val) => {
+            var employeeModal = $("#employeeModal");
                 var employeeValue = ` 
                 <div class="product-img product-img-zoom">
                     <a href="shop-product-right.html">
-                        <img class="hover-img" src="${val.foto}" alt="${val.fullName}"/>
+                        <img class="hover-img" src="${result.foto}" alt="${result.fullName}"/>
                     </a>
                 </div>
-                <h2 class="title-detail" >${val.fullName}</h2>
+                <h2 class="title-detail" >${result.fullName}</h2>
                 <div class="product-detail-rating">
                     <div class="product-rate-cover text-end">
                         <div class="product-rate d-inline-block">
-                            <div class="product-rating" style="width: 90%">${val.averageRating}</div>
+                            <div class="product-rating" style="width: 90%">${result.averageRating}</div>
                         </div>
                         <span class="font-small ml-5 text-muted" id="rating"> Rating Kinerja </span>
                     </div>
                 </div>
                 <div class="clearfix product-price-cover">
                     <div class="product-price primary-color float-left">
-                        <h4 class="current-price text-brand title-detail" id="grade">Grade: ${val.grade}</h4>
+                        <h4 class="current-price text-brand title-detail" id="grade">Grade: ${result.grade}</h4>
                     </div>
                 </div>
                 <div class="clearfix product-price-cover">
@@ -105,19 +103,17 @@
                     </div>
                 </div>
                 <div class="short-desc mb-30">
-                    <p class="font-lg skillData">${val.skill.join(', ')}</p>
+                    <p class="font-lg skillData">${result.skill.join(', ')}</p>
                 </div>
                 <div class="short-desc mb-30">
-                    <p class="font-lg skillData">Calon partner yang akan bergabung dengan perusahaan anda gendernya ${val.gender}
-                        No Handphone yang dapat dihubungi adalah ${val.phoneNumber} kontak email yang tersedia adalah ${val.email} 
-                        cv dapat diakses melalui <a href="${val.cv}">lihat CV</a> 
+                    <p class="font-lg skillData">Calon partner yang akan bergabung dengan perusahaan anda gendernya ${result.gender}
+                        No Handphone yang dapat dihubungi adalah ${result.phoneNumber} kontak email yang tersedia adalah ${result.email} 
+                        cv dapat diakses melalui <a href="${result.cv}">lihat CV</a> 
                     </p>
                 </div>
                 `;
-                console.log("ini employee semua",employeeValue);
-                employeeModal.find('.modal-body').html(employeeValue);
-            });
-        }).fail((error) => {
+                 employeeModal.append(employeeValue);
+            }).fail((error) => {
             console.log(error);
             Swal.fire({
                 icon: 'error',
