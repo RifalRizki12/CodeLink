@@ -1,5 +1,6 @@
 ﻿using API.Contracts;
 using API.DTOs.Accounts;
+using API.DTOs.Tokens;
 using API.Models;
 using API.Repositories;
 using API.Utilities.Handler;
@@ -29,6 +30,20 @@ namespace API.Controllers
             _emailHandler = emailHandler;
             _roleRepository = roleRepository;
             _tokenHandler = tokenHandler;
+        }
+
+        [Authorize]
+        [HttpGet("GetClaims/{token}")]
+        public IActionResult GetClaims(string token)
+        {
+            var claims = _tokenHandler.ExtractClaimsFromJwt(token);
+            return Ok(new ResponseOKHandler<ClaimsDto>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Claims has been retrieved",
+                Data = claims
+            });
         }
 
         //Login
