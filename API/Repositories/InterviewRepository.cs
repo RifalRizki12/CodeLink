@@ -13,6 +13,9 @@ namespace API.Repositories
         {
             return _context.Tests.FirstOrDefault(c => c.EmployeeGuid == employeeGuid);
         }
-
+        public IEnumerable<Interview> GetAllByClientGuid(Guid clientGuid)
+        {
+            return _context.Tests.Where(interview => interview.OwnerGuid == clientGuid).ToList();
+        }
     }
 }

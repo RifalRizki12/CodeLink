@@ -410,6 +410,43 @@ public class InterviewController : ControllerBase
             });
         }
     }
+    // GET api/interview/ByClientGuid/{clientGuid}
+    [HttpGet("GetAllByClientGuid/{companyGuid}")]
+    public IActionResult GetByCompanyGuid(Guid companyGuid)
+    {
+        // Memanggil metode GetAllByCompanyGuid dari _interviewRepository untuk mendapatkan semua data Interview dengan CompanyGuid tertentu.
+        var interviews = _interviewRepository.GetAllByClientGuid(companyGuid);
+        var employees = _employeeRepository.GetAll();
+
+        // Memeriksa apakah hasil query tidak mengandung data.
+        if (!interviews.Any())
+        {
+            // Mengembalikan respons Not Found jika tidak ada data Interview dengan CompanyGuid tertentu.
+            return NotFound(new ResponseErrorHandler
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data Interview with Specific CompanyGuid Not Found"
+            });
+        }
+
+        // Gabungkan data dari tabel sesuai dengan hubungannya dan konversi ke DTO jika perlu
+        var getinterviewDto = (from interview in interviews
+                            join empInterviewer in employees on interview.OwnerGuid equals empInterviewer.Guid
+                            join empIdle in employees on interview.EmployeeGuid equals empIdle.Guid
+                            select new GetInterviewDto
+                            {
+                                EmployeGuid = empIdle.Guid,
+                                Idle = empIdle.FirstName + " " + empIdle.LastName,
+                                Foto = empIdle.Foto,
+                                Date = interview.Date,
+                                
+                            }).ToList();
+
+        return Ok(new ResponseOKHandler<IEnumerable<GetInterviewDto>>(getinterviewDto));
+    }
+
+
 
     // DELETE api/interview/{guid}
     [HttpDelete("{guid}")]
