@@ -55,9 +55,9 @@ namespace API.Utilities.Handler
                 {
                     var claims = new ClaimsDto
                     {
-                        EmployeeGuid = Guid.Parse(identity.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? ""),
-                        FullName = identity.FindFirst(ClaimTypes.Name)?.Value,
-                        Email = identity.FindFirst(ClaimTypes.Email)?.Value
+                        EmployeeGuid = Guid.Parse(identity.FindFirst("EmployeeGuid")?.Value ?? ""),
+                        FullName = identity.FindFirst("Fullname")?.Value,
+                        Email = identity.FindFirst("Email")?.Value
                     };
 
                     var roles = identity.Claims.Where(c => c.Type == ClaimTypes.Role).Select(claim => claim.Value).ToList();
@@ -66,9 +66,10 @@ namespace API.Utilities.Handler
                     return claims;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return new ClaimsDto();
+                // Handle any exceptions that may occur during token validation and extraction
+                Console.WriteLine("Error extracting claims from JWT: " + ex.Message);
             }
 
             return new ClaimsDto();
