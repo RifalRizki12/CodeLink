@@ -138,10 +138,55 @@
                 title: 'Error',
                 text: 'Failed to retrieve employee data.'
             });
+        });
+    };
 
+    $('#formAddSchedule').submit(function (event) {
+        event.preventDefault();
+        addScheduleInterview();
+    });
+
+    //INI UNTUK ADD JADWAL JIKA CLIENT KLIK HIRE
+    function addScheduleInterview() {
+        var nameInput = $("#nameInput").val();
+        var dateInput = $("#dateInput").val();
+
+        
+        var obj = {
+            name: nameInput,
+            date: dateInput,
+            employeeGuid: guid,
+            
+        }
+        console.log(obj);
+
+        $.ajax({
+            url: "/Interview/AddSchedule", // Ganti dengan URL yang sesuai
+            method: "POST",
+            data: JSON.stringify(obj),
+            contentType: 'application/json',
+
+            success: function (response) {
+                console.log(response)
+                $('#modalInterview').modal('hide');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pembaruan berhasil',
+                    text: 'Data schedule berhasil ditambahkan!!.'
+                });
+            },
+            error: function (response) {
+                $('#modalInterview').modal('hide');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Pembaruan gagal',
+                    text: 'Terjadi kesalahan saat mencoba menambahkan data schedule!!.'
+                });
+            }
 
 
 
         });
     };
+
 });

@@ -63,17 +63,17 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form method="post">
+                <form id="formAddSchedule">
                     <div class="form-group">
                         <label>Name of Interview</label>
-                        <input type="text" required="" id="nameInput" placeholder="Username or Email " />
+                        <input type="text" required="" id="nameInput" />
                     </div>
                     <div class="form-group">
                         <label>Date Interview</label>
-                        <input required="" type="date" id="dateInput" placeholder="Your password *" />
+                        <input required="" type="date" id="dateInput" />
                     </div>
                     <div class="form-group">
-                        <button type="submit" class="btn btn-heading btn-block hover-up" name="login">Submit</button>
+                        <button type="submit" id="btn-save" class="btn btn-heading btn-block hover-up" >Submit</button>
                     </div>
                 </form>
             </div>
@@ -84,7 +84,8 @@
 <!--Products Tabs-->
 @section scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    @* <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"> *@
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 

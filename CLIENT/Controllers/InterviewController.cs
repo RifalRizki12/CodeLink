@@ -105,5 +105,28 @@ namespace CLIENT.Controllers
             }
 
         }
+
+        [HttpPost]
+        public async Task<JsonResult> AddSchedule(CreateInterviewDto createDto)
+        {
+            var response = await _repository.Post(createDto);
+            if (response != null)
+            {
+                if (response.Code == 200)
+                {
+                    return Json(new { data = response.Data });
+                }
+                else
+                {
+                    return Json(new { error = response.Message });
+                }
+            }
+            else
+            {
+                return Json(new { error = "An error occurred while updating the employee." });
+            }
+
+
+        }
     }
 }
