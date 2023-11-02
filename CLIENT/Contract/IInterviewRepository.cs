@@ -14,6 +14,7 @@ namespace CLIENT.Contract
         Task<ResponseOKHandler<IEnumerable<InterviewDto>>> GetAllInterview();
         Task<ResponseOKHandler<IEnumerable<GetInterviewDto>>> GetByCompanyGuid(Guid guid);
         Task<ResponseOKHandler<IEnumerable<GetOnsiteDto>>> GetOnsite(Guid guid);
+        Task<ResponseOKHandler<IEnumerable<GetIdleHistoryDto>>> GetIdleHistory(Guid guid);
     }
 }
 

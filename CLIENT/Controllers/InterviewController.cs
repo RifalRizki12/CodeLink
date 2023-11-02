@@ -109,6 +109,27 @@ namespace CLIENT.Controllers
 
         }
 
+
+        public IActionResult GetIdleHistory()
+        {
+            return View();
+        }
+        [HttpGet("Interview/GetIdleHistory/{guid}")]
+        public async Task<JsonResult> GetIdleHistory(Guid guid)
+        {
+            var interview = new GetIdleHistoryDto();
+            var result = await _repository.GetIdleHistory(guid);
+            if (result.Data != null)
+            {
+                return Json(result.Data);
+            }
+            else
+            {
+                return Json(interview); ;
+            }
+
+        }
+
         [HttpPost("Interview/AddSchedule")]
         public async Task<JsonResult> AddSchedule([FromBody] CreateInterviewDto createDto)
         {

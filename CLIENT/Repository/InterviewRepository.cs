@@ -60,13 +60,26 @@ namespace CLIENT.Repository
 
         public async Task<ResponseOKHandler<IEnumerable<GetOnsiteDto>>> GetOnsite(Guid guid)
         {
-            string requestUrl = "GetByOnsite/" + guid; // Sesuaikan dengan URL endpoint yang benar
+            string requestUrl = "GetOnsite/" + guid; // Sesuaikan dengan URL endpoint yang benar
 
             ResponseOKHandler<IEnumerable<GetOnsiteDto>> entityVM = null;
             using (var response = await httpClient.GetAsync(request + requestUrl))
             {
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<IEnumerable<GetOnsiteDto>>>(apiResponse);
+            }
+            return entityVM;
+        }  
+
+        public async Task<ResponseOKHandler<IEnumerable<GetIdleHistoryDto>>> GetIdleHistory(Guid guid)
+        {
+            string requestUrl = "GetIdleHistory/" + guid; // Sesuaikan dengan URL endpoint yang benar
+
+            ResponseOKHandler<IEnumerable<GetIdleHistoryDto>> entityVM = null;
+            using (var response = await httpClient.GetAsync(request + requestUrl))
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<IEnumerable<GetIdleHistoryDto>>>(apiResponse);
             }
             return entityVM;
         }
