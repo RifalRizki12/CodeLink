@@ -44,28 +44,6 @@ namespace CLIENT.Controllers
                 return Json(new { error = result.Message });
             }
         }
-        /*    [HttpPut]
-            public async Task<JsonResult> ScheduleUpdate(ScheduleInterviewDto scheduleUpdate)
-            {
-                try
-                {
-                    var result = await _repository.ScheduleUpdate(scheduleUpdate);
-
-                    if (result.Status == "OK")
-                    {
-                        return Json(new { success = true });
-                    }
-                    else
-                    {
-                        return Json(new { success = false, message = "Pembaruan gagal: " + result.Message });
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // Log pesan kesalahan atau tangani kesalahan sesuai kebutuhan Anda
-                    return Json(new { success = false, message = "Terjadi kesalahan saat memproses pembaruan: " + ex.Message });
-                }
-            }*/
 
         [HttpPut("Interview/ScheduleUpdate/{guid}")]
         public async Task<JsonResult> ScheduleUpdate(Guid guid, [FromBody] ScheduleInterviewDto scheduleUpdate)
@@ -93,12 +71,12 @@ namespace CLIENT.Controllers
             return View();
         }
 
-        [HttpGet("GetAllByClientGuid/{companyGuid}")]
+        [HttpGet("Interview/ListHireIdle/{guid}")]
         public async Task<JsonResult> ListHireIdle(Guid guid)
         {
             var interview = new GetInterviewDto();
             var result = await _repository.GetByCompanyGuid(guid);
-            if (result.Data?.EmployeGuid != null)
+            if (result.Data != null)
             {
                 return Json(result.Data);
             }
