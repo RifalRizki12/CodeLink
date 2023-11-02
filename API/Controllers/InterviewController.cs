@@ -154,6 +154,7 @@ public class InterviewController : ControllerBase
             Rating rating = announcment;
             rating.Guid = toUpdate.Guid;
             rating.Feedback = announcment.FeedBack;
+            rating.Rate = announcment.Rate;
             var resultUpdate = _ratingRepository.Update(rating);
 
             if ((result == null) && (resultUpdate == null))
@@ -166,9 +167,69 @@ public class InterviewController : ControllerBase
                 });
             }
 
+            /*            if (specificEmployee != null)
+                        {
+                            if(entity.EndContract == null) // annaouncment lolos / tidak 
+                            {
+                                string emailBody = $"Terimakasih atas partisipasinya telah mengikuti proses {toUpdate.Name} pada\n" +
+                                                  $"Date                  : {toUpdate.Date}\n" +
+                                                  $"kami nyatakan anda    : {announcment.StatusIntervew} \n";
+                                //ini untuk if lolos
+                                if (announcment.StartContract != null && announcment.EndContract != null)
+                                {
+                                    emailBody += $"Start Contract        : {announcment.StartContract} \n" +
+                                                 $"End Contract          : {announcment.EndContract}\n";
+
+                                    specificEmployee.StatusEmployee = (StatusEmployee)2;
+                                    specificEmployee.CompanyGuid = company.Guid;
+                                    _employeeRepository.Update(specificEmployee);
+
+                                }
+                                emailBody += $"Company Name          : {company.Name}\n" +
+                                             $"{announcment.FeedBack}";
+
+                                _emailHandler.Send("Announcment Interview", emailBody, specificEmployee.Email);
+                                _emailHandler.Send("Announcment Interview", emailBody, adminEmployee.Email);
+                            }
+                            //ini untuk contract termination
+                            if (announcment.EndContract != null && announcment.EndContract.Value.Date == dateNow.Date)
+                            {
+                                _emailHandler.Send("Contract Termination ", $"Kami menguncapkan mohon maaf atas ketidaknyamanannya" +
+                                    $"kami terpaksa harus memutuskan kontrak untuk saudara/i {specificEmployee.FirstName} {specificEmployee.LastName} " +
+                                    $"dikarenakan  {announcment.Remarks} Terimakasi atas kerjasamanya", specificEmployee.Email);
+
+                                _emailHandler.Send("Contract Termination ", $"Kami menguncapkan mohon maaf atas ketidaknyamanannya" +
+                                  $"kami terpaksa harus memutuskan kontrak untuk saudara/i {specificEmployee.FirstName} {specificEmployee.LastName} " +
+                                  $"dikarenakan  {announcment.Remarks} Terimakasi atas kerjasamanya", adminEmployee.Email);
+
+
+                                specificEmployee.StatusEmployee = 0;
+                                specificEmployee.CompanyGuid = null;
+                                _employeeRepository.Update(specificEmployee);
+                            }
+                            //ini untuk finish contact
+                            if (entity.Guid != null && entity.EndContract.Value.Date == dateNow.Date)
+                            {
+                                _emailHandler.Send("Contract Finished ",
+                                   $"Kami menguncapkan terimakasi pada saudara/i yang telah bergabung bersama kami. " +
+                                   $"Semoga dilain waktu kita bisa jumpa kembali " +
+                                   $"Salam Hormat {company.Name}", specificEmployee.Email);
+
+                                _emailHandler.Send("Contract Finished ",
+                                   $"Kami menguncapkan terimakasi pada saudara/i yang telah bergabung bersama kami. " +
+                                   $"Semoga dilain waktu kita bisa jumpa kembali " +
+                                   $"Salam Hormat {company.Name}", adminEmployee.Email);
+
+                                specificEmployee.StatusEmployee = 0;
+                                specificEmployee.CompanyGuid = null;
+                                _employeeRepository.Update(specificEmployee);
+
+                            }
+
+                        }*/
             if (specificEmployee != null)
             {
-                if(entity.EndContract == null) // annaouncment lolos / tidak 
+                if (entity.EndContract == null) // annaouncment lolos / tidak 
                 {
                     string emailBody = $"Terimakasih atas partisipasinya telah mengikuti proses {toUpdate.Name} pada\n" +
                                       $"Date                  : {toUpdate.Date}\n" +
@@ -188,6 +249,7 @@ public class InterviewController : ControllerBase
                                  $"{announcment.FeedBack}";
 
                     _emailHandler.Send("Announcment Interview", emailBody, specificEmployee.Email);
+                    _emailHandler.Send("Announcment Interview", emailBody, adminEmployee.Email);
                 }
                 //ini untuk contract termination
                 if (announcment.EndContract != null && announcment.EndContract.Value.Date == dateNow.Date)
@@ -206,27 +268,22 @@ public class InterviewController : ControllerBase
                     _employeeRepository.Update(specificEmployee);
                 }
                 //ini untuk finish contact
-                if (entity.Guid != null && entity.EndContract.Value.Date == dateNow.Date)
+                if (entity.Guid != null && entity.EndContract?.Date == dateNow.Date)
                 {
-                    _emailHandler.Send("Contract Finished ",
-                       $"Kami menguncapkan terimakasi pada saudara/i yang telah bergabung bersama kami. " +
-                       $"Semoga dilain waktu kita bisa jumpa kembali " +
-                       $"Salam Hormat {company.Name}", specificEmployee.Email);
+                    string subject = "Contract Finished";
+                    string body = $"Kami mengucapkan terima kasih pada saudara/i yang telah bergabung bersama kami. " +
+                                  $"Semoga di lain waktu kita bisa jumpa kembali. " +
+                                  $"Salam Hormat, {company.Name}";
 
-                    _emailHandler.Send("Contract Finished ",
-                       $"Kami menguncapkan terimakasi pada saudara/i yang telah bergabung bersama kami. " +
-                       $"Semoga dilain waktu kita bisa jumpa kembali " +
-                       $"Salam Hormat {company.Name}", adminEmployee.Email);
+                    SendEmailToBoth(subject, body, specificEmployee.Email, adminEmployee.Email);
 
-                    specificEmployee.StatusEmployee = 0;
+                    specificEmployee.StatusEmployee = StatusEmployee.idle;  // Gantikan 0 dengan enum yang sesuai
                     specificEmployee.CompanyGuid = null;
                     _employeeRepository.Update(specificEmployee);
-
                 }
 
+               
             }
-
-
 
             return Ok(new ResponseOKHandler<string>("Announcement sent successfully"));
 
@@ -243,6 +300,12 @@ public class InterviewController : ControllerBase
             });
         }
     }
+    private void SendEmailToBoth(string subject, string body, string employeeEmail, string adminEmail)
+    {
+        _emailHandler.Send(subject, body, employeeEmail);
+        _emailHandler.Send(subject, body, adminEmail);
+    }
+
 
 
     // GET api/interview
@@ -414,14 +477,11 @@ public class InterviewController : ControllerBase
     [HttpGet("GetAllByClientGuid/{companyGuid}")]
     public IActionResult GetByCompanyGuid(Guid companyGuid)
     {
-        // Memanggil metode GetAllByCompanyGuid dari _interviewRepository untuk mendapatkan semua data Interview dengan CompanyGuid tertentu.
         var interviews = _interviewRepository.GetAllByClientGuid(companyGuid);
         var employees = _employeeRepository.GetAll();
 
-        // Memeriksa apakah hasil query tidak mengandung data.
         if (!interviews.Any())
         {
-            // Mengembalikan respons Not Found jika tidak ada data Interview dengan CompanyGuid tertentu.
             return NotFound(new ResponseErrorHandler
             {
                 Code = StatusCodes.Status404NotFound,
@@ -430,23 +490,27 @@ public class InterviewController : ControllerBase
             });
         }
 
-        // Gabungkan data dari tabel sesuai dengan hubungannya dan konversi ke DTO jika perlu
+        var currentDate = DateTime.Now; // Ambil tanggal saat ini
+
+
         var getinterviewDto = (from interview in interviews
-                            join empInterviewer in employees on interview.OwnerGuid equals empInterviewer.Guid
-                            join empIdle in employees on interview.EmployeeGuid equals empIdle.Guid
-                            where empIdle.StatusEmployee == StatusEmployee.idle
-                            select new GetInterviewDto
-                            {
-                                EmployeGuid = empIdle.Guid,
-                                InterviewGuid=interview.Guid,
-                                Idle = empIdle.FirstName + " " + empIdle.LastName,
-                                Foto = empIdle.Foto,
-                                Date = interview.Date,
-                                
-                            }).ToList();
+                               join empInterviewer in employees on interview.OwnerGuid equals empInterviewer.Guid
+                               join empIdle in employees on interview.EmployeeGuid equals empIdle.Guid
+                               where empIdle.StatusEmployee == StatusEmployee.idle
+                               && interview.EndContract.HasValue && interview.Type==null
+                               && interview.EndContract > currentDate 
+                               select new GetInterviewDto
+                               {
+                                   EmployeGuid = empIdle.Guid,
+                                   InterviewGuid = interview.Guid,
+                                   Idle = empIdle.FirstName + " " + empIdle.LastName,
+                                   Foto = empIdle.Foto,
+                                   Date = interview.Date,
+                               }).ToList();
 
         return Ok(new ResponseOKHandler<IEnumerable<GetInterviewDto>>(getinterviewDto));
     }
+
 
 
     [HttpGet("GetOnsite/{companyGuid}")]
@@ -474,6 +538,7 @@ public class InterviewController : ControllerBase
                                select new GetOnsiteDto
                                {
                                    EmployeGuid = empIdle.Guid,
+                                   InterviewGuid = interview.Guid,
                                    Idle = empIdle.FirstName + " " + empIdle.LastName,
                                    Foto = empIdle.Foto,
                                    StartContract = interview.StartContract,
@@ -483,6 +548,41 @@ public class InterviewController : ControllerBase
 
         return Ok(new ResponseOKHandler<IEnumerable<GetOnsiteDto>>(getOnsiteDto));
     }
+
+    [HttpGet("GetIdleHistory/{companyGuid}")]
+    public IActionResult GetIdleHistory(Guid companyGuid)
+    {
+        var interviews = _interviewRepository.GetAllByClientGuid(companyGuid);
+        var employees = _employeeRepository.GetAll();
+
+        if (!interviews.Any())
+        {
+            return NotFound(new ResponseErrorHandler
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data Interview with Specific CompanyGuid Not Found"
+            });
+        }
+
+        var idleHistoryDto = (from interview in interviews
+                              join emp in employees on interview.EmployeeGuid equals emp.Guid
+                              where emp.StatusEmployee == StatusEmployee.idle || (emp.StatusEmployee == StatusEmployee.onsite && interview.EndContract < DateTime.Now)
+                              select new GetIdleHistoryDto
+                              {
+                                  EmployeeGuid = emp.Guid,
+                                  InterviewGuid = interview.Guid,
+                                  Idle = emp.FirstName + " " + emp.LastName,
+                                  Foto = emp.Foto,
+                                  StartContract = interview.StartContract,
+                                  EndContract = interview.EndContract,
+                                  Status = emp.StatusEmployee.ToString() 
+                              }).ToList();
+
+        return Ok(new ResponseOKHandler<IEnumerable<GetIdleHistoryDto>>(idleHistoryDto));
+    }
+
+
 
 
     // DELETE api/interview/{guid}

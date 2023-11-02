@@ -6,6 +6,7 @@ namespace API.DTOs.Interviews;
 public class GetOnsiteDto //untuk update interview yang biasa
 {
     public Guid EmployeGuid { get; set; }
+    public Guid InterviewGuid { get; set; }
     public DateTime? StartContract { get; set; }
     public DateTime? EndContract { get; set; }
     public string Idle { get; set; }
@@ -24,7 +25,7 @@ public class GetOnsiteDto //untuk update interview yang biasa
     {
         return new GetOnsiteDto
         {
-
+            InterviewGuid = interview.Guid,
             StartContract = interview.StartContract,
             EndContract = interview.EndContract,
 
