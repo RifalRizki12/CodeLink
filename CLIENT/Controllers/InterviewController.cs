@@ -67,6 +67,7 @@ namespace CLIENT.Controllers
                 return Json(new { error = "An error occurred while updating the employee." });
             }
         }
+
         public IActionResult ListHireIdle()
         {
             return View();
@@ -151,6 +152,29 @@ namespace CLIENT.Controllers
             }
 
 
+        }
+
+
+        [HttpPut("Interview/Announcement/{guid}")]
+        public async Task<JsonResult> Announcement(Guid guid, [FromBody] AnnouncmentDto announcment)
+        {
+            var response = await _repository.UpdateAnnouncement(guid, announcment);
+
+            if (response != null)
+            {
+                if (response.Code == 200)
+                {
+                    return Json(new { data = response.Data });
+                }
+                else
+                {
+                    return Json(new { error = response.Message });
+                }
+            }
+            else
+            {
+                return Json(new { error = "An error occurred while updating the employee." });
+            }
         }
     }
 }

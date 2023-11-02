@@ -83,5 +83,19 @@ namespace CLIENT.Repository
             }
             return entityVM;
         }
+
+        public async Task<ResponseOKHandler<AnnouncmentDto>> UpdateAnnouncement(Guid guid, AnnouncmentDto announcment)
+        {
+            string requestUrl = "Announcement";
+            ResponseOKHandler<AnnouncmentDto> entityVM = null;
+            StringContent content = new StringContent(JsonConvert.SerializeObject(announcment), Encoding.UTF8, "application/json");
+            using (var response = httpClient.PutAsync(request + requestUrl, content).Result)
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<AnnouncmentDto>>(apiResponse);
+            }
+            return entityVM;
+        }
+
     }
 }
