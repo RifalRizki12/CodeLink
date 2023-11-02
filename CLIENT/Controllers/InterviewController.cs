@@ -88,6 +88,27 @@ namespace CLIENT.Controllers
 
         }
 
+        public IActionResult ListOnsite()
+        {
+            return View();
+        }
+
+        [HttpGet("Interview/GetOnsite/{guid}")]
+        public async Task<JsonResult> GetOnsite(Guid guid)
+        {
+            var interview = new GetInterviewDto();
+            var result = await _repository.GetOnsite(guid);
+            if (result.Data != null)
+            {
+                return Json(result.Data);
+            }
+            else
+            {
+                return Json(interview); ;
+            }
+
+        }
+
         [HttpPost("Interview/AddSchedule")]
         public async Task<JsonResult> AddSchedule([FromBody] CreateInterviewDto createDto)
         {
