@@ -434,9 +434,11 @@ public class InterviewController : ControllerBase
         var getinterviewDto = (from interview in interviews
                             join empInterviewer in employees on interview.OwnerGuid equals empInterviewer.Guid
                             join empIdle in employees on interview.EmployeeGuid equals empIdle.Guid
+                            where empIdle.StatusEmployee == StatusEmployee.idle
                             select new GetInterviewDto
                             {
                                 EmployeGuid = empIdle.Guid,
+                                InterviewGuid=interview.Guid,
                                 Idle = empIdle.FirstName + " " + empIdle.LastName,
                                 Foto = empIdle.Foto,
                                 Date = interview.Date,
@@ -446,6 +448,41 @@ public class InterviewController : ControllerBase
         return Ok(new ResponseOKHandler<IEnumerable<GetInterviewDto>>(getinterviewDto));
     }
 
+
+    [HttpGet("GetOnsite/{companyGuid}")]
+    public IActionResult GetOnsite(Guid companyGuid)
+    {
+        
+        var interviews = _interviewRepository.GetAllByClientGuid(companyGuid);
+        var employees = _employeeRepository.GetAll();
+
+
+        if (!interviews.Any())
+        {
+            return NotFound(new ResponseErrorHandler
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data Interview with Specific CompanyGuid Not Found"
+            });
+        }
+
+        var getOnsiteDto = (from interview in interviews
+                               join empInterviewer in employees on interview.OwnerGuid equals empInterviewer.Guid
+                               join empIdle in employees on interview.EmployeeGuid equals empIdle.Guid
+                               where empIdle.StatusEmployee == StatusEmployee.onsite
+                               select new GetOnsiteDto
+                               {
+                                   EmployeGuid = empIdle.Guid,
+                                   Idle = empIdle.FirstName + " " + empIdle.LastName,
+                                   Foto = empIdle.Foto,
+                                   StartContract = interview.StartContract,
+                                   EndContract = interview.EndContract,
+
+                               }).ToList();
+
+        return Ok(new ResponseOKHandler<IEnumerable<GetOnsiteDto>>(getOnsiteDto));
+    }
 
 
     // DELETE api/interview/{guid}

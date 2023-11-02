@@ -6,6 +6,7 @@ namespace API.DTOs.Interviews;
 public class GetInterviewDto //untuk update interview yang biasa
 {
     public Guid EmployeGuid { get; set; }
+    public Guid InterviewGuid { get; set; }
     public DateTime Date { get; set; }
     public string Idle { get; set; }
     public string? Foto { get; set; }
@@ -25,6 +26,7 @@ public class GetInterviewDto //untuk update interview yang biasa
         {
 
             Date = interview.Date,
+            InterviewGuid = interview.Guid,
 
         };
     }
