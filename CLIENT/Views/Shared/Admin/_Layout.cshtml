@@ -79,11 +79,10 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" type="text/css"
         href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
-    @RenderSection("styles", required: false)
+    @RenderSection("scripct", required: false)
 </head>
 
 <body>
-
 
     <!-- ?PROD Only: Google Tag Manager (noscript) (Default ThemeSelection: GTM-5DDHKGP, PixInvent: GTM-5J3LMKC) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5DDHKGP" height="0" width="0"
@@ -734,4 +733,19 @@
             }
         });
     });
+
+    const token = '@Context.Session.GetString("JWToken")';
+
+    $.ajax({
+        url: url + "BootcampQuantity/" + year,
+        headers: {
+            "Authorization": "Bearer " + token,
+        },
+    }).done((result) => {
+        console.log("done");
+        console.log(result);
+    }).fail((error) => {
+        console.log("fail");
+        console.log(error);
+    })
 </script>

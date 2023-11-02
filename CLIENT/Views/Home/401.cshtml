@@ -1,5 +1,45 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    Layout = "/Views/Shared/Admin/_ErrorLayout.cshtml";
 }
+
+<!-- Content -->
+<!-- Not Authorized -->
+<div class="container-xxl container-p-y">
+    <div class="misc-wrapper">
+        <h2 class="mb-1 mx-2">You are not authorized!</h2>
+        <p class="mb-4 mx-2">
+            You do not have permission to view this page using the credentials that you have provided
+            while login. <br> Please contact your site administrator.
+        </p>
+        <a href="/" class="btn btn-primary mb-4">Back to home</a>
+        <div id="countdown">Redirecting in <span id="countdown-number">5</span> seconds...</div>
+
+        <div class="mt-4">
+            <img src="../../TAdmin/assets/img/illustrations/page-misc-you-are-not-authorized.png"
+                 alt="page-misc-not-authorized" width="170" class="img-fluid">
+        </div>
+    </div>
+</div>
+<div class="container-fluid misc-bg-wrapper">
+    <img src="../../TAdmin/assets/img/illustrations/bg-shape-image-light.png" alt="page-misc-not-authorized"
+         data-app-light-img="illustrations/bg-shape-image-light.png"
+         data-app-dark-img="illustrations/bg-shape-image-dark.html">
+</div>
+<!-- /Not Authorized -->
+<!-- / Content -->
+
+<script>
+    var countdown = 5; // Jumlah detik sebelum mengarahkan ulang
+
+    function updateCountdown() {
+        var countdownNumber = document.getElementById("countdown-number");
+        countdownNumber.textContent = countdown;
+        countdown--;
+
+        if (countdown < 0) {
+            window.location.href = "/Account/Logins"; // Ganti dengan URL tujuan Anda
+        }
+    }
+
+    setInterval(updateCountdown, 500);
+</script>

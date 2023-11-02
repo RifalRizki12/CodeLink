@@ -57,7 +57,8 @@ if (!app.Environment.IsDevelopment())
 app.UseRouting();
 
 // Custome Error page
-/*app.UseStatusCodePages(async context => {
+app.UseStatusCodePages(async context =>
+{
     var response = context.HttpContext.Response;
 
     if (response.StatusCode.Equals((int)HttpStatusCode.Unauthorized))
@@ -72,7 +73,7 @@ app.UseRouting();
     {
         response.Redirect("/forbidden");
     }
-});*/
+});
 
 app.UseSession();
 
