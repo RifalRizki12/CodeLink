@@ -88,6 +88,11 @@ namespace CLIENT.Controllers
 
         }
 
+        public IActionResult ListOnsite()
+        {
+            return View();
+        }
+
         [HttpGet("Interview/GetOnsite/{guid}")]
         public async Task<JsonResult> GetOnsite(Guid guid)
         {
