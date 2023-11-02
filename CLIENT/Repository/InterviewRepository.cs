@@ -48,13 +48,14 @@ namespace CLIENT.Repository
         {
             string requestUrl = "GetAllByClientGuid/" + guid; // Sesuaikan dengan URL endpoint yang benar
 
-            ResponseOKHandler<IEnumerable<GetInterviewDto>> entityVM = null;
+            ResponseOKHandler<IEnumerable<GetInterviewDto>> entity = null;
+
             using (var response = await httpClient.GetAsync(request + requestUrl))
             {
                 string apiResponse = await response.Content.ReadAsStringAsync();
-                entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<IEnumerable<GetInterviewDto>>>(apiResponse);
+                entity = JsonConvert.DeserializeObject<ResponseOKHandler<IEnumerable<GetInterviewDto>>>(apiResponse);
             }
-            return entityVM;
+            return entity;
         }
     }
 }

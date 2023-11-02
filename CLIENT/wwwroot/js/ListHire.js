@@ -1,38 +1,59 @@
 ﻿$(document).ready(function () {
-     // Ganti #someElement dengan selector yang sesuai
-    var guid = $('#empGuid').val();
+    var guid = document.getElementById("employeeGuid").getAttribute("data-guid");
+    console.log(guid);
 
-    var compGuid = guid ? guid.toLowerCase() : null;
+    // Fungsi untuk membangun tampilan setiap karyawan
+    function buildEmployeeItem(item) {
+        const baseURL = "https://localhost:7051/";
+        const photoURL = `${baseURL}ProfilePictures/${item.foto}`;
 
-    if (typeof guid === 'undefined' || guid === null) {
-        console.error('guid is not defined or null');
-        return;
+        return `
+            <tr class="pt-30" style="text-align:center;">
+               <td class="custome-checkbox pl-30">
+                   <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox1" value="">
+                   <label class="form-check-label" for="exampleCheckbox1"></label>
+               </td>
+               <td class="image product-thumbnail pt-40">
+                    <img src="${photoURL}" alt="${item.idle}">
+                    <h6><a class="product-name mb-10" href="">${item.idle}</a></h6>
+               
+               </td>
+               <td class="product-des product-name">
+               </td>
+               <td class="product-des product-name" data-title="date">
+                   <h6 class="text-brand">${item.date}</h6>
+               </td>
+               <td class="text-right" data-title="Lolos">
+                   <button class="btn btn-sm">Lolos</button>
+               </td>
+               <td class="text-right" data-title="tidakLolos">
+                   <button class="btn-danger btn-sm">Tidak Lolos</button>
+               </td>
+            </tr>
+        `;
     }
 
-    console.log(compGuid);
+    // Mengambil data dari server
+    $.ajax({
+        url: '/Interview/ListHireIdle/' + guid,
+        type: 'GET',
+        dataType: 'json',
+        dataSrc: '',
+    }).done(function (result) {
+        console.log("Data dari server:", result);
 
-    $('#tableListHire').DataTable({
-        ajax: {
-            url: '/Interview/ListHireIdle/' + compGuid,
-            type: 'GET',
-            dataType: 'json',
-            dataSrc: 'data',
-        },
-        columns: [
-            {
-                data: 'employeGuid',
-            },
-            { data: 'date' },
-            { data: 'idle' },
-            { data: 'foto' },
-            {
-                data: null,
-                render: function (data, type, row, meta) {
-                    return meta.row + 1;
-                }
-            },
-          
-        ]
+        if (result && result.length > 0) {
+            const tableBody = $("#tableListHire").find("tbody");
+            tableBody.empty(); // Mengosongkan isi tabel
 
-    }); 
+            $.each(result, function (index, item) {
+                const employeeItem = buildEmployeeItem(item);
+                tableBody.append(employeeItem);
+            });
+        } else {
+            console.log("Tidak ada data yang ditemukan.");
+        }
+    }).fail(function (xhr, status, error) {
+        console.error("Gagal mengambil data: " + error);
+    });
 });
