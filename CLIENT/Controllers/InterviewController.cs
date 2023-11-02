@@ -3,6 +3,7 @@ using API.DTOs.Employees;
 using API.DTOs.Interviews;
 using API.Models;
 using CLIENT.Contract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol.Core.Types;
 
@@ -93,12 +94,12 @@ namespace CLIENT.Controllers
             return View();
         }
 
-        [HttpGet("GetAllByClientGuid/{companyGuid}")]
+        [HttpGet("Interview/ListHireIdle/{guid}")]
         public async Task<JsonResult> ListHireIdle(Guid guid)
         {
             var interview = new GetInterviewDto();
             var result = await _repository.GetByCompanyGuid(guid);
-            if (result.Data?.EmployeGuid != null)
+            if (result.Data != null)
             {
                 return Json(result.Data);
             }

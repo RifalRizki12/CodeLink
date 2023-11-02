@@ -12,7 +12,7 @@ namespace CLIENT.Contract
     {
         Task<ResponseOKHandler<ScheduleInterviewDto>> ScheduleUpdate(Guid guid, ScheduleInterviewDto scheduleUpdate);
         Task<ResponseOKHandler<IEnumerable<InterviewDto>>> GetAllInterview();
-        Task<ResponseOKHandler<GetInterviewDto>> GetByCompanyGuid(Guid guid);
+        Task<ResponseOKHandler<IEnumerable<GetInterviewDto>>> GetByCompanyGuid(Guid guid);
     }
 }
 
