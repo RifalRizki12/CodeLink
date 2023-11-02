@@ -109,8 +109,8 @@ namespace CLIENT.Controllers
 
         }
 
-        [HttpPost]
-        public async Task<JsonResult> AddSchedule(CreateInterviewDto createDto)
+        [HttpPost("Interview/AddSchedule")]
+        public async Task<JsonResult> AddSchedule([FromBody] CreateInterviewDto createDto)
         {
             var response = await _repository.Post(createDto);
             if (response != null)
