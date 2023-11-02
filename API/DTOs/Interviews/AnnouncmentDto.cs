@@ -14,6 +14,7 @@ namespace API.DTOs.Interviews
         public DateTime? EndContract {  get; set; }
         public Guid EmployeeGuid { get; set; }
         public string? FeedBack {  get; set; }
+        public int? Rate { get; set; }
         public Guid OwnerGuid { get; set; }
 
        
@@ -41,7 +42,8 @@ namespace API.DTOs.Interviews
             {
                 Feedback = announceDto.FeedBack,
                 CreatedDate = DateTime.Now,
-                ModifiedDate = DateTime.Now
+                ModifiedDate = DateTime.Now,
+                Rate = announceDto.Rate,
                 
             };
         }
