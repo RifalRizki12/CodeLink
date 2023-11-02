@@ -3,6 +3,7 @@ using API.DTOs.Employees;
 using API.DTOs.Interviews;
 using API.Models;
 using CLIENT.Contract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol.Core.Types;
 
