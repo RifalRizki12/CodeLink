@@ -24,10 +24,10 @@
                    <h6 class="text-brand">${item.date}</h6>
                </td>
                <td class="text-right" data-title="Lolos">
-                   <button class="btn btn-sm btn-lolos" data-guid1="${item.employeGuid}" data-guid2="${item.idle}" data-bs-toggle="modal" data-bs-target="#lolosInterview">Lolos</button>
+                   <button class="btn btn-sm btn-lolos" data-guid1="${item.interviewGuid}" data-guid2="${item.employeGuid}" data-bs-toggle="modal" data-bs-target="#lolosInterview">Lolos</button>
                </td>
                <td class="text-right" data-title="tidakLolos">
-                   <button class="btn-danger btn-sm btn-ditolak" data-guid="${item.employeGuid}">Tidak Lolos</button>
+                   <button class="btn-danger btn-sm btn-tdkLolos" data-guid1="${item.interviewGuid}" data-guid2="${item.employeGuid}" data-bs-toggle="modal" data-bs-target="#tdkLolosInterview" >Tidak Lolos</button>
                </td>
             </tr>
         `;
@@ -60,57 +60,115 @@
     var guidInterview
     var guidEmp
 
-    $(document).on('click', '.btn-lolos', function () {
+    $("#tableListHire").find("tbody").on('click', '.btn-lolos', function () {
         var btn = $(this); // Tombol yang diklik
         guidInterview = btn.data('guid1');
         guidEmp = btn.data('guid2');
-        console.log("ini guid interview", guidInterview);
-        console.log("ini guid employee", guidEmp);
     });
 
+    $("#lolosForm").submit(function (event) {
+        event.preventDefault();
+        lolosInterview(guidInterview);
+    });
 
-    function lolosInterview(intGuid) {
-        console.log("ini guid di update", intGuid);
+    function lolosInterview(guidInterview) {
+        console.log("ini guid di update", guidInterview);
 
-        var updateType = parseInt($("#updateType").val());
-        var locUpdate = $("#location").val();
-        var remarksUpate = $("#remarks").val();
-
+        var contractStart = $("#startContractInp").val();
+        var contractEnd = $("#endContractInp").val();
+        var status = 0;
 
         var obj = {
-            guid: intGuid,
-            employeeGuid: empGuid,
-            ownerGuid: ownGuid,
-            type: updateType,
-            location: locUpdate,
-            remarks: remarksUpate
+            guid: guidInterview,
+            employeeGuid: guidEmp,
+            ownerGuid: guidCompny,
+            statusIntervew: status,
+            startContract: contractStart,
+            endContract: contractEnd,
+            
         };
 
         console.log(obj);
+        // lnjut disini, belum bikin controller dan repo
         $.ajax({
-            url: '/Interview/ScheduleUpdate/' + intGuid,
+            url: '/Interview/Announcement/' + guidInterview,
             type: 'PUT',
             data: JSON.stringify(obj),
             contentType: 'application/json',
             success: function (response) {
-
-                $('#updateInterview').modal('hide');
-                $('#tableInterview').DataTable().ajax.reload();
+                console.log(response);
+                $('#lolosInterview').modal('hide');
+                //$('#tableListHire').DataTable().ajax.reload();
                 Swal.fire({
                     icon: 'success',
-                    title: 'Pembaruan berhasil',
-                    text: 'Data client berhasil diperbarui.'
+                    title: 'Proses Rekrutmen Berhasil',
+                    text: 'Orang yang Anda pilih telah berhasil direkrut!.'
                 });
             },
             error: function (response) {
-                $('#updateInterview').modal('hide');
+                $('#lolosInterview').modal('hide');
                 Swal.fire({
                     icon: 'error',
-                    title: 'Pembaruan gagal',
-                    text: 'Terjadi kesalahan saat mencoba update data client.'
+                    title: 'Perekrutan gagal',
+                    text: 'Terjadi kesalahan saat mencoba merekrut partner.'
                 });
             }
         });
 
     };
+
+    $("#tableListHire").find("tbody").on('click', '.btn-tdkLolos', function () {
+        var btn = $(this); // Tombol yang diklik
+        guidInterview = btn.data('guid1');
+        guidEmp = btn.data('guid2');
+    });
+
+    $("#tdkLolosForm").submit(function (event) {
+        event.preventDefault();
+        tidakLolosInterview(guidInterview);
+    });
+    function tidakLolosInterview(guidInterview) {
+        console.log("ini guid di update", guidInterview);
+
+        var feedbackInput = $("#feedback").val();
+        var status = 1;
+
+        var obj = {
+            guid: guidInterview,
+            employeeGuid: guidEmp,
+            ownerGuid: guidCompny,
+            statusIntervew: status,
+            feedBack: feedbackInput
+
+        };
+
+        console.log(obj);
+        // lnjut disini, belum bikin controller dan repo
+        $.ajax({
+            url: '/Interview/Announcement/' + guidInterview,
+            type: 'PUT',
+            data: JSON.stringify(obj),
+            contentType: 'application/json',
+            success: function (response) {
+                console.log(response);
+                $('#tdkLolosInterview').modal('hide');
+                //$('#tableListHire').DataTable().ajax.reload();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Rekrutmen Tidak Lolos',
+                    text: 'Orang yang Anda pilih tidak lolos dalam rekrutmen.'
+                });
+            },
+            error: function (response) {
+                $('#tdkLolosInterview').modal('hide');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Pembaruan data tidak lolos gagal',
+                    text: 'Terjadi kesalahan saat anda mencoba menolak partner.'
+                });
+            }
+        });
+
+    };
+   
 });
