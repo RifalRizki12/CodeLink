@@ -13,7 +13,7 @@
             const baseURL = "https://localhost:7051/"; // Gantilah URL dasar sesuai dengan kebutuhan Anda
             const photoURL = `${baseURL}ProfilePictures/${val.foto}`; // Gabungkan baseURL dengan path gambar
             const cvURL = `${baseURL}Cv/${val.cv}`;
-            
+
             // Membuat tampilan grid untuk setiap karyawan
             const employeeItem = `
         <div class="col-lg-1-5 col-md-4 col-12 col-sm-6">
@@ -76,7 +76,7 @@
         $('#modalInterview').modal('show');
 
     });
-   
+
     function getIdleByGuid(guid) {
         console.log("ini guid di paramter getby guid", guid);
         $.ajax({
@@ -88,8 +88,8 @@
             console.log("Data dari server:", result);
             const baseURL = "https://localhost:7051/"; // Gantilah URL dasar sesuai dengan kebutuhan Anda
             const photoURL = `${baseURL}ProfilePictures/${result.foto}`;
-           // var employeeModal = $("#employeeModal");
-                var employeeValue = ` 
+            // var employeeModal = $("#employeeModal");
+            var employeeValue = ` 
                 <div class="product-img product-img-zoom">
                     <a href="shop-product-right.html">
                         <img class="hover-img" src="${photoURL}" alt="Employee Photo" style="max-width: 470px; max-height: 500px;"/>
@@ -130,8 +130,8 @@
                     </p>
                 </div>
                 `;
-                 $(".modalBodyDetail").html(employeeValue)
-            }).fail((error) => {
+            $(".modalBodyDetail").html(employeeValue)
+        }).fail((error) => {
             console.log(error);
             Swal.fire({
                 icon: 'error',
@@ -146,58 +146,109 @@
         addScheduleInterview();
     });
 
-    // Mengambil employeeGuid dari session
-   // var empGuid = sessionStorage.getItem("EmployeeGuid");
-
-    //INI UNTUK ADD JADWAL JIKA CLIENT KLIK HIRE
     function addScheduleInterview() {
+
         var nameInput = $("#nameInput").val();
         var dateInput = $("#dateInput").val();
+        // Mengambil nilai string dari input
+        var compGuidString = $("#companyGuid").val();
 
-        // Mengambil JWT Token dari sessionStorage
-        var jwtToken = localStorage.getItem("JWToken");
+        // Membuat tipe GUID dari string
+        var compGuid = compGuidString ? compGuidString.toLowerCase() : null; // Mengonversi menjadi lowercase
 
-        // Mengambil EmployeeGuid dari sessionStorage
-        var employeeGuid = localStorage.getItem("EmployeeGuid");
-
-        if (jwtToken && employeeGuid) {
-            // Buat objek dengan EmployeeGuid dari session
-            var obj = {
-                name: nameInput,
-                date: dateInput,
-                companyGuid: employeeGuid
-            };
-            console.log(obj);
-
-            $.ajax({
-                url: "/Interview/AddSchedule", // Ganti dengan URL yang sesuai
-                method: "POST",
-                data: JSON.stringify(obj),
-                contentType: 'application/json',
-
-                success: function (response) {
-                    console.log(response);
-                    $('#modalInterview').modal('hide');
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Pembaruan berhasil',
-                        text: 'Data schedule berhasil ditambahkan!!.'
-                    });
-                },
-                error: function (response) {
-                    $('#modalInterview').modal('hide');
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Pembaruan gagal',
-                        text: 'Terjadi kesalahan saat mencoba menambahkan data schedule!!.'
-                    });
-                }
-            });
-        } else {
-            console.error("Token JWT atau EmployeeGuid tidak ditemukan di sessionStorage.");
-            // Handle the situation when JWT token or EmployeeGuid is not available.
+        // Buat objek dengan EmployeeGuid dari session
+        var obj = {
+            name: nameInput,
+            date: dateInput,
+            employeeGuid: guid,
+            ownerGuid: compGuid
         }
-    }
+        console.log(obj);
 
+        $.ajax({
+            url: "/Interview/AddSchedule", // Ganti dengan URL yang sesuai
+            method: "POST",
+            data: JSON.stringify(obj),
+            contentType: 'application/json',
+
+            success: function (response) {
+                console.log(response);
+                $('#modalInterview').modal('hide');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pembaruan berhasil',
+                    text: 'Data schedule berhasil ditambahkan!!.'
+                });
+            },
+            error: function (response) {
+                $('#modalInterview').modal('hide');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Pembaruan gagal',
+                    text: 'Terjadi kesalahan saat mencoba menambahkan data schedule!!.'
+                });
+            }
+        });
+
+    };
+
+
+
+
+
+
+    // Mengambil employeeGuid dari session
+    // var empGuid = sessionStorage.getItem("EmployeeGuid");
+
+    //INI UNTUK ADD JADWAL JIKA CLIENT KLIK HIRE
+    /*   function addScheduleInterview() {
+           var nameInput = $("#nameInput").val();
+           var dateInput = $("#dateInput").val();
+   
+           // Mengambil JWT Token dari sessionStorage
+           var jwtToken = localStorage.getItem("JWToken");
+   
+           // Mengambil EmployeeGuid dari sessionStorage
+           var employeeGuid = localStorage.getItem("EmployeeGuid");
+   
+           if (jwtToken && employeeGuid) {
+               // Buat objek dengan EmployeeGuid dari session
+               var obj = {
+                   name: nameInput,
+                   date: dateInput,
+                   companyGuid: employeeGuid
+               };
+               console.log(obj);
+   
+               $.ajax({
+                   url: "/Interview/AddSchedule", // Ganti dengan URL yang sesuai
+                   method: "POST",
+                   data: JSON.stringify(obj),
+                   contentType: 'application/json',
+   
+                   success: function (response) {
+                       console.log(response);
+                       $('#modalInterview').modal('hide');
+                       Swal.fire({
+                           icon: 'success',
+                           title: 'Pembaruan berhasil',
+                           text: 'Data schedule berhasil ditambahkan!!.'
+                       });
+                   },
+                   error: function (response) {
+                       $('#modalInterview').modal('hide');
+                       Swal.fire({
+                           icon: 'error',
+                           title: 'Pembaruan gagal',
+                           text: 'Terjadi kesalahan saat mencoba menambahkan data schedule!!.'
+                       });
+                   }
+               });
+           } else {
+               console.error("Token JWT atau EmployeeGuid tidak ditemukan di sessionStorage.");
+               // Handle the situation when JWT token or EmployeeGuid is not available.
+           }
+       }
+   */
 
 });

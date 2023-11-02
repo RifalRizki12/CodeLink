@@ -64,13 +64,15 @@
             </div>
             <div class="modal-body">
                 <form id="formAddSchedule">
+                    <input type="text" hidden id="companyGuid" name="nameInput" value="@Context.Session.GetString("EmployeeGuid")"/>
+
                     <div class="form-group">
                         <label>Name of Interview</label>
                         <input type="text" required="" id="nameInput" />
                     </div>
                     <div class="form-group">
                         <label>Date Interview</label>
-                        <input required="" type="date" id="dateInput" />
+                        <input required="" type="datetime-local" id="dateInput" />
                     </div>
                     <div class="form-group">
                         <button type="submit" id="btn-save" class="btn btn-heading btn-block hover-up" >Submit</button>
