@@ -1,5 +1,64 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewBag.Title = "NotFound";
+    Layout = "/Views/Shared/Admin/_ErrorLayout.cshtml";
 }
+
+<!-- Content -->
+<!-- Error -->
+<div class="container-xxl container-p-y">
+    <div class="misc-wrapper">
+        <h2 class="mb-1 mt-4">Page Not Found :(</h2>
+        <p class="mb-4 mx-2">Oops! 😖 The requested URL was not found on this server.</p>
+
+        <a href="/Account/Logins" class="btn btn-primary mb-4">Back to home</a>
+        <div id="countdown">Redirecting in <span id="countdown-number">5</span> seconds...</div>
+        <div class="mt-4">
+            <img src="../../TAdmin/assets/img/illustrations/page-misc-error.png" alt="page-misc-error" width="225"
+                 class="img-fluid">
+        </div>
+    </div>
+</div>
+<div class="container-fluid misc-bg-wrapper">
+    <img src="../../TAdmin/assets/img/illustrations/bg-shape-image-light.png" alt="page-misc-error"
+         data-app-light-img="illustrations/bg-shape-image-light.png"
+         data-app-dark-img="illustrations/bg-shape-image-dark.html">
+</div>
+<!-- /Error -->
+<!-- / Content -->
+@section scripts {
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var countdown = 5; // Jumlah detik sebelum mengarahkan ulang
+                        
+            var isAuthenticated = token !== null;
+
+            var role = "@Context.Session.GetString("Role")";
+
+            function updateCountdown() {
+                var countdownNumber = document.getElementById("countdown-number");
+                countdownNumber.textContent = countdown;
+                countdown--;
+
+                if (countdown < 0) {
+                    if (isAuthenticated) {
+                        if (role == "admin") {
+                            window.location.href = "/Employee/GetClient"; // Arahkan ke halaman admin
+                        } else if (role == "client" || role == "idle") {
+                            window.location.href = "/HomeClient/HomeClient"; // Arahkan ke halaman client
+                        } else {
+                            // Jika tidak ada peran atau peran tidak dikenali, arahkan ke halaman default
+                            window.location.href = "/HomeClient/HomeClient"; // Ganti dengan URL halaman default
+                        }
+                    } else {
+                        // Jika pengguna belum login, arahkan ke halaman login
+                        window.location.href = "/Account/Logins"; // Ganti dengan URL halaman login
+                    }
+                }
+            }
+
+            setInterval(updateCountdown, 500);
+        });
+    </script>
+}
+
