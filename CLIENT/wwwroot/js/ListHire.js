@@ -1,47 +1,38 @@
 ﻿$(document).ready(function () {
      // Ganti #someElement dengan selector yang sesuai
+    var guid = $('#empGuid').val();
 
-
-
-    var guid = $('#employeeGuid').data('guid');
+    var compGuid = guid ? guid.toLowerCase() : null;
 
     if (typeof guid === 'undefined' || guid === null) {
         console.error('guid is not defined or null');
         return;
     }
 
-    console.log(guid);
+    console.log(compGuid);
 
     $('#tableListHire').DataTable({
         ajax: {
-            url: '/Interview/ListHireIdle/' + guid,
+            url: '/Interview/ListHireIdle/' + compGuid,
             type: 'GET',
             dataType: 'json',
             dataSrc: 'data',
         },
         columns: [
             {
-                data: 'foto',
-                render: function (data, type, row) {
-                    if (type === 'display' && data) {
-                        const baseURL = "https://localhost:7051/";
-                        const photoURL = `${baseURL}ProfilePictures/${data}`;
-                        return `<img src="${photoURL}" alt="Employee Photo" style="max-width: 100px; max-height: 100px;">`;
-                    }
-                    return 'N/A';
-                }
+                data: 'employeGuid',
             },
-            { data: 'idle' },
             { data: 'date' },
+            { data: 'idle' },
+            { data: 'foto' },
             {
                 data: null,
                 render: function (data, type, row, meta) {
                     return meta.row + 1;
                 }
             },
-            {
-                data: 'employeGuid',
-            },
+          
         ]
-    });
+
+    }); 
 });

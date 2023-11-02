@@ -3,13 +3,14 @@
 *@
 @{
     ViewData["Title"] = "Home Client";
-    Layout = "/Views/Shared/Client/_StyleLayout.cshtml";
+    Layout = "/Views/Shared/Admin/_Layout.cshtml";
 }
 <div class="card">
-    <div id="employeeGuid" data-guid="@Context.Session.GetString("EmployeeGuid")" style="display:none;"></div>
+    <input type="text" hidden id="empGuid" value="@Context.Session.GetString("EmployeeGuid")">
+@*     <div id="empGuid" data-guid="@Context.Session.GetString("EmployeeGuid")" style="display:none;"></div> *@
     <h5 class="card-header">Data Employee</h5>
     <div class="dt-action-buttons text-end pt-3 pt-md-0">
-        <div class="datatable-buttons">
+        @* <div class="datatable-buttons">
             <!-- Button trigger modal -->
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCenter">
                 Create
@@ -19,7 +20,7 @@
             <button id="custom-pdf-button" class="btn btn-secondary">PDF</button> <!-- Sudah diperbaiki -->
             <button id="custom-print-button" class="btn btn-secondary">Print</button>
             <button id="custom-visibility" class="btn btn-secondary">Visibility</button>
-        </div>
+        </div> *@
     </div>
     <div class="card-datatable text-nowrap table-responsive">
         <table id="tableListHire" class="dt-complex-header table table-bordered dt-responsive table datatables-basic table">

@@ -44,18 +44,17 @@ namespace CLIENT.Repository
             return entityVM;
         }        
         
-        public async Task<ResponseOKHandler<GetInterviewDto>> GetByCompanyGuid(Guid guid)
+        public async Task<ResponseOKHandler<IEnumerable<GetInterviewDto>>> GetByCompanyGuid(Guid guid)
         {
-            string requestUrl = "GetAllByClientGuid/"; // Sesuaikan dengan URL endpoint yang benar
+            string requestUrl = "GetAllByClientGuid/" + guid; // Sesuaikan dengan URL endpoint yang benar
 
-            ResponseOKHandler<GetInterviewDto> entity = null;
-
-            using (var response = await httpClient.GetAsync(request + requestUrl + guid))
+            ResponseOKHandler<IEnumerable<GetInterviewDto>> entityVM = null;
+            using (var response = await httpClient.GetAsync(request + requestUrl))
             {
                 string apiResponse = await response.Content.ReadAsStringAsync();
-                entity = JsonConvert.DeserializeObject<ResponseOKHandler<GetInterviewDto>>(apiResponse);
+                entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<IEnumerable<GetInterviewDto>>>(apiResponse);
             }
-            return entity;
+            return entityVM;
         }
     }
 }
