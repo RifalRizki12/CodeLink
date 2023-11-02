@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
-    var guid = document.getElementById("employeeGuid").getAttribute("data-guid");
-    console.log(guid);
+    var guidCompny = document.getElementById("employeeGuid").getAttribute("data-guid");
+    console.log(guidCompny);
 
     // Fungsi untuk membangun tampilan setiap karyawan
     function buildEmployeeItem(item) {
@@ -24,10 +24,10 @@
                    <h6 class="text-brand">${item.date}</h6>
                </td>
                <td class="text-right" data-title="Lolos">
-                   <button class="btn btn-sm">Lolos</button>
+                   <button class="btn btn-sm btn-lolos" data-guid1="${item.employeGuid}" data-guid2="${item.idle}" data-bs-toggle="modal" data-bs-target="#lolosInterview">Lolos</button>
                </td>
                <td class="text-right" data-title="tidakLolos">
-                   <button class="btn-danger btn-sm">Tidak Lolos</button>
+                   <button class="btn-danger btn-sm btn-ditolak" data-guid="${item.employeGuid}">Tidak Lolos</button>
                </td>
             </tr>
         `;
@@ -35,7 +35,7 @@
 
     // Mengambil data dari server
     $.ajax({
-        url: '/Interview/ListHireIdle/' + guid,
+        url: '/Interview/ListHireIdle/' + guidCompny,
         type: 'GET',
         dataType: 'json',
         dataSrc: '',
@@ -56,4 +56,61 @@
     }).fail(function (xhr, status, error) {
         console.error("Gagal mengambil data: " + error);
     });
+
+    var guidInterview
+    var guidEmp
+
+    $(document).on('click', '.btn-lolos', function () {
+        var btn = $(this); // Tombol yang diklik
+        guidInterview = btn.data('guid1');
+        guidEmp = btn.data('guid2');
+        console.log("ini guid interview", guidInterview);
+        console.log("ini guid employee", guidEmp);
+    });
+
+
+    function lolosInterview(intGuid) {
+        console.log("ini guid di update", intGuid);
+
+        var updateType = parseInt($("#updateType").val());
+        var locUpdate = $("#location").val();
+        var remarksUpate = $("#remarks").val();
+
+
+        var obj = {
+            guid: intGuid,
+            employeeGuid: empGuid,
+            ownerGuid: ownGuid,
+            type: updateType,
+            location: locUpdate,
+            remarks: remarksUpate
+        };
+
+        console.log(obj);
+        $.ajax({
+            url: '/Interview/ScheduleUpdate/' + intGuid,
+            type: 'PUT',
+            data: JSON.stringify(obj),
+            contentType: 'application/json',
+            success: function (response) {
+
+                $('#updateInterview').modal('hide');
+                $('#tableInterview').DataTable().ajax.reload();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pembaruan berhasil',
+                    text: 'Data client berhasil diperbarui.'
+                });
+            },
+            error: function (response) {
+                $('#updateInterview').modal('hide');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Pembaruan gagal',
+                    text: 'Terjadi kesalahan saat mencoba update data client.'
+                });
+            }
+        });
+
+    };
 });
