@@ -14,6 +14,7 @@ namespace API.DTOs.Accounts
         public string NameCompany { get; set; }
         public string AddressCompany { get; set; }
         public string Description { get; set; }
+        public Guid? CompanyGuid { get; set; }
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
 
@@ -45,7 +46,8 @@ namespace API.DTOs.Accounts
                 StatusEmployee = StatusEmployee.owner,
                 PhoneNumber = registrationDto.PhoneNumber,
                 CreatedDate = DateTime.Now,
-                ModifiedDate = DateTime.Now
+                ModifiedDate = DateTime.Now,
+                CompanyGuid = registrationDto.CompanyGuid,
             };
         }
         public static implicit operator Company(RegisterClientDto registrationDto)

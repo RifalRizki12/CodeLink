@@ -37,6 +37,11 @@ namespace CLIENT.Controllers
         {
             return View();
         }
+        
+        public IActionResult MyAccount()
+        {
+            return View();
+        }
 
     }
 }

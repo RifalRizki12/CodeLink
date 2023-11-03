@@ -116,7 +116,7 @@ namespace CLIENT.Controllers
             return Json(new { data = result.Data });
         }
 
-
+        [AllowAnonymous]
         [HttpGet("Employee/GetGuidClient/{guid}")]
         public async Task<JsonResult> GetGuidClient(Guid guid)
         {
@@ -150,6 +150,7 @@ namespace CLIENT.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPut]
         public async Task<IActionResult> UpdateClient([FromForm] UpdateClientDto updateDto)
         {
@@ -176,7 +177,8 @@ namespace CLIENT.Controllers
                 return Json(new { success = false, message = "Data tidak valid." });
             }
         }
-        
+
+        [AllowAnonymous]
         [HttpPut]
         public async Task<IActionResult> UpdateIdle([FromForm] UpdateIdleDto updateDto)
         {

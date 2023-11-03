@@ -102,8 +102,10 @@
             success: function (data) {
                 console.log(data);
                 if (data) {
-                    var imageUrl1 = 'https://localhost:7051/Utilities/File/ProfilePictures/' + data.foto;
-                    var imageUrl2 = 'https://localhost:7051/Utilities/File/Cv/' + data.cv;
+                    const baseURL = "https://localhost:7051/";
+                    const imageUrl1 = `${baseURL}ProfilePictures/${data.foto}`;
+                    var imageUrl2 = `${baseURL}Cv/${data.cv}`;
+
                     // Isi formulir modal dengan data karyawan
                     employeeGuid = data.guid;
                     $('#editFirstName').val(data.firstName);
@@ -468,7 +470,7 @@ $(document).ready(function () {
                                  <a class="dropdown-item" data-guid="${data.employeeGuid}" data-status="4">Non Active</a>
                             </ul>
                           </div>
-                         <button type="button" class="btn btn-primary btn-update" data-guid="${data.companyGuid}" data-bs-toggle="modal" data-bs-target="#modalUpdateClient">Update</button> `;
+                         <button type="button" class="btn btn-primary btn-update" data-guid="${data.employeeGuid}" data-bs-toggle="modal" data-bs-target="#modalUpdateClient">Update</button> `;
                 }
             },
         ]
@@ -622,7 +624,6 @@ $(document).ready(function () {
         // Ambil file gambar dari input
         var profilePictureInput = document.getElementById('profilePictureInput');
         var profilePictureFile = profilePictureInput.files[0];
-        console.log(profilePictureFile);
 
         // Buat objek FormData dan tambahkan data
         var dataToUpdate = new FormData();
@@ -636,14 +637,7 @@ $(document).ready(function () {
         dataToUpdate.append('nameCompany', nameCompany);
         dataToUpdate.append('addressCompany', addressCompany);
         dataToUpdate.append('description', description);
-
-        // Cek apakah gambar sudah dipilih sebelum menambahkannya ke FormData
-        if (profilePictureFile) {
-            dataToUpdate.append('ProfilePictureFile', profilePictureFile);
-        } else {
-            alert('Harap pilih gambar profil sebelum mengirimkan permintaan.');
-            return;
-        }
+        dataToUpdate.append('ProfilePictureFile', profilePictureFile);
 
         $.ajax({
             url: '/Employee/UpdateClient',
@@ -680,7 +674,6 @@ $(document).ready(function () {
                         text: 'An error occurred while updating employee data.'
                     });
                 }
-                console.error(xhr.responseText);
             }
         });
 
