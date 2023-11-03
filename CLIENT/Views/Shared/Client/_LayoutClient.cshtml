@@ -3,6 +3,10 @@
     var role = Context.Session.GetString("Role");
     var employeeGuid = Context.Session.GetString("EmployeeGuid");
 
+    var fotoProfile = Context.Session.GetString("Foto");
+    var baseURL = "https://localhost:7051/"; // Gantilah URL dasar sesuai dengan kebutuhan Anda
+    var photoURL = $"{baseURL}ProfilePictures/{fotoProfile}";
+
     var token = Context.Session.GetString("JWToken");
     var isAuthenticated = token != null;
 }
@@ -81,10 +85,10 @@
                                         }
                                     }
                                     <div class="header-action-icon-2">
-                                        <a href="">
-                                            <img class="svgInject" alt="Nest" src="../../TClient/assets/imgs/theme/icons/icon-user.svg" />
-                                        </a>
-                                        <span class="lable ml-0">@fullName</span>
+                                        <span>
+                                            <img style="max-width:50px; max-height:50px;border-radius: 50%;" class="svgInject" alt="Nest" src="@photoURL" />
+                                            <span class="lable ml-0">@fullName</span>
+                                        </span>
                                         <div class="cart-dropdown-wrap cart-dropdown-hm2 account-dropdown">
                                             <ul>
                                                 <li>
@@ -446,8 +450,6 @@
 
 @section ScriptsStyle{
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -458,6 +460,9 @@
 
         var employeeGuid = '@employeeGuid';
         sessionStorage.setItem('employeeGuid', employeeGuid);
+
+        var foto = '@photoURL';
+        sessionStorage.setItem('foto', foto);
 
         var getRole = '@role';
         sessionStorage.setItem('role', getRole);
