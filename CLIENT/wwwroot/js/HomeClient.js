@@ -37,7 +37,7 @@
                     <h2><a href="">${val.fullName}</a></h2>
                     <div class="product-rate-cover">
                         <div class="product-rate d-inline-block">
-                            <div class="product-rating" style="width: ${val.averageRating * 10}%"></div>
+                            <div class="product-rating" style="width: ${val.averageRating * 20}%"></div>
                         </div>
                         <span class="font-small ml-5 text-muted"> (${val.averageRating})</span>
                     </div>
@@ -101,7 +101,7 @@
                         <span class="font-small mr-4 text-muted"> Rating Kinerja </span>
 
                         <div class="product-rate d-inline-block">
-                            <div class="product-rating" style="width: 90%">${result.averageRating}</div>
+                            <div class="product-rating" style="width: ${result.averageRating * 20}%"></div>
                         </div>
                     </div>
                 </div>

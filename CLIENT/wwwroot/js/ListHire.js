@@ -296,32 +296,78 @@ $(document).ready(function () {
         const baseURL = "https://localhost:7051/";
         const photoURL = `${baseURL}ProfilePictures/${item.foto}`;
 
+        const btnGuid = item.employeeGuid; // Asumsikan employeeGuid adalah unik
+        const isRated = item.hasRated || localStorage.getItem(btnGuid) === 'true'; // Tambahkan pemeriksaan localStorage di sini
+        const ratedStyle = isRated ? 'background-color: grey; border-color: grey; color: white; cursor: not-allowed;' : '';
+        const disabledAttribute = isRated ? 'disabled' : ''; // Tambahkan atribut "disabled" jika sudah dinilai
+
         return `
-            <tr class="pt-30" style="text-align:center;">
-               <td class="custome-checkbox pl-30">
-                   <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox1" value="">
-                   <label class="form-check-label" for="exampleCheckbox1"></label>
-               </td>
-               <td class="image product-thumbnail pt-40">
-                    <img src="${photoURL}" alt="${item.idle}">
-                    <h6><a class="product-name mb-10" href="">${item.idle}</a></h6>
-               
-               </td>
-               <td class="product-des product-name">
-               </td>
-               <td class="product-des product-name" data-title="date">
-                   <h6 class="text-brand">${item.startContract}</h6>
-               </td>
-               <td class="product-des product-name" data-title="date">
-                   <h6 class="text-brand">${item.endContract}</h6>
-               </td>
-               <td class="text-right" data-title="Lolos">
-                   <button class="btn btn-sm">Lolos</button>
+       <tr class="pt-30" style="text-align:center;">
+          <td class="image product-thumbnail pt-40">
+               <img src="${photoURL}" alt="${item.idle}">
+          </td>
+          <td class="product-des product-name">
+          </td>
+          <td class="product-des product-name" data-title="date">
+              <h6 class="text-brand">${item.idle}</h6>
+          </td>
+          <td class="product-des product-name" data-title="date">
+              <h6 class="text-brand">${item.endContract}</h6>
+          </td>
+          <td class="text-right" data-title="Lolos">
+           <button ${disabledAttribute} style="${ratedStyle}" class="btn-danger btn-sm btn-rating" data-rated="${isRated ? 'true' : 'false'}" data-guid1="${item.interviewGuid}" data-guid2="${btnGuid}" data-bs-toggle="modal" data-bs-target="#ratingInterview" >Rating</button>
                </td>
             </tr>
         `;
     }
+    document.body.addEventListener('click', function (e) {
+        if (e.target && e.target.classList.contains('btn-rating')) {
+            const button = e.target;
+            button.setAttribute('data-active', "true");  // Tandai tombol sebagai yang sedang aktif
+        }
+    });
 
+    // Saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', function () {
+        let ratingButtons = document.querySelectorAll('.btn-rating');
+        ratingButtons.forEach(function (button) {
+            const btnGuid = button.getAttribute('data-guid2');
+            if (localStorage.getItem(btnGuid) === 'true') {
+                button.disabled = true;
+                button.style.backgroundColor = "grey";
+                button.style.borderColor = "grey";
+                button.style.color = "white";
+                button.style.cursor = "not-allowed";
+                button.setAttribute('data-rated', "true");
+            }
+        });
+    });
+
+    document.getElementById('rating').addEventListener('click', function () {
+        // Ambil tombol rating yang saat ini sedang aktif
+        const activeRatingButton = document.querySelector('.btn-rating[data-active="true"]');
+
+        if (activeRatingButton) {
+            const btnGuid = activeRatingButton.getAttribute('data-guid2');
+
+            // Ubah style tombol rating menjadi tidak aktif
+            activeRatingButton.disabled = true;
+            activeRatingButton.style.backgroundColor = "grey";
+            activeRatingButton.style.borderColor = "grey";
+            activeRatingButton.style.color = "white";
+            activeRatingButton.style.cursor = "not-allowed";
+
+            // Set atribut data-rated menjadi true, hapus atribut data-active, dan simpan status ke localStorage
+            activeRatingButton.setAttribute('data-rated', "true");
+            activeRatingButton.removeAttribute('data-active');
+            localStorage.setItem(btnGuid, 'true');
+        }
+    });
+
+    
+
+
+    // Mengambil data dari server
     // Mengambil data dari server
     $.ajax({
         url: '/Interview/GetIdleHistory/' + guid,
@@ -345,5 +391,92 @@ $(document).ready(function () {
     }).fail(function (xhr, status, error) {
         console.error("Gagal mengambil data: " + error);
     });
+
+    $("#tableGetIdleHistory").find("tbody").on('click', '.btn-rating', function () {
+        var btn = $(this); // Tombol yang diklik
+        guidInterview = btn.data('guid1');
+        guidEmp = btn.data('guid2');
+        console.log("guid emp:", guidEmp)
+    });
+
+    $("#ratingForm").submit(function (event) {
+        event.preventDefault();
+        rateInterview(guidInterview);
+    });
+    function rateInterview(guidInterview) {
+        console.log("ini guid di update", guidInterview);
+
+        var feedbackInput = $("#feedback").val();
+        var rateInput;
+        if ($('input[name="rating"]:checked').length > 0) {
+            rateInput = parseInt($('input[name="rating"]:checked').val());
+        } else {
+            // Anda bisa menetapkan nilai default jika tidak ada bintang yang dipilih
+            rateInput = 0;
+        }
+        console.log(rateInput);
+
+
+
+        var obj = {
+            guid: guidInterview,
+            employeeGuid: guidEmp,
+            ownerGuid: guid,
+            feedBack: feedbackInput,
+            rate: rateInput,
+
+        };
+
+        console.log(obj);
+        // lnjut disini, belum bikin controller dan repo
+        $.ajax({
+            url: '/Interview/Announcement/' + guidInterview,
+            type: 'PUT',
+            data: JSON.stringify(obj),
+            contentType: 'application/json',
+            success: function (response) {
+                console.log(response);
+                $('#ratingInterview').modal('hide');
+                //$('#tableListHire').DataTable().ajax.reload();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Terimakasih Atas Kepercayaanya',
+                    text: 'Orang yang Anda pilih tidak lolos dalam rekrutmen.'
+                });
+            },
+            error: function (response) {
+                $('#ratingInterview').modal('hide');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Pembaruan data tidak lolos gagal',
+                    text: 'Terjadi kesalahan saat anda mencoba menolak partner.'
+                });
+            }
+        });
+
+    };
+
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+    let labels = document.querySelectorAll('.rating label');
+    labels.forEach(function (label) {
+        label.addEventListener('click', function () {
+            this.style.color = 'gold';
+            let prev = this.previousElementSibling;
+            while (prev) {
+                if (prev.tagName.toLowerCase() === 'label') {
+                    prev.style.color = 'gold';
+                }
+                prev = prev.previousElementSibling;
+            }
+            let next = this.nextElementSibling;
+            while (next) {
+                if (next.tagName.toLowerCase() === 'label') {
+                    next.style.color = 'gray';
+                }
+                next = next.nextElementSibling;
+            }
+        });
+    });
+});
