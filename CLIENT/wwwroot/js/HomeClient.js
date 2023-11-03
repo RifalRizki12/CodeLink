@@ -141,28 +141,62 @@
         });
     };
 
-    $('#formAddSchedule').submit(function (event) {
-        event.preventDefault();
-        addScheduleInterview();
+   
+    $(document).on('click', '.btn-detail', function () {
+        var guid = $(this).data('guid');
+        $('#modalDetail').data('employee-guid', guid);
+        console.log("Data modal setelah tombol detail ditekan:", $('#modalDetail').data()); // Tambahkan baris ini
     });
 
-    function addScheduleInterview() {
 
+
+
+    // Handler ketika form disubmit
+    $('#formAddSchedule').submit(function (event) {
+        event.preventDefault();
+
+        var guid = $('#modalDetail').data('employee-guid');
+        console.log("Data modal saat form disubmit:", $('#modalDetail').data()); // Tambahkan baris ini
+        console.log("GUID saat form disubmit:", guid);
+
+        if (canSubmit(guid)) {
+            localStorage.setItem('lastSubmit_' + guid, new Date().getTime());
+            addScheduleInterview();
+        } else {
+            alert('Anda hanya dapat mengirimkan sekali dalam sehari.');
+        }
+    });
+
+    function canSubmit(guid) {
+        var lastSubmitTimestamp = localStorage.getItem('lastSubmit_' + guid);
+        if (lastSubmitTimestamp) {
+            var lastSubmitDate = new Date(parseInt(lastSubmitTimestamp));
+            var currentDate = new Date();
+            if (lastSubmitDate.getDate() === currentDate.getDate() &&
+                lastSubmitDate.getMonth() === currentDate.getMonth() &&
+                lastSubmitDate.getFullYear() === currentDate.getFullYear()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    function addScheduleInterview() {
+        // Kode untuk menambahkan jadwal interview
+        // Pastikan untuk mengambil GUID yang sesuai untuk disertakan dalam objek yang dikirim
         var nameInput = $("#nameInput").val();
         var dateInput = $("#dateInput").val();
-        // Mengambil nilai string dari input
         var compGuidString = $("#companyGuid").val();
+        var compGuid = compGuidString ? compGuidString.toLowerCase() : null;
+       /* var employeeGuid = $('#employeeGuid').val(); // Asumsi ada input dengan id 'employeeGuid'*/
 
-        // Membuat tipe GUID dari string
-        var compGuid = compGuidString ? compGuidString.toLowerCase() : null; // Mengonversi menjadi lowercase
-
-        // Buat objek dengan EmployeeGuid dari session
         var obj = {
             name: nameInput,
             date: dateInput,
             employeeGuid: guid,
             ownerGuid: compGuid
-        }
+        };
         console.log(obj);
 
         $.ajax({
