@@ -73,16 +73,61 @@ $(document).ready(function () {
     });
 
     function lolosInterview(guidInterview) {
-        console.log("ini guid di update", guidInterview);
+
+        var contractStart = $("#startContractInp").val();
+        var contractEnd = $("#endContractInp").val();
+
+        if (contractStart === "" || contractEnd === "") {
+            Swal.fire({
+                title: 'Data Inputan Tidak Boleh Kosong',
+                icon: 'info',
+                showCloseButton: true,
+                focusConfirm: false,
+                confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
+                confirmButtonAriaLabel: 'Thumbs up, great!',
+            })
+            return;
+        };
+
+        var startContractDate = new Date(contractStart);
+        var endContractDate = new Date(contractEnd);
+
+        // Mendapatkan tanggal hari ini
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+        endContractDate.setHours(0, 0, 0, 0);
+        
+        if (startContractDate <= today) {
+            
+            Swal.fire({
+                title: 'Tanggal start contract tidak boleh kurang dari hari ini',
+                icon: 'info',
+                showCloseButton: true,
+                focusConfirm: false,
+                confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
+                confirmButtonAriaLabel: 'Thumbs up, great!',
+            })
+            return;
+        } else if (endContractDate <= today) {
+            Swal.fire({
+                title: 'Tanggal End Contract tidak boleh kurang dari atau sama dengan hari ini',
+                icon: 'info',
+                showCloseButton: true,
+                focusConfirm: false,
+                confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
+                confirmButtonAriaLabel: 'Thumbs up, great!',
+            });
+            return;
+        }
 
         var obj = {
             guid: guidInterview,
             employeeGuid: guidEmp,
             ownerGuid: guidCompny,
             statusIntervew: 0,
-            startContract: $("#startContractInp").val(),
-            endContract: $("#endContractInp").val(),
-            
+            startContract: contractStart,
+            endContract: contractEnd,
+
         };
 
         console.log(obj);
@@ -125,14 +170,24 @@ $(document).ready(function () {
         tidakLolosInterview(guidInterview);
     });
     function tidakLolosInterview(guidInterview) {
-        console.log("ini guid di update", guidInterview);
 
+        if ($("#feedback").val() === "") {
+            Swal.fire({
+                title: 'Kasih FeedBack dulu yaaa!!!',
+                icon: 'info',
+                showCloseButton: true,
+                focusConfirm: false,
+                confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
+                confirmButtonAriaLabel: 'Thumbs up, great!',
+            })
+            return;
+        };
         var obj = {
             guid: guidInterview,
             employeeGuid: guidEmp,
             ownerGuid: guidCompny,
             statusIntervew: 1,
-            feedBack: $("#feedback").val()
+            feedBack: $("#feedback").val(),
 
         };
 
@@ -163,7 +218,7 @@ $(document).ready(function () {
         });
 
     };
-   
+
 });
 
 //EMPLOYEE ONSITE DAN  END CONTRACT 
@@ -239,12 +294,20 @@ $(document).ready(function () {
         event.preventDefault();
         endContract(guidInterview);
     });
-    /*var remarksInput = */
-    /* var status = 2;*/
+    
     function endContract(guidInterview) {
-        console.log("ini guid di update", guidInterview);
 
-     
+        if ($("#remarks").val() === "") {
+            Swal.fire({
+                title: 'Alasan end contractnya diisi dulu ya Kakak!!!',
+                icon: 'info',
+                showCloseButton: true,
+                focusConfirm: false,
+                confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
+                confirmButtonAriaLabel: 'Thumbs up, great!',
+            })
+            return;
+        };
         var today = new Date(); // Membuat objek Date saat ini
         var formattedDate = today.toISOString().split('T')[0];
         var obj = {
@@ -364,7 +427,7 @@ $(document).ready(function () {
         }
     });
 
-    
+
 
 
     // Mengambil data dari server
@@ -414,9 +477,18 @@ $(document).ready(function () {
             // Anda bisa menetapkan nilai default jika tidak ada bintang yang dipilih
             rateInput = 0;
         }
-        console.log(rateInput);
-
-
+      
+        if (feedbackInput === "" || rateInput === 0 ) {
+            Swal.fire({
+                title: 'Isi semua datanya dong Kakak!!!',
+                icon: 'info',
+                showCloseButton: true,
+                focusConfirm: false,
+                confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
+                confirmButtonAriaLabel: 'Thumbs up, great!',
+            })
+            return;
+        };
 
         var obj = {
             guid: guidInterview,

@@ -70,7 +70,7 @@
                 intGuid = response.guid;
 
                 $("#location").val(response.location);
-                $("#type").val(response.type);
+               
                 $("#remarks").val(response.remarks);
             },
             error: function (response) {
@@ -83,49 +83,58 @@
         });
     }
     function updateInterview(intGuid) {
-        console.log("ini guid di update", intGuid);
-
-        if (intGuid && empGuid && ownGuid) {
-            var obj = {
-                guid: intGuid,
-                employeeGuid: empGuid,
-                ownerGuid: ownGuid,
-                type: parseInt($("#updateType").val()),
-                location: $("#location").val(),
-                remarks: $("#remarks").val()
-            };
-
-            console.log(obj);
-            $.ajax({
-                url: '/Interview/ScheduleUpdate/' + intGuid,
-                type: 'PUT',
-                data: JSON.stringify(obj),
-                contentType: 'application/json',
-                success: function (response) {
-                    
-                        $('#updateInterview').modal('hide');
-                        $('#tableInterview').DataTable().ajax.reload();
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Pembaruan berhasil',
-                            text: 'Data client berhasil diperbarui.'
-                        });
-                },
-                error: function (response) {
-                    $('#updateInterview').modal('hide');
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Pembaruan gagal',
-                        text: 'Terjadi kesalahan saat mencoba update data client.'
-                    });
-                }
-            });
-        } else {
+        var typeInpt = parseInt($("#updateType").val());
+        var locInput = $("#location").val();
+        
+        if (typeInpt === "" || locInput === "") {
             Swal.fire({
-                icon: 'error',
-                title: 'Pembaruan gagal',
-                text: 'intGuid, empGuid, or ownGuid is null.'
-            });
+                text: 'Data Input Tidak Boleh Kosong',
+                icon: 'info',
+                showCloseButton: false,
+                focusConfirm: false,
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            })
+            return;
+        };
+
+
+        var obj = {
+            guid: intGuid,
+            employeeGuid: empGuid,
+            ownerGuid: ownGuid,
+            type: typeInpt,
+            location: locInput,
+            remarks: $("#remarks").val()
         }
+        
+        $.ajax({
+            url: '/Interview/ScheduleUpdate/' + intGuid,
+            type: 'PUT',
+            data: JSON.stringify(obj),
+            contentType: 'application/json',
+            success: function (response) {
+
+                $('#updateInterview').modal('hide');
+                $('#tableInterview').DataTable().ajax.reload();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pembaruan berhasil',
+                    text: 'Data client berhasil diperbarui.'
+                });
+            },
+            error: function (response) {
+                $('#updateInterview').modal('hide');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Pembaruan gagal',
+                    text: 'Terjadi kesalahan saat mencoba update data client.'
+                });
+            }
+        })
+
     }
+
 });

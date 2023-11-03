@@ -141,62 +141,34 @@
         });
     };
 
-   
-    $(document).on('click', '.btn-detail', function () {
-        var guid = $(this).data('guid');
-        $('#modalDetail').data('employee-guid', guid);
-        console.log("Data modal setelah tombol detail ditekan:", $('#modalDetail').data()); // Tambahkan baris ini
-    });
-
-
-
-
-    // Handler ketika form disubmit
     $('#formAddSchedule').submit(function (event) {
         event.preventDefault();
-
-        var guid = $('#modalDetail').data('employee-guid');
-        console.log("Data modal saat form disubmit:", $('#modalDetail').data()); // Tambahkan baris ini
-        console.log("GUID saat form disubmit:", guid);
-
-        if (canSubmit(guid)) {
-            localStorage.setItem('lastSubmit_' + guid, new Date().getTime());
-            addScheduleInterview();
-        } else {
-            alert('Anda hanya dapat mengirimkan sekali dalam sehari.');
-        }
+        addScheduleInterview();
     });
 
-    function canSubmit(guid) {
-        var lastSubmitTimestamp = localStorage.getItem('lastSubmit_' + guid);
-        if (lastSubmitTimestamp) {
-            var lastSubmitDate = new Date(parseInt(lastSubmitTimestamp));
-            var currentDate = new Date();
-            if (lastSubmitDate.getDate() === currentDate.getDate() &&
-                lastSubmitDate.getMonth() === currentDate.getMonth() &&
-                lastSubmitDate.getFullYear() === currentDate.getFullYear()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-
     function addScheduleInterview() {
-        // Kode untuk menambahkan jadwal interview
-        // Pastikan untuk mengambil GUID yang sesuai untuk disertakan dalam objek yang dikirim
+        var ownGuid = sessionStorage.getItem('employeeGuid');
         var nameInput = $("#nameInput").val();
         var dateInput = $("#dateInput").val();
-        var compGuidString = $("#companyGuid").val();
-        var compGuid = compGuidString ? compGuidString.toLowerCase() : null;
-       /* var employeeGuid = $('#employeeGuid').val(); // Asumsi ada input dengan id 'employeeGuid'*/
+      
+        if (nameInput === "" || dateInput === "") {
+            Swal.fire({
+                title: 'Data Inputan Tidak Boleh Kosong',
+                icon: 'info',
+                showCloseButton: true,
+                focusConfirm: false,
+                confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
+                confirmButtonAriaLabel: 'Thumbs up, great!',
+            })
+            return; 
+        };
 
         var obj = {
             name: nameInput,
             date: dateInput,
             employeeGuid: guid,
-            ownerGuid: compGuid
-        };
+            ownerGuid: ownGuid
+        }
         console.log(obj);
 
         $.ajax({
@@ -225,6 +197,11 @@
         });
 
     };
+
+    //VALIDATION INPUTAN 
+   
+
+
 
 });
 

@@ -45,9 +45,24 @@ $(document).ready(function () {
 
 //Forgot Password
 $(document).ready(function () {
-    $('#btnForgotPassword').click(function () {
+    $('#forgotPsswd').click(function () {
         var email = $('#emailInput').val();
 
+        if (email === "" ) {
+            Swal.fire({
+                text: 'Email Tidak Boleh Kosong',
+                icon: 'info',
+                showCloseButton: false,
+                focusConfirm: false,
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            })
+            return;
+        }
+
+    
         var data = {
             Email: email,
         };
@@ -83,11 +98,25 @@ $(document).ready(function () {
 
 //CHANGE PASSWORD
 $(document).ready(function () {
-    $('#btnChangePassword').click(function () {
+    $('#changePasswd').click(function () {
         var email = $('#emailInput').val();
         var otp = $('#otpInput').val();
         var password = $('#passwordInput').val();
         var confirmPassword = $('#confirmPsswdInput').val();
+
+        if (email == " " || otp === "" || password === "" || confirmPassword === "") {
+            Swal.fire({
+                text: 'Data Input Tidak Boleh Kosong',
+                icon: 'info',
+                showCloseButton: false,
+                focusConfirm: false,
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            })
+            return;
+        }
 
         var data = {
             Email: email,
