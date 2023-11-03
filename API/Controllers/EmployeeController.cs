@@ -110,6 +110,9 @@ namespace API.Controllers
                         // Simpan Company dalam repository
                         _companyRepository.Create(company);
 
+                        employee.CompanyGuid = company.Guid;
+                        _employeeRepository.Update(employee);
+
                         // Hubungkan Account dengan Employee pemilik
                         account.Guid = employee.Guid;
                         account.RoleGuid = _roleRepository.GetDefaultGuid() ?? throw new Exception("Default role not found");
@@ -695,9 +698,10 @@ namespace API.Controllers
             try
             {
                 // Get the employee by GUID
-                Company company = _companyRepository.GetByGuid(companyGuid);
+                Employee employee = _employeeRepository.GetByGuid(companyGuid);
+                
 
-                if (company == null)
+                if (employee == null)
                 {
                     return NotFound(new ResponseErrorHandler
                     {
@@ -706,8 +710,8 @@ namespace API.Controllers
                         Message = "Company not found."
                     });
                 }
-                Employee employee = _employeeRepository.GetByGuid(company.EmployeeGuid);
 
+                Company company = _companyRepository.GetByGuid(employee.CompanyGuid.Value);
                 // Get the company and account details
                 Account account = _accountRepository.GetByGuid(employee.Guid);
                 Role role = _roleRepository.GetByGuid(account.Guid);
