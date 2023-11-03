@@ -118,6 +118,12 @@ public class InterviewController : ControllerBase
     }
 
 
+    private void SendEmailToBoth(string subject, string body, string employeeEmail, string adminEmail)
+    {
+        _emailHandler.Send(subject, body, employeeEmail);
+        _emailHandler.Send(subject, body, adminEmail);
+    }
+
     [HttpPut("Announcement")]
     public IActionResult Announcement(AnnouncmentDto announcment)
     {
@@ -300,11 +306,7 @@ public class InterviewController : ControllerBase
             });
         }
     }
-    private void SendEmailToBoth(string subject, string body, string employeeEmail, string adminEmail)
-    {
-        _emailHandler.Send(subject, body, employeeEmail);
-        _emailHandler.Send(subject, body, adminEmail);
-    }
+  
 
 
 

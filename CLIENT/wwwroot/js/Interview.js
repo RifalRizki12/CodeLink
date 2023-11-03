@@ -26,7 +26,11 @@
             {
                 data: "type",
                 render: function (data, type, row) {
-                    return row.type == "0" ? "Online" : "Offline";
+                    if (row.type === null) {
+                        return ""; // Jika type adalah null, kembalikan teks kosong
+                    } else {
+                        return row.type == "0" ? "Online" : "Offline";
+                    }
                 }
             },
             { data: 'location' },
