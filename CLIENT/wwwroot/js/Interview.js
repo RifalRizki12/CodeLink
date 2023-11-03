@@ -87,19 +87,18 @@
         var locInput = $("#location").val();
         
         if (typeInpt === "" || locInput === "") {
-            
-                Swal.fire({
-                    title: 'Info!',
-                    text: 'You clicked the button!',
-                    type: 'info',
-                    customClass: {
-                        confirmButton: 'btn btn-primary'
-                    },
-                    buttonsStyling: false
-                })
-            
-                return; 
-        }
+            Swal.fire({
+                text: 'Data Input Tidak Boleh Kosong',
+                icon: 'info',
+                showCloseButton: false,
+                focusConfirm: false,
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            })
+            return;
+        };
 
 
         var obj = {

@@ -360,65 +360,7 @@ $(document).ready(function () {
             }
         });
     });
-    // Tambahkan event listener untuk tombol "Save"
-    /*  $('#editEmployeeButton').on('click', function () {
-          var updatedEmployee = {
-              Guid: $('#editEmployeeId').val(),
-              FirstName: $('#editFirstName').val(),
-              LastName: $('#editLastName').val(),
-              Gender: $('#editGender').val(),
-              Email: $('#editEmail').val(),
-              PhoneNumber: $('#editPhoneNumber').val(),
-              Grade: $('#editGrade').val(),
-              StatusEmployee: $('#editStatusEmployee').val(),
-              CompanyGuid: $('#editCompanyGuid').val()
-          };
   
-          // Lakukan permintaan PUT ke API untuk memperbarui data karyawan
-          $.ajax({
-              url: '/Employee/UpdateIdle',
-              type: 'PUT',
-              dataType: 'json',
-              data: JSON.stringify(updatedEmployee),
-              contentType: 'application/json',
-              success: function (data) {
-                  console.log(data);
-                  $('#modalEditEmployee').modal('hide');
-                  // Tambahkan logika lainnya seperti memperbarui tampilan tabel atau memberikan notifikasi
-                  Swal.fire({
-                      icon: 'success',
-                      title: 'Success',
-                      text: 'Employee data updated successfully.'
-                  });
-              },
-              error: function (xhr, status, error) {
-                  if (xhr.status === 400) {
-                      Swal.fire({
-                          icon: 'error',
-                          title: 'Validation Error',
-                          text: xhr.responseText
-                      });
-                  } else if (xhr.status === 404) {
-                      Swal.fire({
-                          icon: 'error',
-                          title: 'Error',
-                          text: 'Employee data not found.'
-                      });
-                  } else {
-                      Swal.fire({
-                          icon: 'error',
-                          title: 'Error',
-                          text: 'An error occurred while updating employee data.'
-                      });
-                  }
-                  console.error(xhr.responseText);
-              }
-          });
-      });*/
-
-
-    //Menampilkan data Client (Update Status client, Update Data Client)
-
 });
 
 $(document).ready(function () {
