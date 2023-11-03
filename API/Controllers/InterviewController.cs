@@ -497,8 +497,8 @@ public class InterviewController : ControllerBase
                                join empInterviewer in employees on interview.OwnerGuid equals empInterviewer.Guid
                                join empIdle in employees on interview.EmployeeGuid equals empIdle.Guid
                                where empIdle.StatusEmployee == StatusEmployee.idle
-                               && interview.EndContract.HasValue && interview.Type==null
-                               && interview.EndContract > currentDate 
+                               && interview.EndContract == null && interview.StatusIntervew==null
+                               
                                select new GetInterviewDto
                                {
                                    EmployeGuid = empIdle.Guid,

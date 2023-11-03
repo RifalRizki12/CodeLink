@@ -65,7 +65,6 @@
                 ownGuid = response.ownerGuid;
                 intGuid = response.guid;
 
-                // Set the value of location from the response
                 $("#location").val(response.location);
                 $("#type").val(response.type);
                 $("#remarks").val(response.remarks);
@@ -82,18 +81,14 @@
     function updateInterview(intGuid) {
         console.log("ini guid di update", intGuid);
 
-        var updateType = parseInt($("#updateType").val());
-        var locUpdate = $("#location").val();
-        var remarksUpate = $("#remarks").val();
-
         if (intGuid && empGuid && ownGuid) {
             var obj = {
                 guid: intGuid,
                 employeeGuid: empGuid,
                 ownerGuid: ownGuid,
-                type: updateType,
-                location: locUpdate,
-                remarks: remarksUpate
+                type: parseInt($("#updateType").val()),
+                location: $("#location").val(),
+                remarks: $("#remarks").val()
             };
 
             console.log(obj);

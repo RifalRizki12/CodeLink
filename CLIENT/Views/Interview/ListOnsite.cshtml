@@ -24,7 +24,6 @@
                             <th scope="col" colspan="1">StrartContract</th>
                             <th scope="col" colspan="1">EndContract</th>
                             <th scope="col" colspan="1">Action</th>
-                            <th scope="col" class="end">Remove</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,6 +34,31 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="endContract" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalCenterTitle">Detail Contract</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="endContractForm" class="needs-validation" novalidate>
+                    <div class="row">
+                        <label for="remarks" class="form-label">Keterangan</label>
+                        <textarea id="remarks" placeholder="Masukkan alasan end contract disini....."></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class=" btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" id="lolos" class="btn btn-primary btn-save">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 @section scripts {

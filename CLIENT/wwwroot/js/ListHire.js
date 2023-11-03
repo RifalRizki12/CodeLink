@@ -1,4 +1,5 @@
-﻿$(document).ready(function () {
+﻿//INTERVIEW LIST MASING-MASING PERUSAHAAN DAN TOMBOL LOLOS/TIDAK LOLOS
+$(document).ready(function () {
     var guidCompny = document.getElementById("employeeGuid").getAttribute("data-guid");
     console.log(guidCompny);
 
@@ -74,17 +75,13 @@
     function lolosInterview(guidInterview) {
         console.log("ini guid di update", guidInterview);
 
-        var contractStart = $("#startContractInp").val();
-        var contractEnd = $("#endContractInp").val();
-        var status = 0;
-
         var obj = {
             guid: guidInterview,
             employeeGuid: guidEmp,
             ownerGuid: guidCompny,
-            statusIntervew: status,
-            startContract: contractStart,
-            endContract: contractEnd,
+            statusIntervew: 0,
+            startContract: $("#startContractInp").val(),
+            endContract: $("#endContractInp").val(),
             
         };
 
@@ -102,7 +99,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Proses Rekrutmen Berhasil',
-                    text: 'Orang yang Anda pilih telah berhasil direkrut!.'
+                    text: 'Terimakasih Orang Baik!!!.'
                 });
             },
             error: function (response) {
@@ -130,20 +127,16 @@
     function tidakLolosInterview(guidInterview) {
         console.log("ini guid di update", guidInterview);
 
-        var feedbackInput = $("#feedback").val();
-        var status = 1;
-
         var obj = {
             guid: guidInterview,
             employeeGuid: guidEmp,
             ownerGuid: guidCompny,
-            statusIntervew: status,
-            feedBack: feedbackInput
+            statusIntervew: 1,
+            feedBack: $("#feedback").val()
 
         };
 
         console.log(obj);
-        // lnjut disini, belum bikin controller dan repo
         $.ajax({
             url: '/Interview/Announcement/' + guidInterview,
             type: 'PUT',
@@ -173,6 +166,7 @@
    
 });
 
+//EMPLOYEE ONSITE DAN  END CONTRACT 
 $(document).ready(function () {
     var guid = document.getElementById("employeeGuid").getAttribute("data-guid");
     console.log(guid);
@@ -202,10 +196,7 @@ $(document).ready(function () {
                    <h6 class="text-brand">${item.endContract}</h6>
                </td>
                <td class="text-right" data-title="Lolos">
-                   <button class="btn btn-sm">Lolos</button>
-               </td>
-               <td class="text-right" data-title="tidakLolos">
-                   <button class="btn-danger btn-sm">Tidak Lolos</button>
+                   <button class="btn-danger btn-sm btn-endContract" data-guid1="${item.interviewGuid}" data-guid2="${item.employeGuid}" data-bs-toggle="modal" data-bs-target="#endContract">End Contract</button>
                </td>
             </tr>
         `;
@@ -234,6 +225,66 @@ $(document).ready(function () {
     }).fail(function (xhr, status, error) {
         console.error("Gagal mengambil data: " + error);
     });
+
+
+
+    //FUNCTION UNTUK TOMBOL END CONTRACT
+    $("#tableListOnsite").find("tbody").on('click', '.btn-endContract', function () {
+        var btn = $(this); // Tombol yang diklik
+        guidInterview = btn.data('guid1');
+        guidEmp = btn.data('guid2');
+    });
+
+    $("#endContractForm").submit(function (event) {
+        event.preventDefault();
+        endContract(guidInterview);
+    });
+    /*var remarksInput = */
+    /* var status = 2;*/
+    function endContract(guidInterview) {
+        console.log("ini guid di update", guidInterview);
+
+     
+        var today = new Date(); // Membuat objek Date saat ini
+        var formattedDate = today.toISOString().split('T')[0];
+        var obj = {
+            guid: guidInterview,
+            employeeGuid: guidEmp,
+            ownerGuid: guid,
+            endContract: formattedDate,
+            statusIntervew: 3,
+            remarks: $("#remarks").val(),
+        };
+
+        console.log(obj);
+        $.ajax({
+            url: '/Interview/Announcement/' + guidInterview,
+            type: 'PUT',
+            data: JSON.stringify(obj),
+            contentType: 'application/json',
+            success: function (response) {
+                console.log(response);
+                $('#endContract').modal('hide');
+                //$('#tableListHire').DataTable().ajax.reload();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'End Contract Berhasil Dilakukan',
+                    text: 'Semoga cepat menemukan orang baru!.'
+                });
+            },
+            error: function (response) {
+                $('#endContract').modal('hide');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Pembaruan data tidak lolos gagal',
+                    text: 'Terjadi kesalahan saat anda mencoba menolak partner.'
+                });
+            }
+        });
+
+    };
+
+
 });
 
 $(document).ready(function () {
