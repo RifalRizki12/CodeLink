@@ -16,6 +16,9 @@ namespace API.Utilities.Validations.Interviews
 
             RuleFor(e => e.EmployeeGuid)
                 .NotEmpty();
+
+            RuleFor(e => e.OwnerGuid)
+                .NotEmpty();
         }
     }
 }

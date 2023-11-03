@@ -23,9 +23,11 @@ namespace API.Utilities.Validations.Accounts
                 .EmailAddress().WithMessage("Format Email Salah");  // Properti harus merupakan alamat email yang valid, dengan pesan kustom jika tidak terpenuhi
 
             // Aturan validasi untuk properti 'PhoneNumber' dalam objek EmployeeDto
+
             RuleFor(e => e.PhoneNumber)
-                .NotEmpty().WithMessage("Phone Number tidak boleh kosong")         // Properti tidak boleh kosong
-                .MaximumLength(16);
+                .NotEmpty().WithMessage("Phone Number tidak boleh kosong")
+                .MaximumLength(16)
+                .Matches(@"^0\d*$").WithMessage("Phone Number harus dimulai dengan 0 dan hanya berisi angka");
 
             RuleFor(e => e.NameCompany)
                 .NotEmpty()
@@ -34,8 +36,6 @@ namespace API.Utilities.Validations.Accounts
             RuleFor(e => e.AddressCompany)
                 .NotEmpty()
                 .MinimumLength(4);
-
-        
 
         }
     }

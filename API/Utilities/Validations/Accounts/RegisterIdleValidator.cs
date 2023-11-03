@@ -18,8 +18,9 @@ namespace API.Utilities.Validations.Accounts
                 .IsInEnum();   // Properti harus merupakan nilai dari enum yang valid
 
             RuleFor(e => e.PhoneNumber)
-                .NotEmpty().WithMessage("Phone Number tidak boleh kosong")         // Properti tidak boleh kosong
-                .MaximumLength(16);
+                .NotEmpty().WithMessage("Phone Number tidak boleh kosong")
+                .MaximumLength(16)
+                .Matches(@"^0\d*$").WithMessage("Phone Number harus dimulai dengan 0 dan hanya berisi angka");
 
             // Aturan validasi untuk properti 'Email' dalam objek EmployeeDto
             RuleFor(e => e.Email)

@@ -12,14 +12,16 @@ namespace API.Utilities.Validations.Accounts
                 .NotEmpty()  // Properti tidak boleh kosong
                 .MinimumLength(3); 
 
+
             // Aturan validasi untuk properti 'Gender' dalam objek EmployeeDto
             RuleFor(e => e.Gender)
                 .NotNull()     // Properti tidak boleh null
                 .IsInEnum();   // Properti harus merupakan nilai dari enum yang valid
 
             RuleFor(e => e.PhoneNumber)
-                .NotEmpty().WithMessage("Phone Number tidak boleh kosong")         // Properti tidak boleh kosong
-                .MaximumLength(16);
+                 .NotEmpty().WithMessage("Phone Number tidak boleh kosong")
+                 .MaximumLength(16)
+                 .Matches(@"^0\d*$").WithMessage("Phone Number harus dimulai dengan 0 dan hanya berisi angka");
 
             // Aturan validasi untuk properti 'Email' dalam objek EmployeeDto
             RuleFor(e => e.Email)
@@ -30,20 +32,6 @@ namespace API.Utilities.Validations.Accounts
 
             RuleFor(e => e.StatusEmployee)
                 .NotNull();
-
-           /* RuleFor(e => e.Password)
-                .NotEmpty()         // Properti tidak boleh kosong
-                .MinimumLength(8) // Panjang minimal 8 karakter
-                .MaximumLength(16) //max lenght karakter 16
-                .Matches(@"[A-Z]+") //harus berisi min 1 huruf kapital
-                .Matches(@"[a-z]+");//harus berisi min 1 huruf lowercase
-
-            RuleFor(e => e.ConfirmPassword)
-                .NotEmpty()         // Properti tidak boleh kosong
-                .MinimumLength(8) // Panjang minimal 8 karakter
-                .MaximumLength(16) //max lenght karakter 16
-                .Matches(@"[A-Z]+") //harus berisi min 1 huruf kapital
-                .Matches(@"[a-z]+");//harus berisi min 1 huruf lowercase*/
 
         }
     }
