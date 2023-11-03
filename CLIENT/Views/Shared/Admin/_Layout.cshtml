@@ -2,6 +2,11 @@
 @{
     var fullName = Context.Session.GetString("FullName");
     var role = Context.Session.GetString("Role");
+
+    var employeeGuid = Context.Session.GetString("EmployeeGuid");
+
+    var token = Context.Session.GetString("JWToken");
+    var isAuthenticated = token != null;
 }
 
 <html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed layout-compact " dir="ltr"
@@ -715,6 +720,19 @@
 </html>
 
 <!-- beautify ignore:end -->
+
+<script>
+    const token = '@token';
+    sessionStorage.setItem('jwt', token);
+    var isAuthenticated = token !== null;
+
+    var employeeGuid = '@employeeGuid';
+    sessionStorage.setItem('employeeGuid', employeeGuid);
+
+    var getRole = '@role';
+    sessionStorage.setItem('role', getRole);
+
+</script>
 
 <script>
     $(document).ready(function () {

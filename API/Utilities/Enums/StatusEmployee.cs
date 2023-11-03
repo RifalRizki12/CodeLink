@@ -12,4 +12,7 @@ public enum StatusEmployee
 
     [Display(Name = "On Site")]
     onsite = 2,
+    
+    [Display(Name = "Admin")]
+    admin = 3,
 }

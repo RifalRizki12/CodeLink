@@ -192,63 +192,225 @@
 
     };
 
+});
+
+$(document).ready(function () {
+
+    var guid = sessionStorage.getItem('employeeGuid');
+    console.log(guid);
+
+    var sesRole = sessionStorage.getItem('role');
+
+    console.log("Role : ", sesRole);
+    const baseURL = "https://localhost:7051/";
+    var companyGuid;
+
+    if (sesRole == "idle") {
+        $.ajax({
+            url: '/Employee/GetGuidEmployee/' + guid,
+            type: 'GET',
+            dataType: 'json',
+            dataSrc: 'data',
+            success: function (data) {
+                console.log(data);
+                if (data) {
+                    
+                    const imageUrl1 = `${baseURL}ProfilePictures/${data.foto}`;
+                    var imageUrl2 = `${baseURL}Cv/${data.cv}`;
+
+                    employeeGuid = data.guid;
+                    $('#editFirstName').val(data.firstName);
+                    $("#editLastName").val(data.lastName);
+                    $("#editGender").val(data.gender);
+                    $("#editEmail").val(data.email);
+                    $("#editPhoneNumber").val(data.phoneNumber);
+                    $("#editGrade").text(data.grade);
+
+                    // Saat menerima data dari AJAX:
+                    if (!$('#editSkills').data('select2')) {
+                        $('#editSkills').select2({
+                            tags: true,
+                            tokenSeparators: [',', ' '],
+                            placeholder: "Select or add skills"
+                        });
+                    }
+
+                    var skillSelect = $('#editSkills');
+                    skillSelect.empty(); // Bersihkan opsi yang ada
+
+                    // Menambahkan skill ke dropdown dari data AJAX
+                    if (data && data.skill) {
+                        var selectedSkills = [];
+
+                        data.skill.forEach(function (skill) {
+                            var newOption = new Option(skill, skill, false, true); // Parameter ke-4 diset true agar option tersebut otomatis terpilih
+                            skillSelect.append(newOption);
+                            selectedSkills.push(skill);
+                        });
+
+                        skillSelect.val(selectedSkills).trigger('change'); // Set skill yang telah dipilih
+                    }
+
+                    // Jika Anda ingin menandai beberapa skill tertentu sebagai dipilih (misalnya dari data lain), Anda dapat menggunakan bagian kode ini
+                    if (data && data.selectedSkills) {
+                        skillSelect.val(data.selectedSkills).trigger('change');
+                    }
+                    if (data.foto) {
+                        $("#profilePictureInput").text(data.foto);
+                        $("#editProfilePicPreview").attr("src", imageUrl1);
+                    }
+                    if (data.cv) {
+                        $("#cvInput").text(data.cv);
+                        $("#cvPreview").attr("href", imageUrl2); // Mengatur tautan CV
+                    }
+
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to retrieve employee data.'
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to retrieve employee data.'
+                });
+            }
+        });
+    }if (sesRole == "client") {
+        $.ajax({
+            url: '/Employee/GetGuidClient/' + guid,
+            type: 'GET',
+            dataType: 'json',
+            dataSrc: 'data',
+            success: function (response) {
+                const imageUrl = `${baseURL}ProfilePictures/${response.fotoEmployee}`;
+                employeeGuid = response.guid;
+                companyGuid = response.companyGuid;
+                $("#editFirstName").val(response.firstName);
+                $("#editLastName").val(response.lastName);
+                $("#editGender").val(response.gender);
+                $("#editEmail").val(response.email);
+                $("#editPhoneNumber").val(response.phoneNumber);
+                $("#companyName").val(response.nameCompany);
+                $("#addressCompany").val(response.address);
+                $("#description").val(response.description);
+
+                if (response.fotoEmployee) {
+                    // Tampilkan nama file gambar sebelum diupdate
+                    $("#profilePictureInput").text(response.fotoEmployee);
+
+                    $("#editProfilePicPreview").attr("src", imageUrl);
+                }
+
+            },
+            error: function (response) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Kesalahan',
+                    text: 'Terjadi kesalahan saat mencoba mendapatkan data klien.'
+                });
+            }
+        });
+    }
+
+    $('#updateIdleForm').submit(function (event) {
+        event.preventDefault();
+        // Pastikan employeeGuid dan companyGuid telah di-set
+        if (!employeeGuid) {
+            console.error("employeeGuid belum di-set.");
+            return;
+        }
+        if (sesRole == "idle") {
+
+            updateEmployeeDetails(employeeGuid);
+        } if (sesRole == "idle") {
+
+        }
+    });
 
 
+    // Function untuk mengirim pembaruan data ke server
+    function updateEmployeeDetails(employeeGuid) {
+        // Ambil data dari elemen-elemen formulir
+        var firstName = $('#editFirstName').val();
+        var lastName = $('#editLastName').val();
+        var phoneNumber = $('#editPhoneNumber').val();
+        var email = $('#editEmail').val();
+        var gender = ($('#editGender').val() === 'Male') ? 1 : 0;
+        var skills = $('#editSkills').val();
 
+        // Ambil file gambar dari input
+        var profilePictureInput = document.getElementById('profilePictureInput');
+        var profilePictureFile = profilePictureInput.files[0];
 
+        var cvInput = document.getElementById('cvInput');
+        var cvFile = cvInput.files[0];
 
-    // Mengambil employeeGuid dari session
-    // var empGuid = sessionStorage.getItem("EmployeeGuid");
+        // Buat objek FormData dan tambahkan data
+        var dataToUpdate = new FormData();
+        dataToUpdate.append('guid', employeeGuid);
+        dataToUpdate.append('firstName', firstName);
+        dataToUpdate.append('lastName', lastName);
+        dataToUpdate.append('phoneNumber', phoneNumber);
+        dataToUpdate.append('email', email);
+        dataToUpdate.append('gender', gender);
 
-    //INI UNTUK ADD JADWAL JIKA CLIENT KLIK HIRE
-    /*   function addScheduleInterview() {
-           var nameInput = $("#nameInput").val();
-           var dateInput = $("#dateInput").val();
-   
-           // Mengambil JWT Token dari sessionStorage
-           var jwtToken = localStorage.getItem("JWToken");
-   
-           // Mengambil EmployeeGuid dari sessionStorage
-           var employeeGuid = localStorage.getItem("EmployeeGuid");
-   
-           if (jwtToken && employeeGuid) {
-               // Buat objek dengan EmployeeGuid dari session
-               var obj = {
-                   name: nameInput,
-                   date: dateInput,
-                   companyGuid: employeeGuid
-               };
-               console.log(obj);
-   
-               $.ajax({
-                   url: "/Interview/AddSchedule", // Ganti dengan URL yang sesuai
-                   method: "POST",
-                   data: JSON.stringify(obj),
-                   contentType: 'application/json',
-   
-                   success: function (response) {
-                       console.log(response);
-                       $('#modalInterview').modal('hide');
-                       Swal.fire({
-                           icon: 'success',
-                           title: 'Pembaruan berhasil',
-                           text: 'Data schedule berhasil ditambahkan!!.'
-                       });
-                   },
-                   error: function (response) {
-                       $('#modalInterview').modal('hide');
-                       Swal.fire({
-                           icon: 'error',
-                           title: 'Pembaruan gagal',
-                           text: 'Terjadi kesalahan saat mencoba menambahkan data schedule!!.'
-                       });
-                   }
-               });
-           } else {
-               console.error("Token JWT atau EmployeeGuid tidak ditemukan di sessionStorage.");
-               // Handle the situation when JWT token or EmployeeGuid is not available.
-           }
-       }
-   */
+        if (typeof skills === 'string') {
+            skills.split(',').forEach((skill, index) => {
+                dataToUpdate.append('skills[' + index + ']', skill.trim());
+            });
+        } else if (Array.isArray(skills)) {
+            skills.forEach((skill, index) => {
+                dataToUpdate.append('skills[' + index + ']', skill.trim());
+            });
+        } else {
+            Swal.fire({
+                title: 'Format Skill Salah!',
+                icon: 'info',
+                html: 'Skills harus berupa string atau array',
+                showCloseButton: true,
+                focusConfirm: false,
+                confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
+                confirmButtonAriaLabel: 'Thumbs up, great!',
+            });
+            return; // Berhenti jika format skill salah
+        }
+
+        if (profilePictureFile) {
+            dataToUpdate.append('ProfilePictureFile', profilePictureFile);
+        }
+
+        if (cvFile) {
+            dataToUpdate.append('cvFile', cvFile);
+        }
+
+        $.ajax({
+            url: '/Employee/updateIdle',
+            type: 'PUT',
+            data: dataToUpdate,
+            contentType: false,
+            processData: false, // Diperlukan untuk FormData
+            success: function (response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pembaruan berhasil',
+                    text: 'Data Idle berhasil diperbarui.'
+                });
+            },
+            error: function (response) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Pembaruan gagal',
+                    text: 'Terjadi kesalahan saat mencoba update data Idle.'
+                });
+            }
+        });
+    }
 
 });
+
+
