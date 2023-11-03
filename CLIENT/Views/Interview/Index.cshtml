@@ -44,8 +44,8 @@
 <div class="modal fade" id="updateInterview" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalCenterTitle">Add Schedule Interview</h5>
+            <div class="modal-header" >
+                <h5 class="modal-title center" id="modalCenterTitle" >Add Schedule Interview</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -65,12 +65,14 @@
                         </div>
                     </div>
                     <div class="row">
-                        <label for="remarks" class="form-label">remarks</label>
-                        <input type="text" id="remarks" class="form-control" name="remarks" placeholder="Enter remarks" />
+                        <div class="col mb-6">
+                        <label for="remarks" class="form-label">Remarks</label>
+                        <textarea type="text" id="remarks" class="form-control" name="remarks" placeholder="Enter remarks" /> </textarea>
+                   </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" id="updateInterviewButton" class="btn btn-primary btn-save">Save</button>
+                        <button type="submit" id="type-info" class="btn btn-primary btn-save">Save</button>
                     </div>
                 </form>
             </div>

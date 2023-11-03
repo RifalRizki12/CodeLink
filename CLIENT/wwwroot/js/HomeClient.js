@@ -147,21 +147,27 @@
     });
 
     function addScheduleInterview() {
-
+        var ownGuid = sessionStorage.getItem('employeeGuid');
         var nameInput = $("#nameInput").val();
         var dateInput = $("#dateInput").val();
-        // Mengambil nilai string dari input
-        var compGuidString = $("#companyGuid").val();
+      
+        if (nameInput === "" || dateInput === "") {
+            Swal.fire({
+                title: 'Data Inputan Tidak Boleh Kosong',
+                icon: 'info',
+                showCloseButton: true,
+                focusConfirm: false,
+                confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
+                confirmButtonAriaLabel: 'Thumbs up, great!',
+            })
+            return; 
+        };
 
-        // Membuat tipe GUID dari string
-        var compGuid = compGuidString ? compGuidString.toLowerCase() : null; // Mengonversi menjadi lowercase
-
-        // Buat objek dengan EmployeeGuid dari session
         var obj = {
             name: nameInput,
             date: dateInput,
             employeeGuid: guid,
-            ownerGuid: compGuid
+            ownerGuid: ownGuid
         }
         console.log(obj);
 
@@ -191,6 +197,11 @@
         });
 
     };
+
+    //VALIDATION INPUTAN 
+   
+
+
 
 });
 
