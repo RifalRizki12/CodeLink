@@ -5,6 +5,10 @@
 
     var employeeGuid = Context.Session.GetString("EmployeeGuid");
 
+    var fotoProfile = Context.Session.GetString("Foto");
+    var baseURL = "https://localhost:7051/"; // Gantilah URL dasar sesuai dengan kebutuhan Anda
+    var photoURL = $"{baseURL}ProfilePictures/{fotoProfile}";
+
     var token = Context.Session.GetString("JWToken");
     var isAuthenticated = token != null;
 }
@@ -72,6 +76,7 @@
 
     <!-- Page CSS -->
     <link rel="stylesheet" href="../../TAdmin/assets/vendor/css/pages/cards-advance.css" />
+    <link rel="stylesheet" href="../../TAdmin/assets/vendor/libs/animate-css/animate.css" />
     <link rel="stylesheet" href="../../TAdmin/assets/vendor/libs/sweetalert2/sweetalert2.css" />
 
 
@@ -273,7 +278,7 @@
                                                 <span class="dropdown-shortcuts-icon rounded-circle mb-2">
                                                     <i class="ti ti-chart-bar fs-4"></i>
                                                 </span>
-                                                <a href="index-2.html" class="stretched-link">Dashboard</a>
+                                                <a href="/" class="stretched-link">Dashboard</a>
                                                 <small class="text-muted mb-0">@fullName!</small>
                                             </div>
                                             <div class="dropdown-shortcuts-item col">
@@ -290,14 +295,14 @@
                                                 <span class="dropdown-shortcuts-icon rounded-circle mb-2">
                                                     <i class="ti ti-help fs-4"></i>
                                                 </span>
-                                                <a href="pages-faq.html" class="stretched-link">FAQs</a>
+                                                <a href="/" class="stretched-link">FAQs</a>
                                                 <small class="text-muted mb-0">FAQs & Articles</small>
                                             </div>
                                             <div class="dropdown-shortcuts-item col">
                                                 <span class="dropdown-shortcuts-icon rounded-circle mb-2">
                                                     <i class="ti ti-square fs-4"></i>
                                                 </span>
-                                                <a href="modal-examples.html" class="stretched-link">Modals</a>
+                                                <a href="/" class="stretched-link">Modals</a>
                                                 <small class="text-muted mb-0">Useful Popups</small>
                                             </div>
                                         </div>
@@ -562,7 +567,7 @@
                                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
                                     data-bs-toggle="dropdown">
                                     <div class="avatar avatar-online">
-                                        <img src="../../TAdmin/assets/img/avatars/1.png" class="h-auto rounded-circle">
+                                        <img src="@photoURL" class="h-auto rounded-circle">
                                     </div>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
@@ -571,7 +576,7 @@
                                             <div class="d-flex">
                                                 <div class="flex-shrink-0 me-3">
                                                     <div class="avatar avatar-online">
-                                                        <img src="../../TAdmin/assets/img/avatars/1.png"
+                                                        <img src="@photoURL"
                                                             class="h-auto rounded-circle">
                                                     </div>
                                                 </div>
@@ -735,6 +740,9 @@
 
     var employeeGuid = '@employeeGuid';
     sessionStorage.setItem('employeeGuid', employeeGuid);
+    
+    var foto = '@photoURL';
+    sessionStorage.setItem('foto', foto);
 
     var getRole = '@role';
     sessionStorage.setItem('role', getRole);

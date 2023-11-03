@@ -80,6 +80,7 @@ namespace API.Controllers
                 var claims = new List<Claim>();
                 claims.Add(new Claim("Email", employee.Email));
                 claims.Add(new Claim("Fullname", string.Concat(employee.FirstName + " " + employee.LastName)));
+                claims.Add(new Claim("Foto", employee.Foto ?? ""));
 
                 // Menggunakan RoleRepository untuk mendapatkan peran yang sesuai dengan akun
                 var role = _roleRepository.GetByGuid(user.RoleGuid);

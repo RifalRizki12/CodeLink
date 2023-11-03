@@ -47,6 +47,7 @@ namespace CLIENT.Controllers
                         HttpContext.Session.SetString("FullName", claims.Data.FullName);
                         HttpContext.Session.SetString("EmployeeGuid", claims.Data.EmployeeGuid.ToString());
                         HttpContext.Session.SetString("Email", claims.Data.Email);
+                        HttpContext.Session.SetString("Foto", claims.Data.Foto ?? "");
                         // Anda juga bisa menyimpan peran (role) sesuai kebutuhan aplikasi Anda.
                         HttpContext.Session.SetString("Role", claims.Data.Role.FirstOrDefault());
 
