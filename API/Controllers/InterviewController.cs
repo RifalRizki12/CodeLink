@@ -586,6 +586,8 @@ public class InterviewController : ControllerBase
                                   Foto = emp.Foto,
                                   StartContract = interview.StartContract,
                                   EndContract = interview.EndContract,
+                                  StatusInterview = interview.StatusIntervew,
+                                  Remarks = interview.Remarks,
                                   Rate = rat.Rate.ToString()
                               }).ToList();
 
