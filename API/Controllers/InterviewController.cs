@@ -269,7 +269,7 @@ public class InterviewController : ControllerBase
                       $"dikarenakan  {announcment.Remarks} Terimakasi atas kerjasamanya", adminEmployee.Email);
 
 
-                    specificEmployee.StatusEmployee = 0;
+                    specificEmployee.StatusEmployee = StatusEmployee.idle;
                     specificEmployee.CompanyGuid = null;
                     _employeeRepository.Update(specificEmployee);
                 }
@@ -288,7 +288,7 @@ public class InterviewController : ControllerBase
                     _employeeRepository.Update(specificEmployee);
                 }
 
-               
+
             }
 
             return Ok(new ResponseOKHandler<string>("Announcement sent successfully"));
@@ -306,7 +306,7 @@ public class InterviewController : ControllerBase
             });
         }
     }
-  
+
 
 
 
@@ -339,12 +339,16 @@ public class InterviewController : ControllerBase
                                 EmployeeGuid = interview.EmployeeGuid,
                                 Name = interview.Name,
                                 Date = interview.Date,
+                                EndContract = interview.EndContract,
+                                StartContract = interview.StartContract,
                                 Interviewer = empInterviewer.FirstName + " " + empInterviewer.LastName,
                                 Idle = empIdle.FirstName + " " + empIdle.LastName,
                                 OwnerGuid = interview.OwnerGuid,
                                 StatusIdle = empIdle.StatusEmployee.ToString(),
                                 Type = interview.Type,
                                 Location = interview.Location,
+                                StatusInterview = interview.StatusIntervew
+
                             }).ToList();
 
         return Ok(new ResponseOKHandler<IEnumerable<InterviewDto>>(interviewDto));
@@ -499,8 +503,8 @@ public class InterviewController : ControllerBase
                                join empInterviewer in employees on interview.OwnerGuid equals empInterviewer.Guid
                                join empIdle in employees on interview.EmployeeGuid equals empIdle.Guid
                                where empIdle.StatusEmployee == StatusEmployee.idle
-                               && interview.EndContract == null && interview.StatusIntervew==null
-                               
+                               && interview.EndContract == null && interview.StatusIntervew == null
+
                                select new GetInterviewDto
                                {
                                    EmployeGuid = empIdle.Guid,
@@ -518,7 +522,7 @@ public class InterviewController : ControllerBase
     [HttpGet("GetOnsite/{companyGuid}")]
     public IActionResult GetOnsite(Guid companyGuid)
     {
-        
+
         var interviews = _interviewRepository.GetAllByClientGuid(companyGuid);
         var employees = _employeeRepository.GetAll();
 
@@ -534,19 +538,19 @@ public class InterviewController : ControllerBase
         }
 
         var getOnsiteDto = (from interview in interviews
-                               join empInterviewer in employees on interview.OwnerGuid equals empInterviewer.Guid
-                               join empIdle in employees on interview.EmployeeGuid equals empIdle.Guid
-                               where empIdle.StatusEmployee == StatusEmployee.onsite
-                               select new GetOnsiteDto
-                               {
-                                   EmployeGuid = empIdle.Guid,
-                                   InterviewGuid = interview.Guid,
-                                   Idle = empIdle.FirstName + " " + empIdle.LastName,
-                                   Foto = empIdle.Foto,
-                                   StartContract = interview.StartContract,
-                                   EndContract = interview.EndContract,
+                            join empInterviewer in employees on interview.OwnerGuid equals empInterviewer.Guid
+                            join empIdle in employees on interview.EmployeeGuid equals empIdle.Guid
+                            where empIdle.StatusEmployee == StatusEmployee.onsite 
+                            select new GetOnsiteDto
+                            {
+                                EmployeGuid = empIdle.Guid,
+                                InterviewGuid = interview.Guid,
+                                Idle = empIdle.FirstName + " " + empIdle.LastName,
+                                Foto = empIdle.Foto,
+                                StartContract = interview.StartContract,
+                                EndContract = interview.EndContract,
 
-                               }).ToList();
+                            }).ToList();
 
         return Ok(new ResponseOKHandler<IEnumerable<GetOnsiteDto>>(getOnsiteDto));
     }
@@ -569,7 +573,11 @@ public class InterviewController : ControllerBase
 
         var idleHistoryDto = (from interview in interviews
                               join emp in employees on interview.EmployeeGuid equals emp.Guid
-                              where emp.StatusEmployee == StatusEmployee.idle || (emp.StatusEmployee == StatusEmployee.onsite && interview.EndContract < DateTime.Now)
+                              where (emp.StatusEmployee == StatusEmployee.idle ||
+                                     emp.StatusEmployee == StatusEmployee.onsite) &&
+                                    (interview.StatusIntervew == StatusIntervew.ContarctTermination ||
+                                     interview.StatusIntervew == StatusIntervew.EndContract) &&
+                                    interview.EndContract.HasValue
                               select new GetIdleHistoryDto
                               {
                                   EmployeeGuid = emp.Guid,
@@ -578,11 +586,12 @@ public class InterviewController : ControllerBase
                                   Foto = emp.Foto,
                                   StartContract = interview.StartContract,
                                   EndContract = interview.EndContract,
-                                  Status = emp.StatusEmployee.ToString() 
+                                  Status = emp.StatusEmployee.ToString()
                               }).ToList();
 
         return Ok(new ResponseOKHandler<IEnumerable<GetIdleHistoryDto>>(idleHistoryDto));
     }
+
 
 
 
