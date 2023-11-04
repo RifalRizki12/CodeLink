@@ -2,9 +2,24 @@
     $('#registerForm').on('submit', function (e) {
         e.preventDefault();
 
-        if ($('#firstNameInput').val() === "" || $('#profilePictureInput').val() === "" || $('#genderInput').val() ||
-            $('#emailInput').val() === "" || $('#phoneNumberInput').val() === "" || $('#nameCompanyInput').val() ||
-            $('#addressCompanyInput').val() === "" || $('#passwordInput').val() === "" || $('#confirmPasswordInput').val()) {
+       
+
+        var profilePictureFile = $('#profilePictureInput').prop('files')[0];
+        if (!profilePictureFile) {
+            Swal.fire({
+                title: 'Gambar Profil Harus Dipilih',
+                icon: 'info',
+                showCloseButton: true,
+                focusConfirm: false,
+                confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
+                confirmButtonAriaLabel: 'Thumbs up, great!',
+            });
+            return;
+        }
+
+        if ($('#firstNameInput').val() === "" || parseInt($('#genderInput').val()) === null ||
+            $('#emailInput').val() === "" || $('#phoneNumberInput').val() === "" || $('#nameCompanyInput').val() === ""||
+            $('#addressCompanyInput').val() === "" || $('#passwordInput').val() === "" || $('#confirmPasswordInput').val() === "") {
             Swal.fire({
                 title: 'Data Inputan Tidak Boleh Kosong',
                 icon: 'info',
@@ -29,9 +44,6 @@
         formData.append('description', $('#descriptionInput').val());
         formData.append('password', $('#passwordInput').val());
         formData.append('confirmPassword', $('#confirmPasswordInput').val());
-
-        // Tambahkan file ke formData
-        var profilePictureFile = $('#profilePictureInput').prop('files')[0];
         formData.append('profilePictureFile', profilePictureFile);
 
         // Kirim data dengan metode AJAX ke server

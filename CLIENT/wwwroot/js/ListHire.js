@@ -308,16 +308,26 @@ $(document).ready(function () {
             })
             return;
         };
+
         var today = new Date(); // Membuat objek Date saat ini
-        var formattedDate = today.toISOString().split('T')[0];
+        var year = today.getFullYear();
+        var month = String(today.getMonth() + 1).padStart(2, '0'); // Menambahkan nol di depan jika kurang dari 10
+        var day = String(today.getDate()).padStart(2, '0'); // Menambahkan nol di depan jika kurang dari 10
+        var hours = String(today.getHours()).padStart(2, '0'); // Menambahkan nol di depan jika kurang dari 10
+        var minutes = String(today.getMinutes()).padStart(2, '0'); // Menambahkan nol di depan jika kurang dari 10
+        var seconds = String(today.getSeconds()).padStart(2, '0'); // Menambahkan nol di depan jika kurang dari 10
+
+        var formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+
         var obj = {
             guid: guidInterview,
             employeeGuid: guidEmp,
             ownerGuid: guid,
             endContract: formattedDate,
-            statusIntervew: 3,
+            statusIntervew: 2,
             remarks: $("#remarks").val(),
         };
+
 
         console.log(obj);
         $.ajax({

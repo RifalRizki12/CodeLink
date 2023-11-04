@@ -18,6 +18,7 @@ public class InterviewDto //untuk update interview yang biasa
     public string StatusIdle {  get; set; }
     public TypeInterview? Type {  get; set; }
     public string Location { get; set; }
+    public StatusIntervew? StatusInterview { get; set; }
 
     public static explicit operator InterviewDto(Employee employee)
     {
@@ -43,7 +44,8 @@ public class InterviewDto //untuk update interview yang biasa
             EndContract = interview.EndContract,
             EmployeeGuid = interview.EmployeeGuid,
             Type = interview.Type,
-            Location = interview.Location
+            Location = interview.Location,
+            StatusInterview = interview.StatusIntervew
             
         };
     }

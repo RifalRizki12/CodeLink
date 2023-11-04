@@ -34,7 +34,23 @@
                 }
             },
             { data: 'location' },
-
+            {
+                data: 'statusInterview',
+                render: function (data, type, row) {
+                    if (row.statusInterview === null) {
+                        return ""; // Jika type adalah null, kembalikan teks kosong
+                    } else if (row.statusInterview === 0) {
+                        return "Lolos";
+                    } else if (row.statusInterview === 1) {
+                        return "Tidak Lolos";
+                    } else if (row.statusInterview === 2) {
+                        return "Contract Terminated";
+                    } else
+                    {
+                        return "Contract Finish";
+                    }
+                }
+            },
             {
                 data: null,
                 render: function (data, type, row, meta) {
