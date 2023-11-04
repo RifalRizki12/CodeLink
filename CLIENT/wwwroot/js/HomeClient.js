@@ -152,35 +152,38 @@
 
 
 
+
     // Handler ketika form disubmit
     $('#formAddSchedule').submit(function (event) {
         event.preventDefault();
 
         var guid = $('#modalDetail').data('employee-guid');
-        console.log("Data modal saat form disubmit:", $('#modalDetail').data()); // Tambahkan baris ini
-        console.log("GUID saat form disubmit:", guid);
+        var cmpGuid = sessionStorage.getItem('employeeGuid'); // Mengambil company GUID dari sessionStorage
 
-        if (canSubmit(guid)) {
-            localStorage.setItem('lastSubmit_' + guid, new Date().getTime());
+        console.log("Data modal saat form disubmit:", $('#modalDetail').data());
+        console.log("GUID saat form disubmit:", guid);
+        console.log("Company GUID saat form disubmit:", cmpGuid);
+
+        if (canSubmit(guid, cmpGuid)) {
+            localStorage.setItem('lastSubmit_' + guid + '_' + cmpGuid, new Date().getTime());
             addScheduleInterview();
         } else {
             alert('Anda hanya dapat mengirimkan sekali dalam sehari.');
         }
     });
 
-    function canSubmit(guid) {
-        var lastSubmitTimestamp = localStorage.getItem('lastSubmit_' + guid);
+    function canSubmit(guid, cmpGuid) {
+        var lastSubmitTimestamp = localStorage.getItem('lastSubmit_' + guid + '_' + cmpGuid);
         if (lastSubmitTimestamp) {
             var lastSubmitDate = new Date(parseInt(lastSubmitTimestamp));
             var currentDate = new Date();
-            if (lastSubmitDate.getDate() === currentDate.getDate() &&
-                lastSubmitDate.getMonth() === currentDate.getMonth() &&
-                lastSubmitDate.getFullYear() === currentDate.getFullYear()) {
-                return false;
+            if (lastSubmitDate.toDateString() === currentDate.toDateString()) {
+                return false; // Sudah disubmit oleh company ini hari ini
             }
         }
-        return true;
+        return true; // Belum disubmit atau disubmit oleh company lain
     }
+
 
 
     function addScheduleInterview() {
