@@ -182,13 +182,10 @@
     }
 
     function addScheduleInterview() {
-        // Kode untuk menambahkan jadwal interview
-        // Pastikan untuk mengambil GUID yang sesuai untuk disertakan dalam objek yang dikirim
+
+        var compGuid = sessionStorage.getItem('employeeGuid');
         var nameInput = $("#nameInput").val();
         var dateInput = $("#dateInput").val();
-        var compGuidString = $("#companyGuid").val();
-        var compGuid = compGuidString ? compGuidString.toLowerCase() : null;
-        /* var employeeGuid = $('#employeeGuid').val(); // Asumsi ada input dengan id 'employeeGuid'*/
 
         if (nameInput === "" || dateInput === "") {
             Swal.fire({
@@ -203,6 +200,22 @@
             })
             return;
         };
+        var inputDate = new Date(dateInput);
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (inputDate <= today) {
+
+            Swal.fire({
+                text: 'Tanggal interview tidak boleh kurang atau sama dengan dari hari ini',
+                icon: 'info',
+                showCloseButton: true,
+                focusConfirm: false,
+                confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
+                confirmButtonAriaLabel: 'Thumbs up, great!',
+            })
+            return;
+        }
 
         var obj = {
             name: nameInput,
