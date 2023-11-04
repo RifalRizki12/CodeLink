@@ -26,6 +26,12 @@
     </div>
 </section>
 
+<!-- Button trigger modal -->
+@* <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+    Launch demo modal
+</button> *@
+
+<!-- Modal -->
 <div class="modal fade" id="modalDetail" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -36,7 +42,6 @@
                 </button>
             </div>
             <div id="employeeModal" class="modal-body modalBodyDetail">
-               
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
@@ -58,22 +63,26 @@
             </div>
             <div class="modal-body">
                 <form id="formAddSchedule">
-                    <input type="text" hidden id="companyGuid" name="nameInput" value="@Context.Session.GetString("EmployeeGuid")"/>
+                    <input type="text" hidden id="companyGuid" name="nameInput" value="@Context.Session.GetString("EmployeeGuid")" />
 
                     <div class="form-group">
                         <label>Name of Interview</label>
-                        <input type="text"  id="nameInput"/>
+                        <input type="text" required="" id="nameInput" />
                     </div>
                     <div class="form-group">
                         <label>Date Interview</label>
-                        <input type="datetime-local" id="dateInput" />
+                        <input required="" type="datetime-local" id="dateInput" />
                     </div>
                     <div class="form-group">
-                        <button type="submit" id="btn-save" class="btn btn-heading btn-block hover-up" >Submit</button>
+
+                        <button type="submit" class="btn btn-outline-success btn-submit btn-save" data-guid="GUID_EMPLOYEE">Submit</button>
+
+
+
                     </div>
                 </form>
             </div>
-           
+
         </div>
     </div>
 </div>
