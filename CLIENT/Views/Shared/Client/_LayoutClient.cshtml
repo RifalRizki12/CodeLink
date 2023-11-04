@@ -2,6 +2,7 @@
     var fullName = Context.Session.GetString("FullName");
     var role = Context.Session.GetString("Role");
     var employeeGuid = Context.Session.GetString("EmployeeGuid");
+    var statusEmployee = Context.Session.GetString("StatusEmployee");
 
     var fotoProfile = Context.Session.GetString("Foto");
     var baseURL = "https://localhost:7051/"; // Gantilah URL dasar sesuai dengan kebutuhan Anda
@@ -466,6 +467,9 @@
 
         var getRole = '@role';
         sessionStorage.setItem('role', getRole);
+
+        var getStatusEmp = '@statusEmployee';
+        sessionStorage.setItem('statusEmployee', getStatusEmp);
 
     </script>
 }

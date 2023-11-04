@@ -6,5 +6,6 @@ namespace API.Contracts
     {
         Interview GetEmployeeGuid(Guid employeeGuid);
         IEnumerable<Interview> GetAllByClientGuid(Guid clientGuid);
+        List<Interview> GetByEmployeeGuid(Guid employeeGuid);
     }
 }
