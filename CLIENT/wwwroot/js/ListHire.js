@@ -371,6 +371,12 @@ $(document).ready(function () {
     function buildEmployeeItem(item) {
         const baseURL = "https://localhost:7051/";
         const photoURL = `${baseURL}ProfilePictures/${item.foto}`;
+        console.log("Sebelum konversi:", item.statusInterview);
+        if (item.statusInterview !== null && item.statusInterview !== "") {
+            item.statusInterview = parseInt(item.statusInterview);
+        }
+        console.log("Setelah konversi:", item.statusInterview);
+
 
         const btnGuid = item.employeeGuid; // Asumsikan employeeGuid adalah unik
         const interviewGuid = item.interviewGuid; // Asumsikan interviewGuid juga tersedia
@@ -398,11 +404,13 @@ $(document).ready(function () {
           </td>
           <td class="product-des product-name" data-title="date">
               <h6 class="text-brand">${item.endContract}</h6>
+              <h6 class="text-brand">${item.statusInterview}</h6>
+              <h6 class="text-brand">${item.remarks}</h6>
           </td>
 
           
           <td class="text-right" data-title="Lolos">
-          <button ${disabledAttribute} style="${ratedStyle}" class="btn-danger btn-sm btn-rating" data-rated="${isRated ? 'true' : 'false'}" data-guid1="${item.interviewGuid}" data-guid2="${btnGuid}" data-end-contract="${item.endContract}" data-bs-toggle="modal" data-bs-target="#ratingInterview" >Rating</button>
+          <button ${disabledAttribute} style="${ratedStyle}" class="btn-danger btn-sm btn-rating" data-rated="${isRated ? 'true' : 'false'}" data-guid1="${item.interviewGuid}" data-guid2="${btnGuid}" data-end-contract="${item.endContract}" data-statusInterview="${item.statusInterview}" data-remaks="${item.remarks}" data-start-contract="${item.startContract}" data-bs-toggle="modal" data-bs-target="#ratingInterview" >Rating</button>
                </td>
             </tr>
         `;
@@ -480,24 +488,32 @@ $(document).ready(function () {
     }).fail(function (xhr, status, error) {
         console.error("Gagal mengambil data: " + error);
     });
+    
 
     $("#tableGetIdleHistory").find("tbody").on('click', '.btn-rating', function () {
         var btn = $(this); // Tombol yang diklik
         guidInterview = btn.data('guid1');
         guidEmp = btn.data('guid2');
         endContractDate = btn.data('end-contract');
+        startContractDate = btn.data('start-contract');
+        statusInterviews = btn.data('statusInterview')
+        remaks = btn.data('remaks')
 
-        // Menyimpan nilai endContract
+        console.log("remaks:", remaks)
+        console.log("statusInterview:", statusInterviews)
         console.log("End Contract Date:", endContractDate)
+        console.log("Start Contract Date:", startContractDate)
         console.log("guid emp:", guidEmp)
     });
 
     $("#ratingForm").submit(function (event) {
         event.preventDefault();
-        rateInterview(guidInterview, endContractDate);
+        rateInterview(guidInterview, endContractDate, statusInterviews, remaks, startContractDate);
     });
-    function rateInterview(guidInterview, endContractDate) {
+    function rateInterview(guidInterview, endContractDate, statusInterviews, remaks, startContractDate) {
         console.log("ini guid di update", guidInterview);
+        console.log("ini guid di statusInterviews", statusInterviews);
+        console.log("ini guid di remaks", remaks);
 
         var feedbackInput = $("#feedback").val();
         var rateInput;
@@ -509,7 +525,7 @@ $(document).ready(function () {
         }
         console.log(rateInput);
       
-        /*if (feedbackInput === "" || rateInput === 0 ) {
+        if (feedbackInput === "" || rateInput === 0 ) {
             Swal.fire({
                 title: 'Isi semua datanya dong Kakak!!!',
                 icon: 'info',
@@ -519,7 +535,7 @@ $(document).ready(function () {
                 confirmButtonAriaLabel: 'Thumbs up, great!',
             })
             return;
-        };*/
+        };
 
         var obj = {
             guid: guidInterview,
@@ -528,6 +544,10 @@ $(document).ready(function () {
             feedBack: feedbackInput,
             rate: rateInput,
             endContract: endContractDate,
+            startContract: startContractDate,
+            statusIntervew: statusInterviews,
+            remarks: remaks
+
 /*            statusIntervew: statusIntervews*/
 
         };
