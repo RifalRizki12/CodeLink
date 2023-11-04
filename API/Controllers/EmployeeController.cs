@@ -271,6 +271,7 @@ namespace API.Controllers
                                      join com in companies on emp.Guid equals com.EmployeeGuid
                                      join acc in accounts on emp.Guid equals acc.Guid
                                      join r in role on acc.RoleGuid equals r.Guid
+                                     where emp.StatusEmployee == StatusEmployee.owner
                                      select new ClientDetailDto
                                      {
                                          EmployeeGuid = emp.Guid,
@@ -585,7 +586,7 @@ namespace API.Controllers
                                   from companyOwner in ownerJoined.DefaultIfEmpty()
                                   join avgRating in avgRatings on emp.Guid equals avgRating.Employee.Guid into avgRatingJoined
                                   from avgRatingResult in avgRatingJoined.DefaultIfEmpty()
-                                  where emp.StatusEmployee == StatusEmployee.idle
+                                  where emp.StatusEmployee == StatusEmployee.idle || emp.StatusEmployee == StatusEmployee.onsite
                                   select new EmployeeDetailDto
                                   {
                                       Guid = emp.Guid,
@@ -680,13 +681,11 @@ namespace API.Controllers
                 employeeDetail.EmployeeOwner = companyOwner?.FirstName + " " + companyOwner?.LastName ?? "N/A";
             }
 
-            Interview interview = _interviewRepository.GetEmployeeGuid(employee.Guid);
+            double? averageRating = _ratingRepository.GetAverageRatingByEmployee(employee.Guid);
 
-            if (interview != null)
+            if (averageRating != null)
             {
-                // Get the rating for the interview
-                Rating rating = _ratingRepository.GetByGuid(interview.Guid);
-                employeeDetail.AverageRating = rating?.Rate;
+                employeeDetail.AverageRating = averageRating;
             }
 
             return Ok(new ResponseOKHandler<EmployeeDetailDto>(employeeDetail));
