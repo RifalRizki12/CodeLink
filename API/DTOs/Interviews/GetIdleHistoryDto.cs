@@ -9,6 +9,7 @@ public class GetIdleHistoryDto //untuk update interview yang biasa
     public Guid InterviewGuid { get; set; }
     public string Idle{ get; set; }
     public string Foto { get; set; }
+    public string Rate { get; set; }
     public DateTime? StartContract { get; set; }
     public DateTime? EndContract { get; set; }
 
@@ -20,7 +21,7 @@ public class GetIdleHistoryDto //untuk update interview yang biasa
             EmployeeGuid = employee.Guid,
             Idle = employee.FirstName + " " + employee.LastName,
             Foto = employee.Foto,
-            Status = employee.StatusEmployee.ToString(),
+
         };
     }
 
@@ -32,6 +33,14 @@ public class GetIdleHistoryDto //untuk update interview yang biasa
             StartContract = interview.StartContract,
             EndContract = interview.EndContract,
             
+
+        };
+    }
+    public static explicit operator GetIdleHistoryDto(Rating rate)
+    {
+        return new GetIdleHistoryDto
+        {
+            Rate = rate.Rate.ToString(),
 
         };
     }

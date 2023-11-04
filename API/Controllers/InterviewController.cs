@@ -562,6 +562,7 @@ public class InterviewController : ControllerBase
     {
         var interviews = _interviewRepository.GetAllByClientGuid(companyGuid);
         var employees = _employeeRepository.GetAll();
+        var ratings = _ratingRepository.GetAll();
 
         if (!interviews.Any())
         {
@@ -574,12 +575,9 @@ public class InterviewController : ControllerBase
         }
 
         var idleHistoryDto = (from interview in interviews
+                              join rat in ratings on interview.Guid equals rat.Guid
                               join emp in employees on interview.EmployeeGuid equals emp.Guid
-                              where (emp.StatusEmployee == StatusEmployee.idle ||
-                                     emp.StatusEmployee == StatusEmployee.onsite) &&
-                                    (interview.StatusIntervew == StatusIntervew.ContarctTermination ||
-                                     interview.StatusIntervew == StatusIntervew.EndContract) &&
-                                    interview.EndContract.HasValue
+                              where interview.EndContract.HasValue
                               select new GetIdleHistoryDto
                               {
                                   EmployeeGuid = emp.Guid,
@@ -588,7 +586,7 @@ public class InterviewController : ControllerBase
                                   Foto = emp.Foto,
                                   StartContract = interview.StartContract,
                                   EndContract = interview.EndContract,
-                                  Status = emp.StatusEmployee.ToString()
+                                  Rate = rat.Rate.ToString()
                               }).ToList();
 
         return Ok(new ResponseOKHandler<IEnumerable<GetIdleHistoryDto>>(idleHistoryDto));

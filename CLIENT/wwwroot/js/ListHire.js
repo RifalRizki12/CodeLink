@@ -390,11 +390,19 @@ $(document).ready(function () {
           <td class="product-des product-name" data-title="date">
               <h6 class="text-brand">${item.idle}</h6>
           </td>
+
+          <td class="product-des product-name" data-title="date">
+          <div class="product-rate d-inline-block">
+                            <div class="product-rating" style="width: ${item.rate * 20}%"></div>
+                        </div>
+          </td>
           <td class="product-des product-name" data-title="date">
               <h6 class="text-brand">${item.endContract}</h6>
           </td>
+
+          
           <td class="text-right" data-title="Lolos">
-           <button ${disabledAttribute} style="${ratedStyle}" class="btn-danger btn-sm btn-rating" data-rated="${isRated ? 'true' : 'false'}" data-guid1="${item.interviewGuid}" data-guid2="${btnGuid}" data-bs-toggle="modal" data-bs-target="#ratingInterview" >Rating</button>
+          <button ${disabledAttribute} style="${ratedStyle}" class="btn-danger btn-sm btn-rating" data-rated="${isRated ? 'true' : 'false'}" data-guid1="${item.interviewGuid}" data-guid2="${btnGuid}" data-end-contract="${item.endContract}" data-bs-toggle="modal" data-bs-target="#ratingInterview" >Rating</button>
                </td>
             </tr>
         `;
@@ -477,14 +485,18 @@ $(document).ready(function () {
         var btn = $(this); // Tombol yang diklik
         guidInterview = btn.data('guid1');
         guidEmp = btn.data('guid2');
+        endContractDate = btn.data('end-contract');
+
+        // Menyimpan nilai endContract
+        console.log("End Contract Date:", endContractDate)
         console.log("guid emp:", guidEmp)
     });
 
     $("#ratingForm").submit(function (event) {
         event.preventDefault();
-        rateInterview(guidInterview);
+        rateInterview(guidInterview, endContractDate);
     });
-    function rateInterview(guidInterview) {
+    function rateInterview(guidInterview, endContractDate) {
         console.log("ini guid di update", guidInterview);
 
         var feedbackInput = $("#feedback").val();
@@ -495,8 +507,9 @@ $(document).ready(function () {
             // Anda bisa menetapkan nilai default jika tidak ada bintang yang dipilih
             rateInput = 0;
         }
+        console.log(rateInput);
       
-        if (feedbackInput === "" || rateInput === 0 ) {
+        /*if (feedbackInput === "" || rateInput === 0 ) {
             Swal.fire({
                 title: 'Isi semua datanya dong Kakak!!!',
                 icon: 'info',
@@ -506,7 +519,7 @@ $(document).ready(function () {
                 confirmButtonAriaLabel: 'Thumbs up, great!',
             })
             return;
-        };
+        };*/
 
         var obj = {
             guid: guidInterview,
@@ -514,6 +527,8 @@ $(document).ready(function () {
             ownerGuid: guid,
             feedBack: feedbackInput,
             rate: rateInput,
+            endContract: endContractDate,
+/*            statusIntervew: statusIntervews*/
 
         };
 
