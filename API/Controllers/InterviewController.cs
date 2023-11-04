@@ -154,6 +154,8 @@ public class InterviewController : ControllerBase
             toUpdate.CreatedDate = entity.CreatedDate;
             toUpdate.Name = entity.Name;
             toUpdate.Date = entity.Date;
+            toUpdate.Location = entity.Location;
+            toUpdate.Type = entity.Type;
 
             var result = _interviewRepository.Update(toUpdate);
 

@@ -164,12 +164,12 @@
         console.log("GUID saat form disubmit:", guid);
         console.log("Company GUID saat form disubmit:", cmpGuid);
 
-        if (canSubmit(guid, cmpGuid)) {
-            localStorage.setItem('lastSubmit_' + guid + '_' + cmpGuid, new Date().getTime());
+        /*if (canSubmit(guid, cmpGuid)) {
+            localStorage.setItem('lastSubmit_' + guid + '_' + cmpGuid, new Date().getTime());*/
             addScheduleInterview();
-        } else {
+        /*} else {
             alert('Anda hanya dapat mengirimkan sekali dalam sehari.');
-        }
+        }*/
     });
 
     function canSubmit(guid, cmpGuid) {

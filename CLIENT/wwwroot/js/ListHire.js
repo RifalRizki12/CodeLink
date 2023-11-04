@@ -250,8 +250,8 @@ $(document).ready(function () {
                <td class="product-des product-name" data-title="date">
                    <h6 class="text-brand">${item.endContract}</h6>
                </td>
-               <td class="text-right" data-title="Lolos">
-                   <button class="btn-danger btn-sm btn-endContract" data-guid1="${item.interviewGuid}" data-guid2="${item.employeGuid}" data-bs-toggle="modal" data-bs-target="#endContract">End Contract</button>
+               <td class="text-right" data-title="endContract">
+                   <button class="btn-danger btn-sm btn-endContract" data-date="${item.startContract}" data-guid1="${item.interviewGuid}" data-guid2="${item.employeGuid}" data-bs-toggle="modal" data-bs-target="#endContract">End Contract</button>
                </td>
             </tr>
         `;
@@ -281,13 +281,15 @@ $(document).ready(function () {
         console.error("Gagal mengambil data: " + error);
     });
 
-
+    var contractStarts 
 
     //FUNCTION UNTUK TOMBOL END CONTRACT
     $("#tableListOnsite").find("tbody").on('click', '.btn-endContract', function () {
         var btn = $(this); // Tombol yang diklik
         guidInterview = btn.data('guid1');
         guidEmp = btn.data('guid2');
+        contractStarts = btn.data('date')
+
     });
 
     $("#endContractForm").submit(function (event) {
@@ -323,6 +325,7 @@ $(document).ready(function () {
             guid: guidInterview,
             employeeGuid: guidEmp,
             ownerGuid: guid,
+            startContract: contractStarts,
             endContract: formattedDate,
             statusIntervew: 2,
             remarks: $("#remarks").val(),
