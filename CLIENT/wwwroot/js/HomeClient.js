@@ -4,65 +4,67 @@
         method: "GET",
         dataType: 'json',
         dataSrc: 'data',
-    }).done((result) => {
-        console.log("Data dari server:", result); // Tambahkan ini
+    }).done(function (result) {
+        console.log("Data dari server:", result);
 
         const employeeGrid = $("#employeeGrid");
+        employeeGrid.empty();
 
-        $.each(result.data, (key, val) => {
-            const baseURL = "https://localhost:7051/"; // Gantilah URL dasar sesuai dengan kebutuhan Anda
-            const photoURL = `${baseURL}ProfilePictures/${val.foto}`; // Gabungkan baseURL dengan path gambar
-            const cvURL = `${baseURL}Cv/${val.cv}`;
+        $.each(result.data, function (key, val) {
+            if (val.statusEmployee === "idle") {
+                const baseURL = "https://localhost:7051/";
+                const photoURL = `${baseURL}ProfilePictures/${val.foto}`;
+                const cvURL = `${baseURL}Cv/${val.cv}`;
 
-            // Membuat tampilan grid untuk setiap karyawan
-            const employeeItem = `
-        <div class="col-lg-1-5 col-md-4 col-12 col-sm-6">
-            <div class="product-cart-wrap mb-30 wow animate__animated animate__fadeIn" data-wow-delay=".1s">
-                <div class="product-img-action-wrap">
-                    <div class="product-img product-img-zoom">
-                        <a href="shop-product-right.html">
-                            <img src="${photoURL}" alt="Employee Photo" style="max-width: 500px; max-height: 500px;">
-                        </a>
-                    </div>
-                    <div class="product-action-1">
-                        <a aria-label="Add To Wishlist" class="action-btn" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                        <a aria-label="Compare" class "action-btn" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
-                        <a aria-label="Quick view" class="action-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
-                    </div>
-                </div>
-                <div class="product-content-wrap">
-                    <div class="product-category">
-                        <span>${val.statusEmployee}</span>
-                    </div>
-                    <h2><a href="">${val.fullName}</a></h2>
-                    <div class="product-rate-cover">
-                        <div class="product-rate d-inline-block">
-                            <div class="product-rating" style="width: ${val.averageRating * 20}%"></div>
+                const employeeItem = `
+                    <div class="col-lg-1-5 col-md-4 col-12 col-sm-6">
+                        <div class="product-cart-wrap mb-30 wow animate__animated animate__fadeIn" data-wow-delay=".1s">
+                            <div class="product-img-action-wrap">
+                                <div class="product-img product-img-zoom">
+                                    <a href="shop-product-right.html">
+                                        <img src="${photoURL}" alt="Employee Photo" style="max-width: 500px; max-height: 500px;">
+                                    </a>
+                                </div>
+                                <div class="product-action-1">
+                                    <a aria-label="Add To Wishlist" class="action-btn" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
+                                    <a aria-label="Compare" class "action-btn" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
+                                    <a aria-label="Quick view" class="action-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
+                                </div>
+                            </div>
+                            <div class="product-content-wrap">
+                                <div class="product-category">
+                                    <span>${val.statusEmployee}</span>
+                                </div>
+                                <h2><a href="">${val.fullName}</a></h2>
+                                <div class="product-rate-cover">
+                                    <div class="product-rate d-inline-block">
+                                        <div class="product-rating" style="width: ${val.averageRating * 20}%"></div>
+                                    </div>
+                                    <span class="font-small ml-5 text-muted"> (${val.averageRating})</span>
+                                </div>
+                                <div>
+                                    <span class="font-small text-muted">${val.skill.join(', ')}</span>
+                                </div>
+                                <div class="product-card-bottom">
+                                    <div class="add-cart">
+                                        <button type="button" class=" btn btn-outline-success btn-detail" data-guid="${val.guid}" data-bs-toggle="modal" data-bs-target="#modalDetail" ><i class="mr-1 btn-detail" data-guid="${val.guid}"></i>Detail</button>
+                                    </div>
+                                    <a href="${cvURL}" target="_blank">
+                                        <button type="button" class="btn btn-outline-info" data-guid="${val.guid}"> Show CV </button> 
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                        <span class="font-small ml-5 text-muted"> (${val.averageRating})</span>
                     </div>
-                    <div>
-                        <span class="font-small text-muted">${val.skill.join(', ')}</span>
-                    </div>
-                    <div class="product-card-bottom">
-                        <div class="add-cart">
-                            <button type="button" class=" btn btn-outline-success btn-detail" data-guid="${val.guid}" data-bs-toggle="modal" data-bs-target="#modalDetail" ><i class="mr-1 btn-detail" data-guid="${val.guid}"></i>Detail</button>
-                        </div>
-                        <a href="${cvURL}" target="_blank">
-                            <button type="button" class="btn btn-outline-info" data-guid="${val.guid}"> Show CV </button> 
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        `;
-            // Menambahkan kartu karyawan ke dalam grid
-            employeeGrid.append(employeeItem);
+                    `;
+                employeeGrid.append(employeeItem);
+            }
         });
-    }).fail((error) => {
-        console.log(error);
 
+    }).fail(function (error) {
+        console.log(error);
     });
+
     var guid
     $('#employeeGrid').on('click', '.btn-detail', function () {
         guid = $(this).data('guid');// Mengambil GUID dari tombol "Update" yang diklik
@@ -141,34 +143,59 @@
         });
     };
 
-    $('#formAddSchedule').submit(function (event) {
-        event.preventDefault();
-        addScheduleInterview();
+    //Tombol detail
+    $(document).on('click', '.btn-detail', function () {
+        var guid = $(this).data('guid');
+        $('#modalDetail').data('employee-guid', guid);
+        console.log("Data modal setelah tombol detail ditekan:", $('#modalDetail').data()); // Tambahkan baris ini
     });
 
+    // Handler ketika form disubmit
+    $('#formAddSchedule').submit(function (event) {
+        event.preventDefault();
+
+        var guid = $('#modalDetail').data('employee-guid');
+        var cmpGuid = sessionStorage.getItem('employeeGuid'); // Mengambil company GUID dari sessionStorage
+
+        console.log("Data modal saat form disubmit:", $('#modalDetail').data());
+        console.log("GUID saat form disubmit:", guid);
+        console.log("Company GUID saat form disubmit:", cmpGuid);
+
+        if (canSubmit(guid, cmpGuid)) {
+            localStorage.setItem('lastSubmit_' + guid + '_' + cmpGuid, new Date().getTime());
+            addScheduleInterview();
+        } else {
+            alert('Anda hanya dapat mengirimkan sekali dalam sehari.');
+        }
+    });
+
+    function canSubmit(guid, cmpGuid) {
+        var lastSubmitTimestamp = localStorage.getItem('lastSubmit_' + guid + '_' + cmpGuid);
+        if (lastSubmitTimestamp) {
+            var lastSubmitDate = new Date(parseInt(lastSubmitTimestamp));
+            var currentDate = new Date();
+            if (lastSubmitDate.toDateString() === currentDate.toDateString()) {
+                return false; // Sudah disubmit oleh company ini hari ini
+            }
+        }
+        return true; // Belum disubmit atau disubmit oleh company lain
+    }
+
     function addScheduleInterview() {
-        var ownGuid = sessionStorage.getItem('employeeGuid');
+        // Kode untuk menambahkan jadwal interview
+        // Pastikan untuk mengambil GUID yang sesuai untuk disertakan dalam objek yang dikirim
         var nameInput = $("#nameInput").val();
         var dateInput = $("#dateInput").val();
-      
-        if (nameInput === "" || dateInput === "") {
-            Swal.fire({
-                title: 'Data Inputan Tidak Boleh Kosong',
-                icon: 'info',
-                showCloseButton: true,
-                focusConfirm: false,
-                confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
-                confirmButtonAriaLabel: 'Thumbs up, great!',
-            })
-            return; 
-        };
+        var compGuidString = $("#companyGuid").val();
+        var compGuid = compGuidString ? compGuidString.toLowerCase() : null;
+        /* var employeeGuid = $('#employeeGuid').val(); // Asumsi ada input dengan id 'employeeGuid'*/
 
         var obj = {
             name: nameInput,
             date: dateInput,
             employeeGuid: guid,
-            ownerGuid: ownGuid
-        }
+            ownerGuid: compGuid
+        };
         console.log(obj);
 
         $.ajax({
@@ -197,12 +224,6 @@
         });
 
     };
-
-    //VALIDATION INPUTAN 
-   
-
-
-
 });
 
 $(document).ready(function () {
@@ -225,7 +246,7 @@ $(document).ready(function () {
             success: function (data) {
                 console.log(data);
                 if (data) {
-                    
+
                     const imageUrl1 = `${baseURL}ProfilePictures/${data.foto}`;
                     var imageUrl2 = `${baseURL}Cv/${data.cv}`;
 
@@ -291,7 +312,7 @@ $(document).ready(function () {
                 });
             }
         });
-    }if (sesRole == "client") {
+    } if (sesRole == "client") {
         $.ajax({
             url: '/Employee/GetGuidClient/' + guid,
             type: 'GET',
@@ -423,5 +444,3 @@ $(document).ready(function () {
     }
 
 });
-
-
