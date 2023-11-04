@@ -21,15 +21,19 @@ namespace API.Controllers
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IEmailHandler _emailHandler;
         private readonly ITokenHandlers _tokenHandler;
+        private readonly IInterviewRepository _interviewRepository;
+        private readonly IRatingRepository _ratingRepository;
 
         // Konstruktor controller yang menerima IAccountRepository sebagai parameter.
-        public AccountController(IAccountRepository accountRepository, IEmployeeRepository employeeRepository, IEmailHandler emailHandler, IRoleRepository roleRepository, ITokenHandlers tokenHandler)
+        public AccountController(IAccountRepository accountRepository, IEmployeeRepository employeeRepository, IEmailHandler emailHandler, IRoleRepository roleRepository, ITokenHandlers tokenHandler, IInterviewRepository interviewRepository, IRatingRepository ratingRepository)
         {
             _accountRepository = accountRepository;
             _employeeRepository = employeeRepository;
             _emailHandler = emailHandler;
             _roleRepository = roleRepository;
             _tokenHandler = tokenHandler;
+            _interviewRepository = interviewRepository;
+            _ratingRepository = ratingRepository;
         }
 
         [Authorize]
@@ -80,7 +84,16 @@ namespace API.Controllers
                 var claims = new List<Claim>();
                 claims.Add(new Claim("Email", employee.Email));
                 claims.Add(new Claim("Fullname", string.Concat(employee.FirstName + " " + employee.LastName)));
+                claims.Add(new Claim("StatusEmployee", employee.StatusEmployee.ToString()));
                 claims.Add(new Claim("Foto", employee.Foto ?? ""));
+
+                // Mengambil rata-rata rating dari tabel Rating berdasarkan Guid Employee
+                double? averageRating = _ratingRepository.GetAverageRatingByEmployee(employee.Guid);
+
+                if (averageRating.HasValue)
+                {
+                    claims.Add(new Claim("AverageRating", averageRating.Value.ToString()));
+                }
 
                 // Menggunakan RoleRepository untuk mendapatkan peran yang sesuai dengan akun
                 var role = _roleRepository.GetByGuid(user.RoleGuid);
@@ -110,6 +123,7 @@ namespace API.Controllers
                 });
             }
         }
+
 
 
         // Metode untuk mengirim OTP melalui email dalam kasus lupa kata sandi

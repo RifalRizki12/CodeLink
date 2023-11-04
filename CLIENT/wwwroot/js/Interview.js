@@ -21,7 +21,21 @@
             { data: 'idle' },
             { data: 'interviewer' },
             { data: 'name' },
-            { data: 'date' },
+            {
+                data: 'date',
+                render: function (data, type, row) {
+                    if (type === 'display') {
+                        var date = new Date(data);
+                        var formattedDate = date.getFullYear() + '-' +
+                            String(date.getMonth() + 1).padStart(2, '0') + '-' +
+                            String(date.getDate()).padStart(2, '0') + ' ' +
+                            String(date.getHours()).padStart(2, '0') + ':' +
+                            String(date.getMinutes()).padStart(2, '0');
+                        return formattedDate;
+                    }
+                    return data; // Mengembalikan data asli untuk jenis lainnya
+                }
+            },
             { data: 'statusIdle' },
             {
                 data: "type",

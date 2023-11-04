@@ -7,12 +7,14 @@
         var profilePictureFile = $('#profilePictureInput').prop('files')[0];
         if (!profilePictureFile) {
             Swal.fire({
-                title: 'Gambar Profil Harus Dipilih',
+                text: 'Gambar Profil Harus Diisi',
                 icon: 'info',
-                showCloseButton: true,
+                showCloseButton: false,
                 focusConfirm: false,
-                confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
-                confirmButtonAriaLabel: 'Thumbs up, great!',
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
             });
             return;
         }
@@ -21,12 +23,14 @@
             $('#emailInput').val() === "" || $('#phoneNumberInput').val() === "" || $('#nameCompanyInput').val() === ""||
             $('#addressCompanyInput').val() === "" || $('#passwordInput').val() === "" || $('#confirmPasswordInput').val() === "") {
             Swal.fire({
-                title: 'Data Inputan Tidak Boleh Kosong',
+                text: 'Data Inputan Tidak Boleh Kosong',
                 icon: 'info',
-                showCloseButton: true,
+                showCloseButton: false,
                 focusConfirm: false,
-                confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
-                confirmButtonAriaLabel: 'Thumbs up, great!',
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
             })
             return;
         }

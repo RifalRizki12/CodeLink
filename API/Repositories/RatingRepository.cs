@@ -34,5 +34,11 @@ namespace API.Repositories
             // Hitung rata-rata rating
             return ratings.Average();
         }
+
+        public List<Rating> GetByInterviewGuid(Guid interviewGuid)
+        {
+           return _context.Ratings.Where(r => r.Guid == interviewGuid).ToList();
+        }
+
     }
 }

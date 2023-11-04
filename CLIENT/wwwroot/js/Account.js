@@ -22,6 +22,12 @@ $(document).ready(function () {
                         icon: 'success',
                         title: 'Login Berhasil!',
                         text: 'Anda akan diarahkan ke halaman yang dituju.',
+                        showCloseButton: false,
+                        focusConfirm: false,
+                        customClass: {
+                            confirmButton: 'btn btn-primary'
+                        },
+                        buttonsStyling: false
                     }).then(function () {
                         window.location.href = response.redirectTo;
                     });
@@ -35,6 +41,12 @@ $(document).ready(function () {
                         icon: 'error',
                         title: 'Login Gagal!',
                         text: 'Pastikan email dan password Anda benar.',
+                        showCloseButton: false,
+                        focusConfirm: false,
+                        customClass: {
+                            confirmButton: 'btn btn-primary'
+                        },
+                        buttonsStyling: false
                     });
 
                 }
