@@ -190,6 +190,20 @@
         var compGuid = compGuidString ? compGuidString.toLowerCase() : null;
         /* var employeeGuid = $('#employeeGuid').val(); // Asumsi ada input dengan id 'employeeGuid'*/
 
+        if (nameInput === "" || dateInput === "") {
+            Swal.fire({
+                text: 'Data Input Tidak Boleh Kosong',
+                icon: 'info',
+                showCloseButton: false,
+                focusConfirm: false,
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            })
+            return;
+        };
+
         var obj = {
             name: nameInput,
             date: dateInput,
