@@ -2,6 +2,7 @@
 using API.DTOs.Employees;
 using API.Utilities.Handler;
 using CLIENT.Contract;
+using CLIENT.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -160,22 +161,18 @@ namespace CLIENT.Controllers
 
                 var result = await repository.UpdateClient(updateDto);
 
-                if (result.Status == "OK")
+                if (result is ResponseOKHandler<UpdateClientDto> successResult)
                 {
                     // Pembaruan berhasil
-                    return Json(new { success = true, redirectTo = Url.Action("Index", "Employee") });
+                    return Json(successResult);
                 }
-                else
+                else if (result is ResponseErrorHandler errorResult)
                 {
                     // Pembaruan gagal atau ada kesalahan
-                    return Json(new { success = false, message = "Pembaruan gagal atau terjadi kesalahan." });
+                    return Json(new { status = "Error", message = errorResult });
                 }
             }
-            else
-            {
-                // Data yang dikirim tidak valid
-                return Json(new { success = false, message = "Data tidak valid." });
-            }
+            return Json(new { success = false, message = "Data tidak valid." });
         }
 
         [AllowAnonymous]

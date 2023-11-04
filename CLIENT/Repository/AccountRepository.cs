@@ -84,38 +84,81 @@ namespace CLIENT.Repository
             }
         }*/
 
-        public async Task<ResponseOKHandler<TokenDto>> Login(LoginDto login)
+        public async Task<object> Login(LoginDto login)
         {
             string jsonEntity = JsonConvert.SerializeObject(login);
             StringContent content = new StringContent(jsonEntity, Encoding.UTF8, "application/json");
 
             using (var response = await httpClient.PostAsync($"{request}login", content))
             {
-                if (response.StatusCode == HttpStatusCode.BadRequest)
+                if (response.IsSuccessStatusCode)
                 {
-                    // Respons status adalah 400 (Bad Request), baca pesan kesalahan validasi
-                    string apiResponse = await response.Content.ReadAsStringAsync();
-                    var validationErrors = JsonConvert.DeserializeObject<ResponseErrorHandler>(apiResponse).Error;
-
-                    // Handle pesan kesalahan validasi di sini
-                    string validationErrorMessage = "Validasi gagal: " + string.Join(", ", validationErrors);
-
-                    // Anda dapat melemparkan pengecualian dengan pesan kesalahan validasi
-                    throw new ValidationException(validationErrorMessage);
-
-                    // Atau jika Anda ingin mengembalikan pesan kesalahan kepada pengguna, Anda bisa mengembalikan respons khusus
-                    // Misalnya: return new ResponseErrorHandler { Code = StatusCodes.Status400BadRequest, Status = HttpStatusCode.BadRequest.ToString(), Message = validationErrorMessage };
-                }
-                else
-                {
-                    // Respons status lainnya (status 200 OK), proses respons seperti biasa
+                    // Respons status adalah 200 OK, proses respons seperti biasa
                     response.EnsureSuccessStatusCode();
                     string apiResponse = await response.Content.ReadAsStringAsync();
-                    var entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<TokenDto>>(apiResponse);
-                    return entityVM;
+
+                    if (apiResponse != null)
+                    {
+                        var entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<TokenDto>>(apiResponse);
+                        return entityVM;
+                    }
+                    else
+                    {
+                        // Handle respons lainnya jika tidak ada token di dalam respons OK
+                        return new ResponseErrorHandler
+                        {
+                            Code = StatusCodes.Status500InternalServerError,
+                            Status = HttpStatusCode.InternalServerError.ToString(),
+                            Message = "Terjadi kesalahan server. Silakan coba lagi nanti.",
+                            Error = null
+                        };
+                    }
                 }
+                else if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    // Respons status adalah 400 Bad Request, baca pesan kesalahan validasi
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine(apiResponse);
+                    dynamic dynamicResponse = JsonConvert.DeserializeObject(apiResponse);
+
+                    // Handle pesan kesalahan validasi di sini
+                    if (dynamicResponse != null)
+                    {
+                        var errors = dynamicResponse.error.ToObject<List<string>>() ?? "";
+                        var errorString = string.Join("\n", errors);
+
+                        // Mengembalikan objek ResponseErrorHandler dengan kesalahan validasi
+                        try
+                        {
+                            var errorResponse = new ResponseErrorHandler
+                            {
+                                Code = dynamicResponse.code,
+                                Status = dynamicResponse.status,
+                                Message = dynamicResponse.message,
+                                Error = errorString
+                            };
+                            return errorResponse;
+                        }
+                        catch (Exception ex)
+                        {
+                            // Tampilkan pesan pengecualian ke konsol atau log
+                            Console.WriteLine("Exception: " + ex.Message);
+                        }
+                    }
+                }
+
+                // Handle respons lainnya seperti sebelumnya
+                return new ResponseErrorHandler
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = HttpStatusCode.InternalServerError.ToString(),
+                    Message = "Terjadi kesalahan server. Silakan coba lagi nanti.",
+                    Error = null
+                };
             }
         }
+
+
 
     }
 }
