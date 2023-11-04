@@ -141,66 +141,34 @@
         });
     };
 
-
-    //Tonmbol detail
-    $(document).on('click', '.btn-detail', function () {
-        var guid = $(this).data('guid');
-        $('#modalDetail').data('employee-guid', guid);
-        console.log("Data modal setelah tombol detail ditekan:", $('#modalDetail').data()); // Tambahkan baris ini
-    });
-
-
-
-
-
-    // Handler ketika form disubmit
     $('#formAddSchedule').submit(function (event) {
         event.preventDefault();
-
-        var guid = $('#modalDetail').data('employee-guid');
-        var cmpGuid = sessionStorage.getItem('employeeGuid'); // Mengambil company GUID dari sessionStorage
-
-        console.log("Data modal saat form disubmit:", $('#modalDetail').data());
-        console.log("GUID saat form disubmit:", guid);
-        console.log("Company GUID saat form disubmit:", cmpGuid);
-
-        /*if (canSubmit(guid, cmpGuid)) {
-            localStorage.setItem('lastSubmit_' + guid + '_' + cmpGuid, new Date().getTime());*/
-            addScheduleInterview();
-        /*} else {
-            alert('Anda hanya dapat mengirimkan sekali dalam sehari.');
-        }*/
+        addScheduleInterview();
     });
 
-    function canSubmit(guid, cmpGuid) {
-        var lastSubmitTimestamp = localStorage.getItem('lastSubmit_' + guid + '_' + cmpGuid);
-        if (lastSubmitTimestamp) {
-            var lastSubmitDate = new Date(parseInt(lastSubmitTimestamp));
-            var currentDate = new Date();
-            if (lastSubmitDate.toDateString() === currentDate.toDateString()) {
-                return false; // Sudah disubmit oleh company ini hari ini
-            }
-        }
-        return true; // Belum disubmit atau disubmit oleh company lain
-    }
-
-
-
     function addScheduleInterview() {
-        // Kode untuk menambahkan jadwal interview
-        // Pastikan untuk mengambil GUID yang sesuai untuk disertakan dalam objek yang dikirim
+        var ownGuid = sessionStorage.getItem('employeeGuid');
         var nameInput = $("#nameInput").val();
         var dateInput = $("#dateInput").val();
-        var compGuidString = $("#companyGuid").val();
-        var compGuid = compGuidString ? compGuidString.toLowerCase() : null;
-        /* var employeeGuid = $('#employeeGuid').val(); // Asumsi ada input dengan id 'employeeGuid'*/
+      
+        if (nameInput === "" || dateInput === "") {
+            Swal.fire({
+                title: 'Data Inputan Tidak Boleh Kosong',
+                icon: 'info',
+                showCloseButton: true,
+                focusConfirm: false,
+                confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
+                confirmButtonAriaLabel: 'Thumbs up, great!',
+            })
+            return; 
+        };
 
         var obj = {
             name: nameInput,
             date: dateInput,
             employeeGuid: guid,
-            ownerGuid: compGuid
-        };
+            ownerGuid: ownGuid
+        }
         console.log(obj);
 
         $.ajax({
@@ -229,6 +197,12 @@
         });
 
     };
+
+    //VALIDATION INPUTAN 
+   
+
+
+
 });
 
 $(document).ready(function () {
@@ -251,7 +225,7 @@ $(document).ready(function () {
             success: function (data) {
                 console.log(data);
                 if (data) {
-
+                    
                     const imageUrl1 = `${baseURL}ProfilePictures/${data.foto}`;
                     var imageUrl2 = `${baseURL}Cv/${data.cv}`;
 
@@ -317,7 +291,7 @@ $(document).ready(function () {
                 });
             }
         });
-    } if (sesRole == "client") {
+    }if (sesRole == "client") {
         $.ajax({
             url: '/Employee/GetGuidClient/' + guid,
             type: 'GET',
