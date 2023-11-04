@@ -360,9 +360,12 @@ $(document).ready(function () {
         const photoURL = `${baseURL}ProfilePictures/${item.foto}`;
 
         const btnGuid = item.employeeGuid; // Asumsikan employeeGuid adalah unik
-        const isRated = item.hasRated || localStorage.getItem(btnGuid) === 'true'; // Tambahkan pemeriksaan localStorage di sini
+        const interviewGuid = item.interviewGuid; // Asumsikan interviewGuid juga tersedia
+        // Buat unique key untuk setiap kombinasi employee dan interview
+        const uniqueRatingKey = `rated_${interviewGuid}_${btnGuid}`;
+        const isRated = item.hasRated || localStorage.getItem(uniqueRatingKey) === 'true';
         const ratedStyle = isRated ? 'background-color: grey; border-color: grey; color: white; cursor: not-allowed;' : '';
-        const disabledAttribute = isRated ? 'disabled' : ''; // Tambahkan atribut "disabled" jika sudah dinilai
+        const disabledAttribute = isRated ? 'disabled' : ''; 
 
         return `
        <tr class="pt-30" style="text-align:center;">
@@ -409,9 +412,11 @@ $(document).ready(function () {
     document.getElementById('rating').addEventListener('click', function () {
         // Ambil tombol rating yang saat ini sedang aktif
         const activeRatingButton = document.querySelector('.btn-rating[data-active="true"]');
-
         if (activeRatingButton) {
             const btnGuid = activeRatingButton.getAttribute('data-guid2');
+            const interviewGuid = activeRatingButton.getAttribute('data-guid1');
+            // Gunakan unique key yang sama seperti saat build
+            const uniqueRatingKey = `rated_${interviewGuid}_${btnGuid}`;
 
             // Ubah style tombol rating menjadi tidak aktif
             activeRatingButton.disabled = true;
@@ -423,7 +428,7 @@ $(document).ready(function () {
             // Set atribut data-rated menjadi true, hapus atribut data-active, dan simpan status ke localStorage
             activeRatingButton.setAttribute('data-rated', "true");
             activeRatingButton.removeAttribute('data-active');
-            localStorage.setItem(btnGuid, 'true');
+            localStorage.setItem(uniqueRatingKey, 'true');
         }
     });
 
