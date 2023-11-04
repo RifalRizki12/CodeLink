@@ -9,37 +9,50 @@ $(document).ready(function () {
             Password: password
         };
 
-        $.ajax({
-            url: '/Account/Logins', // Ganti dengan URL API yang sesuai
-            type: 'POST',
-            dataType: 'json',
-            data: JSON.stringify(data),
-            contentType: 'application/json',
-            success: function (response) {
-                if (response.redirectTo) {
-                    // SweetAlert untuk login berhasil
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Login Berhasil!',
-                        text: 'Anda akan diarahkan ke halaman yang dituju.',
-                    }).then(function () {
-                        window.location.href = response.redirectTo;
-                    });
-
-                }
-            },
-            error: function (xhr, status, error) {
-                if (xhr.status === 500) {
-                    // SweetAlert untuk kesalahan server
+            $.ajax({
+                url: '/Account/logins',
+                type: 'POST',
+                dataType: 'json',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                success: function (response) {
+                    if (response.redirectTo) {
+                        // SweetAlert for login success
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Login Berhasil',
+                            text: 'Anda akan diarahkan ke halaman yang dituju.',
+                            showCloseButton: false,
+                            focusConfirm: false,
+                            customClass: {
+                                confirmButton: 'btn btn-primary'
+                            },
+                            buttonsStyling: false,
+                        }).then(function () {
+                            window.location.href = response.redirectTo;
+                        });
+                    } else if (response.status === "Error") {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Login Gagal!',
+                            text: response.message.error || response.message.message,
+                            showCloseButton: false,
+                            focusConfirm: false,
+                            customClass: {
+                                confirmButton: 'btn btn-primary'
+                            },
+                            buttonsStyling: false,
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Login Gagal!',
-                        text: 'Pastikan email dan password Anda benar.',
+                        title: 'Error !!!',
+                        text: 'Gagal Menghubungkan !!!',
                     });
-
                 }
-            }
-        });
+            });
     });
 });
 
@@ -48,7 +61,7 @@ $(document).ready(function () {
     $('#forgotPsswd').click(function () {
         var email = $('#emailInput').val();
 
-        if (email === "" ) {
+        if (email === "") {
             Swal.fire({
                 text: 'Email Tidak Boleh Kosong',
                 icon: 'info',
@@ -62,13 +75,13 @@ $(document).ready(function () {
             return;
         }
 
-    
+
         var data = {
             Email: email,
         };
 
         $.ajax({
-            url: '/Account/ForgotPassword/' + email, 
+            url: '/Account/ForgotPassword/' + email,
             type: 'PUT',
             dataType: 'json',
             data: JSON.stringify(data),

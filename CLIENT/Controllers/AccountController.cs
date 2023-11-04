@@ -2,6 +2,7 @@
 using API.DTOs.Employees;
 using API.DTOs.Roles;
 using API.Models;
+using API.Utilities.Handler;
 using CLIENT.Contract;
 using CLIENT.Models;
 using CLIENT.Repository;
@@ -34,12 +35,13 @@ namespace CLIENT.Controllers
             {
                 var result = await _accountRepository.Login(login);
 
-                if (result.Status == "OK")
+                if (result is ResponseOKHandler<TokenDto> successResult)
                 {
-                    HttpContext.Session.SetString("JWToken", result.Data.Token);
+                    // Respons sukses
+                    HttpContext.Session.SetString("JWToken", successResult.Data.Token);
 
                     // Mengambil klaim pengguna dari JWT
-                    var claims = await _accountRepository.GetClaimsAsync(result.Data.Token);
+                    var claims = await _accountRepository.GetClaimsAsync(successResult.Data.Token);
 
                     if (claims != null)
                     {
@@ -48,8 +50,7 @@ namespace CLIENT.Controllers
                         HttpContext.Session.SetString("EmployeeGuid", claims.Data.EmployeeGuid.ToString());
                         HttpContext.Session.SetString("Email", claims.Data.Email);
                         HttpContext.Session.SetString("Foto", claims.Data.Foto ?? "");
-                        // Anda juga bisa menyimpan peran (role) sesuai kebutuhan aplikasi Anda.
-                        HttpContext.Session.SetString("Role", claims.Data.Role.FirstOrDefault());
+                        HttpContext.Session.SetString("Role", claims.Data.Role.FirstOrDefault() ?? "");
 
                         string role = HttpContext.Session.GetString("Role"); // Ambil peran dari session
 
@@ -72,11 +73,18 @@ namespace CLIENT.Controllers
                         return Json(new { status = "BadRequest", message = "User claims not available." });
                     }
                 }
+                else if (result is ResponseErrorHandler errorResult)
+                {
+                    // Respons error
+                    // Tangani respons error di sini, misalnya dengan menampilkan pesan kesalahan ke pengguna
+                    return Json(new { status = "Error", message = errorResult });
+                }
             }
 
             // Jika login gagal atau data yang dikirimkan tidak valid
             return Json(new { redirectTo = Url.Action("Logins", "Account") });
         }
+
 
 
         [HttpGet("Logout/")]
