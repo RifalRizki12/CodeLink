@@ -23,6 +23,7 @@ namespace API.DTOs.Employees
         public string EmployeeOwner { get; set; }
         public Guid OwnerGuid { get; set; }
         public double? AverageRating { get; set; }
+        public string StatusAccount { get; set; }
 
 
         // Operator eksplisit untuk mengkonversi dari model entitas ke DTO
@@ -76,6 +77,13 @@ namespace API.DTOs.Employees
             return new EmployeeDetailDto
             {
                 Skill = new List<string> { skill.Name }
+            };
+        }
+        public static explicit operator EmployeeDetailDto(Account account)
+        {
+            return new EmployeeDetailDto
+            {
+                StatusAccount = account.Status.ToString(),
             };
         }
     }

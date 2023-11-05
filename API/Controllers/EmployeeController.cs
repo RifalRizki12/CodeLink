@@ -557,6 +557,7 @@ namespace API.Controllers
             var curriculumVitae = _curriculumVitaeRepository.GetAll();
             var interviews = _interviewRepository.GetAll();
             var ratings = _ratingRepository.GetAll();
+            var accounts = _accountRepository.GetAll();
 
             if (!(employees.Any() || companies.Any() || skills.Any() || curriculumVitae.Any()))
             {
@@ -578,6 +579,8 @@ namespace API.Controllers
                              };
 
             var employeeDetails = from emp in employees
+                                  join acc in accounts on emp.Guid equals acc.Guid into accGroup
+                                  from account in accGroup.DefaultIfEmpty()
                                   join cuVit in curriculumVitae on emp.Guid equals cuVit.Guid into cuVitJoined
                                   from cuVitResult in cuVitJoined.DefaultIfEmpty()
                                   join com in companies on emp.CompanyGuid equals com.Guid into companyJoined
@@ -607,6 +610,7 @@ namespace API.Controllers
                                       Address = company?.Address ?? "N/A",
                                       OwnerGuid = company?.EmployeeGuid ?? Guid.Empty,
                                       EmployeeOwner = companyOwner?.FirstName + " " + companyOwner?.LastName ?? "N/A",
+                                      StatusAccount = account.Status.ToString(),
                                   };
 
             return Ok(new ResponseOKHandler<IEnumerable<EmployeeDetailDto>>(employeeDetails));
