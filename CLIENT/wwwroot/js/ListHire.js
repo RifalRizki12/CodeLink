@@ -10,10 +10,7 @@ $(document).ready(function () {
 
         return `
             <tr class="pt-30" style="text-align:center;">
-               <td class="custome-checkbox pl-30">
-                   <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox1" value="">
-                   <label class="form-check-label" for="exampleCheckbox1"></label>
-               </td>
+              
                <td class="image product-thumbnail pt-40">
                     <img src="${photoURL}" alt="${item.idle}">
                     <h6><a class="product-name mb-10" href="">${item.idle}</a></h6>
@@ -24,12 +21,16 @@ $(document).ready(function () {
                <td class="product-des product-name" data-title="date">
                    <h6 class="text-brand">${item.date}</h6>
                </td>
-               <td class="text-right" data-title="Lolos">
-                   <button class="btn btn-sm btn-lolos" data-guid1="${item.interviewGuid}" data-guid2="${item.employeGuid}" data-bs-toggle="modal" data-bs-target="#lolosInterview">Lolos</button>
-               </td>
-               <td class="text-right" data-title="tidakLolos">
-                   <button class="btn-danger btn-sm btn-tdkLolos" data-guid1="${item.interviewGuid}" data-guid2="${item.employeGuid}" data-bs-toggle="modal" data-bs-target="#tdkLolosInterview" >Tidak Lolos</button>
-               </td>
+            
+                 <td class="text-center" style="padding: 8px;" data-title="Aksi">
+    <!-- Button Lolos dengan gaya inline -->
+    <button class="btn btn-lolos" style="background-color: #6baf92; color: white; border-radius: 20px; padding: 8px 15px; border: none; outline: none; font-size: 0.9em; margin-right: 10px;" data-guid1="${item.interviewGuid}" data-guid2="${item.employeGuid}" data-bs-toggle="modal" data-bs-target="#lolosInterview">Lolos</button>
+    <!-- Button Tidak Lolos dengan gaya inline -->
+    <button class="btn btn-tdkLolos" style="background-color: #d9534f; color: white; border-radius: 20px; padding: 8px 15px; border: none; outline: none; font-size: 0.9em;" data-guid1="${item.interviewGuid}" data-guid2="${item.employeGuid}" data-bs-toggle="modal" data-bs-target="#tdkLolosInterview">Tidak Lolos</button>
+</td>
+
+
+
             </tr>
         `;
     }
@@ -232,10 +233,6 @@ $(document).ready(function () {
 
         return `
             <tr class="pt-30" style="text-align:center;">
-               <td class="custome-checkbox pl-30">
-                   <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox1" value="">
-                   <label class="form-check-label" for="exampleCheckbox1"></label>
-               </td>
                <td class="image product-thumbnail pt-40">
                     <img src="${photoURL}" alt="${item.idle}">
                     <h6><a class="product-name mb-10" href="">${item.idle}</a></h6>
@@ -249,9 +246,10 @@ $(document).ready(function () {
                <td class="product-des product-name" data-title="date">
                    <h6 class="text-brand">${item.endContract}</h6>
                </td>
-               <td class="text-right" data-title="endContract">
-                   <button class="btn-danger btn-sm btn-endContract" data-date="${item.startContract}" data-guid1="${item.interviewGuid}" data-guid2="${item.employeGuid}" data-bs-toggle="modal" data-bs-target="#endContract">End Contract</button>
-               </td>
+               <td style="display: flex; justify-content: flex-end; align-items: center; height: 100%;">
+  <button class="btn btn-sm btn-endContract" style="background-color: #d9534f; color: white; border-radius: 20px; padding: 8px 20px; border: none; outline: none; font-size: 0.9em;" data-date="${item.startContract}" data-guid1="${item.interviewGuid}" data-guid2="${item.employeGuid}" data-bs-toggle="modal" data-bs-target="#endContract">EndContract</button>
+</td>
+
             </tr>
         `;
     }
@@ -412,7 +410,9 @@ $(document).ready(function () {
 
           
           <td class="text-right" data-title="Lolos">
-          <button ${disabledAttribute} style="${ratedStyle}" class="btn-danger btn-sm btn-rating" data-rated="${isRated ? 'true' : 'false'}" data-guid1="${item.interviewGuid}" data-guid2="${btnGuid}" data-end-contract="${item.endContract}" data-status-interview="${item.statusInterview}" data-remaks="${item.remarks}" data-start-contract="${item.startContract}" data-bs-toggle="modal" data-bs-target="#ratingInterview" >Rating</button>
+        <button ${disabledAttribute} style="display: block; margin-left: auto; margin-right: auto; background-color: #6baf92; color: white; border-radius: 20px; padding: 8px 20px; border: none; outline: none; font-size: 0.9em; ${ratedStyle}" class="btn-sm btn-rating" data-rated="${isRated ? 'true' : 'false'}" data-guid1="${item.interviewGuid}" data-guid2="${btnGuid}" data-end-contract="${item.endContract}" data-status-interview="${item.statusInterview}" data-remaks="${item.remarks}" data-start-contract="${item.startContract}" data-bs-toggle="modal" data-bs-target="#ratingInterview">Rating</button>
+
+
                </td>
             </tr>
         `;
@@ -568,8 +568,9 @@ $(document).ready(function () {
                 Swal.fire({
                     icon: 'success',
                     title: 'Terimakasih Atas Kepercayaanya',
-                    text: 'Orang yang Anda pilih tidak lolos dalam rekrutmen.'
+                    text: 'Kami Tunggu Kembali Pesanan Anda.'
                 });
+
             },
             error: function (response) {
                 $('#ratingInterview').modal('hide');

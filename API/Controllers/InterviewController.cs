@@ -542,7 +542,7 @@ public class InterviewController : ControllerBase
         var getOnsiteDto = (from interview in interviews
                             join empInterviewer in employees on interview.OwnerGuid equals empInterviewer.Guid
                             join empIdle in employees on interview.EmployeeGuid equals empIdle.Guid
-                            where empIdle.StatusEmployee == StatusEmployee.onsite 
+                            where empIdle.StatusEmployee == StatusEmployee.onsite && interview.StatusIntervew == StatusIntervew.Lolos && interview.StartContract.HasValue
                             select new GetOnsiteDto
                             {
                                 EmployeGuid = empIdle.Guid,
@@ -577,7 +577,7 @@ public class InterviewController : ControllerBase
         var idleHistoryDto = (from interview in interviews
                               join rat in ratings on interview.Guid equals rat.Guid
                               join emp in employees on interview.EmployeeGuid equals emp.Guid
-                              where interview.EndContract.HasValue
+                              where interview.EndContract.HasValue && (interview.StatusIntervew == StatusIntervew.ContarctTermination || interview.StatusIntervew == StatusIntervew.EndContract)
                               select new GetIdleHistoryDto
                               {
                                   EmployeeGuid = emp.Guid,
