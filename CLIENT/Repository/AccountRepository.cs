@@ -125,7 +125,7 @@ namespace CLIENT.Repository
                     if (dynamicResponse != null)
                     {
                         var errors = dynamicResponse.error.ToObject<List<string>>() ?? "";
-                        var errorString = string.Join("\n", errors);
+                        var errorString = string.Join(", ", errors);
 
                         // Mengembalikan objek ResponseErrorHandler dengan kesalahan validasi
                         try

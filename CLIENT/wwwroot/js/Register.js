@@ -2,39 +2,8 @@
     $('#registerForm').on('submit', function (e) {
         e.preventDefault();
 
-       
-
         var profilePictureFile = $('#profilePictureInput').prop('files')[0];
-        if (!profilePictureFile) {
-            Swal.fire({
-                text: 'Gambar Profil Harus Diisi',
-                icon: 'info',
-                showCloseButton: false,
-                focusConfirm: false,
-                customClass: {
-                    confirmButton: 'btn btn-primary'
-                },
-                buttonsStyling: false
-            });
-            return;
-        }
-
-        if ($('#firstNameInput').val() === "" || parseInt($('#genderInput').val()) === null ||
-            $('#emailInput').val() === "" || $('#phoneNumberInput').val() === "" || $('#nameCompanyInput').val() === ""||
-            $('#addressCompanyInput').val() === "" || $('#passwordInput').val() === "" || $('#confirmPasswordInput').val() === "") {
-            Swal.fire({
-                text: 'Data Inputan Tidak Boleh Kosong',
-                icon: 'info',
-                showCloseButton: false,
-                focusConfirm: false,
-                customClass: {
-                    confirmButton: 'btn btn-primary'
-                },
-                buttonsStyling: false
-            })
-            return;
-        }
-
+        
         var formData = new FormData();
 
         // Tambahkan data teks ke formData
@@ -58,14 +27,36 @@
             processData: false,  // penting, jangan proses data
             contentType: false,  // penting, biarkan jQuery mengatur ini
             success: function (response) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Register Berhasil!',
-                    text: 'Anda akan diarahkan ke halaman yang dituju.',
-                }).then(function () {
-                    // Ganti dengan URL yang diinginkan
-                    window.location.href = '/path/to/redirect';
-                });
+
+                if (response.status == "OK") {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Register Berhasil!',
+                        text: 'Anda akan diarahkan ke halaman yang dituju !',
+                        showCloseButton: false,
+                        focusConfirm: false,
+                        customClass: {
+                            confirmButton: 'btn btn-primary'
+                        },
+                        buttonsStyling: false,
+                    }).then(function () {
+                        // Ganti dengan URL yang diinginkan
+                        window.location.href = '/Account/Logins';
+                    });
+                }
+                else if (response.status === "Error") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Register !',
+                        text: response.message.error || response.message.message,
+                        showCloseButton: false,
+                        focusConfirm: false,
+                        customClass: {
+                            confirmButton: 'btn btn-primary'
+                        },
+                        buttonsStyling: false,
+                    });
+                }
             },
             error: function (xhr, status, error) {
                 Swal.fire({
