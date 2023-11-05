@@ -5,14 +5,11 @@
 
 <!-- Complex Headers -->
 <div class="card">
-    <h5 class="card-header">Data Employee</h5>
+    <h5 class="card-header">Data Idle</h5>
     <div class="dt-action-buttons text-end pt-3 pt-md-0">
-        <div class="datatable-buttons">
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCenter">
-                Create
-            </button>
-        </div>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCenter">
+            <i class="fa-sharp fa-solid fa-user-plus"></i>
+        </button>
     </div>
     <div class="card-datatable text-nowrap table-responsive">
         <table id="tableEmployee" class="dt-complex-header table table-bordered dt-responsive table datatables-basic table">
@@ -20,25 +17,25 @@
                 <tr>
                     <th rowspan="2">No</th>
                     <th colspan="3" style="text-align: center;">Biodata</th>
-                    <th colspan="5" style="text-align: center;">Info</th>
+                    <th colspan="6" style="text-align: center;">Info</th>
                     <th class="no-export" rowspan="2" style="text-align: center;">Action</th>
                 </tr>
                 <tr>
-                    <th>Foto</th>
+                    <th class="no-export">Foto</th>
                     <th>Full Name</th>
                     <th>Gender</th>
                     <th>Email</th>
                     <th>Phone Number</th>
                     <th>Skill</th>
                     <th>status</th>
-                    <th>Cv</th>
+                    <th class="no-export">Cv</th>
+                    <th>Status Account</th>
                 </tr>
             </thead>
         </table>
     </div>
 </div>
 <!--/ Complex Headers -->
-
 <!-- Modal Create -->
 <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -72,7 +69,7 @@
                             <label for="profilePictureInput" class="form-label">Profile Picture</label>
                             <input type="file" id="profilePictureInput" class="form-control" />
                         </div>
-                        
+
                         <div class="col mb-3">
                             <label for="cvInput" class="form-label">CV File</label>
                             <input type="file" id="cvInput" class="form-control" />
@@ -109,24 +106,27 @@
                     <div class="row">
                         <div class="col mb-3">
                             <label for="passwordInput" class="form-label">Password</label>
-                            <input type="password" id="passwordInput" class="form-control" required />
+                            <input type="password" placeholder="Coba12345" id="passwordInput" class="form-control" required />
                         </div>
                         <div class="col mb-3">
                             <label for="confirmPasswordInput" class="form-label">Confirm Password</label>
-                            <input type="password" id="confirmPasswordInput" class="form-control" required />
+                            <input type="password" placeholder="Coba12345" id="confirmPasswordInput" class="form-control" required />
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col mb-3">
                             <label for="skillsInput" class="form-label">Skills</label><br />
-                            <select id="skillsInput" class="form-control" multiple="multiple" style="width: 500px;"></select>
+                            <select id="skillsInput" class="form-control" multiple="multiple" style="width: 500px;" placeholder="Pilih keterampilan..."></select>
                         </div>
                     </div>
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" id="createButton" class="btn btn-primary">Create</button>
+                        <button type="submit" id="createButton" class="btn btn-primary btn-save">Create</button>
+                        <div class="spinner-border text-dark" role="status" style="display: none;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -211,7 +211,10 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" id="editEmployeeButton" class="btn btn-primary btn-save">Save</button>
+                        <button type="submit" class="btn btn-primary btn-save">Save</button>
+                        <div class="spinner-border text-dark" role="status" style="display: none;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -232,7 +235,7 @@
                 placeholder: "Select or add skills"
             });
         });
-    </script>    
+    </script>
 
     <!-- DataTables JavaScript -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>

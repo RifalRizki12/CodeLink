@@ -48,11 +48,13 @@ namespace CLIENT.Controllers
                         // Simpan klaim dalam session
                         HttpContext.Session.SetString("FullName", claims.Data.FullName);
                         HttpContext.Session.SetString("EmployeeGuid", claims.Data.EmployeeGuid.ToString());
+                        HttpContext.Session.SetString("StatusAccount", claims.Data.StatusAccount.ToString());
                         HttpContext.Session.SetString("Email", claims.Data.Email);
                         HttpContext.Session.SetString("Foto", claims.Data.Foto ?? "");
                         HttpContext.Session.SetString("Role", claims.Data.Role.FirstOrDefault() ?? "");
 
                         string role = HttpContext.Session.GetString("Role"); // Ambil peran dari session
+                        string statusAccount = HttpContext.Session.GetString("StatusAccount"); // Ambil peran dari session
 
                         // Lakukan pengalihan berdasarkan peran
                         if (role == "admin")
@@ -60,12 +62,20 @@ namespace CLIENT.Controllers
                             // Pengguna memiliki peran "admin", lakukan tindakan admin
                             return Json(new { redirectTo = Url.Action("Index", "Employee") });
                         }
-                        else if (role == "client" || role == "idle")
+                        else if (statusAccount == "Requested")
+                        {
+                            return Json(new { status = "Error", message = "Status Akun Masih Requested, silahkan menuggu !!!" });
+                        }
+                        else if (statusAccount != "Requested" && statusAccount != "Approved")
+                        {
+                            return Json(new { status = "Error", message = "Status Akun Non-Aktif/Rejected, silahkan Menghubungi Admin !!!" });
+                        }
+                        else if (statusAccount == "Approved" && role == "client" || role == "idle")
                         {
                             // Pengguna memiliki peran "client", lakukan tindakan client
                             return Json(new { redirectTo = Url.Action("HomeClient", "HomeClient") });
                         }
-                        // Anda juga bisa menambahkan peran lain sesuai dengan kebutuhan Anda
+                        
                     }
                     else
                     {
@@ -85,8 +95,6 @@ namespace CLIENT.Controllers
             return Json(new { redirectTo = Url.Action("Logins", "Account") });
         }
 
-
-
         [HttpGet("Logout/")]
         public IActionResult Logout()
         {
@@ -95,8 +103,8 @@ namespace CLIENT.Controllers
         }
 
 
-        [HttpGet("Account/GuidClient/{guid}")]
-        public async Task<JsonResult> GuidClient(Guid guid)
+        [HttpGet("Account/GuidAccount/{guid}")]
+        public async Task<JsonResult> GuidAccount(Guid guid)
         {
             var result = await _accountRepository.Get(guid);
             var employee = new AccountDto();
@@ -113,8 +121,8 @@ namespace CLIENT.Controllers
 
 
 
-        [HttpPut("Account/UpdateClient/{guid}")]
-        public async Task<JsonResult> UpdateClient(Guid guid, [FromBody] AccountDto accountDto)
+        [HttpPut("Account/UpdateAccount/{guid}")]
+        public async Task<JsonResult> UpdateAccount(Guid guid, [FromBody] AccountDto accountDto)
         {
             var response = await _accountRepository.Put(guid, accountDto);
 

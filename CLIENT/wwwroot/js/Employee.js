@@ -1,5 +1,59 @@
 ﻿$(document).ready(function () {
     $('#tableEmployee').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'copy',
+                text: 'Copy',
+                className: 'btn btn-dark btn-sm',
+                exportOptions: {
+                    columns: ':visible:not(.no-export)'
+                }
+            },
+            {
+                extend: 'excel',
+                text: 'Export to Excel',
+                className: 'btn btn-success btn-sm',
+                exportOptions: {
+                    columns: ':visible:not(.no-export)'
+                },
+            },
+            {
+                extend: 'pdf',
+                text: 'Export to PDF',
+                className: 'btn btn-danger btn-sm',
+                exportOptions: {
+                    columns: ':visible:not(.no-export)'
+                },
+                customize: function (doc) {
+                    doc.pageOrientation = 'landscape';
+                    doc.pageSize = 'A3';
+                }
+            },
+            {
+                extend: 'print',
+                text: 'Print',
+                className: 'btn btn-info btn-sm',
+                exportOptions: {
+                    columns: ':visible:not(.no-export)'
+                },
+                customize: function (win) {
+                    $(win.document.body).css('font-size', '12px');
+                    $(win.document.body).find('table').addClass('compact').css('font-size', 'inherit');
+                }
+            },
+            {
+                extend: 'colvis',
+                className: 'btn btn-primary btn-sm',
+                postfixButtons: ['colvisRestore']
+            }
+        ],
+        scrollX: true,
+        columnDefs: [
+            {
+                visible: false
+            }
+        ],
         ajax: {
             url: '/Employee/GetEmployeeData',
             type: 'GET',
@@ -50,9 +104,23 @@
             },
             {
                 data: 'statusEmployee',
-                render: function (data) {
-                    return `<div class="text-center">${data}</div>`;
+                render: function (data, type, row) {
+                    var statusText = data;
+                    var badgeClass = "bg-success";
+
+                    if (data === "idle") {
+                        statusText = "Idle";
+                    } else if (data === "onsite") {
+                        statusText = "On Site";
+                        badgeClass = "bg-warning";
+                    }
+
+                    return `
+                        <div class="text-center">
+                            <span class="badge bg-glow ${badgeClass}">${statusText}</span>
+                        </div>`;
                 }
+
             },
             {
                 data: 'cv',
@@ -62,19 +130,29 @@
                         const cvURL = `${baseURL}Cv/${data}`; // Gabungkan baseURL dengan path cv
                         return `
                         <div class="text-center">
-                            <a href="${cvURL}" target="_blank"><button class="btn btn-info btn-sm"><i class="fa-solid fa-eye"></i></button></a>
+                            <a href="${cvURL}" target="_blank"><button class="btn btn-dark btn-sm"><i class="fa-solid fa-eye"></i></button></a>
                         </div>`;
                     }
-                    return 'N/A'; // Pesan jika URL gambar tidak tersedia
+                    return `
+                    <div class="text-center">
+                        <span class="badge bg-glow bg-secondary">N/A</span>
+                    </div>`; // Pesan jika URL gambar tidak tersedia
                 }
             },
+            { data: 'statusAccount' },
             {
                 data: null,
                 render: function (data, type, row) {
                     return `
+                     <div class="text-center">
+                        <button type="button" class="btn btn-danger nonAktif" data-guid="${data.guid}" data-bs-toggle="modal" data-bs-target="#modalEditEmployee">NonAktif</button>
+                    </div> <br/> 
                     <div class="text-center">
                         <button type="button" class="btn btn-warning edit-button" data-guid="${data.guid}" data-bs-toggle="modal" data-bs-target="#modalEditEmployee">Update</button>
-                    </div>`;
+                    </div>
+
+
+                    `;
                 }
             },
 
@@ -89,6 +167,11 @@
         updateIdleGuid = $(this).data('guid'); // Mengambil GUID dari tombol "Update" yang diklik
         console.log('Employee Guid update', updateIdleGuid);
         getIdleByGuid(updateIdleGuid);
+    });
+
+    $('#tableEmployee').on('click', '.nonAktif', function () {
+        var guid = $(this).data('guid');
+        updateAccountStatus(guid);
     });
 
     // Tambahkan event listener untuk tombol "Edit"
@@ -172,6 +255,10 @@
             }
         });
     }
+
+    $('.spinner-border').hide();
+    $('.btn-save').show();
+
     $('#updateIdleForm').submit(function (event) {
         event.preventDefault();
         // Pastikan employeeGuid dan companyGuid telah di-set
@@ -179,14 +266,22 @@
             console.error("employeeGuid belum di-set.");
             return;
         }
+        $('.btn-save').attr('disabled', true);
+        $('.btn-save').text('Create...');
+
+        $('.spinner-border').show();
+
         updateIdleDetails(employeeGuid);
+        setTimeout(function () {
+            $('.btn-save').attr('disabled', false);
+            $('.btn-save').text('Save');
+            $('.spinner-border').hide();
+        }, 5000);
     });
 
 
     // function update data idle
     function updateIdleDetails(employeeGuid) {
-        console.log("ini di parameter update ");
-
         // Ambil semua data dari elemen-elemen formulir
         var firstName = $('#editFirstName').val();
         var lastName = $('#editLastName').val();
@@ -245,6 +340,7 @@
             contentType: false,
             processData: false, // Diperlukan untuk FormData
             success: function (response) {
+                $('spinner-border').hide();
                 $('#tableEmployee').DataTable().ajax.reload();
                 if (response.status == "OK") {
                     $('#modalEditEmployee').modal('hide');
@@ -261,6 +357,7 @@
                     });
                 }
                 else if (response.status === "Error") {
+                    $('spinner-border').hide();
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal Update!',
@@ -275,14 +372,105 @@
                 }
             },
             error: function (response) {
+                $('spinner-border').hide();
                 Swal.fire({
                     icon: 'error',
                     title: 'Pembaruan gagal',
-                    text: 'Terjadi kesalahan saat mencoba update data Idle.'
+                    text: 'Terjadi kesalahan saat mencoba update data Idle.',
+                    showCloseButton: false,
+                    focusConfirm: false,
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false,
                 });
             }
         });
     }
+
+
+    function updateAccountStatus(guid) {
+        $.ajax({
+            url: '/Account/GuidAccount/' + guid,
+            type: 'GET',
+            dataType: 'json',
+            dataSrc: 'data',
+            success: function (data) {
+                if (data) {
+                    var dataToUpdate = {
+                        guid: data.guid,
+                        expiredTime: data.expiredTime,
+                        isUsed: data.isUsed,
+                        otp: data.otp,
+                        password: data.password,
+                        roleGuid: data.roleGuid,
+                        status: 4,
+                    };
+
+                    $.ajax({
+                        url: '/Account/UpdateAccount/' + guid,
+                        type: 'PUT',
+                        data: JSON.stringify(dataToUpdate),
+                        contentType: 'application/json',
+
+                        success: function (response) {
+                            $('#tableClient').DataTable().ajax.reload();
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Pembaruan berhasil',
+                                text: 'Status akun klien telah diubah !',
+                                showCloseButton: false,
+                                focusConfirm: false,
+                                customClass: {
+                                    confirmButton: 'btn btn-primary'
+                                },
+                                buttonsStyling: false,
+                            });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Pembaruan Gagal',
+                                text: 'Terjadi kesalahan saat mencoba mengubah status akun klien !',
+                                showCloseButton: false,
+                                focusConfirm: false,
+                                customClass: {
+                                    confirmButton: 'btn btn-primary'
+                                },
+                                buttonsStyling: false,
+                            });
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Data tidak ditemukan',
+                        text: 'Data akun klien tidak ditemukan !',
+                        showCloseButton: false,
+                        focusConfirm: false,
+                        customClass: {
+                            confirmButton: 'btn btn-primary'
+                        },
+                        buttonsStyling: false,
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Kesalahan',
+                    text: 'Terjadi kesalahan saat mencoba mendapatkan data akun klien.',
+                    showCloseButton: false,
+                    focusConfirm: false,
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false,
+                });
+            }
+        });
+    }
+
 });
 $(document).ready(function () {
 
@@ -293,36 +481,6 @@ $(document).ready(function () {
         var profilePictureFile = $('#profilePictureInput').prop('files')[0];
         var cvFile = $('#cvInput').prop('files')[0];
 
-        if ($('#firstNameInput').val() === "" || parseInt($('#genderInput').val()) === null || parseInt($('#gradeInput').val()) === null ||
-            $('#emailInput').val() === "" || $('#phoneNumberInput').val() === "" || parseInt($('#statusEmployeeInput').val()) === null ||
-            $('#passwordInput').val() === "" || $('#confirmPasswordInput').val() === "") {
-            Swal.fire({
-                text: 'Data Inputan Tidak Boleh Kosong',
-                icon: 'info',
-                showCloseButton: false,
-                focusConfirm: false,
-                customClass: {
-                    confirmButton: 'btn btn-primary'
-                },
-                buttonsStyling: false
-            })
-            return;
-        }
-
-
-        if (!profilePictureFile) {
-            Swal.fire({
-                text: 'Gambar Profil Harus Diisi',
-                icon: 'info',
-                showCloseButton: false,
-                focusConfirm: false,
-                customClass: {
-                    confirmButton: 'btn btn-primary'
-                },
-                buttonsStyling: false
-            });
-            return;
-        }
         var formData = new FormData();
 
         // Tambahkan data teks ke formData
@@ -377,14 +535,32 @@ $(document).ready(function () {
             processData: false,  // penting, jangan proses data
             contentType: false,  // penting, biarkan jQuery mengatur ini
             success: function (response) {
-                $('#modalCenter').modal('hide');
-                if (response.redirectTo) {
+                if (response.status == "OK") {
+                    $('#modalCenter').modal('hide');
+                    $('#tableEmployee').DataTable().ajax.reload;
                     Swal.fire({
                         icon: 'success',
                         title: 'Register Berhasil!',
-                        text: 'Anda akan diarahkan ke halaman yang dituju.',
-                    }).then(function () {
-                        window.location.href = response.redirectTo;
+                        text: response.message.message,
+                        showCloseButton: false,
+                        focusConfirm: false,
+                        customClass: {
+                            confirmButton: 'btn btn-primary'
+                        },
+                        buttonsStyling: false,
+                    });
+                }
+                else if (response.status === "Error") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Register!',
+                        text: response.message.error || response.message.message,
+                        showCloseButton: false,
+                        focusConfirm: false,
+                        customClass: {
+                            confirmButton: 'btn btn-primary'
+                        },
+                        buttonsStyling: false,
                     });
                 }
             },
@@ -403,6 +579,61 @@ $(document).ready(function () {
 
 $(document).ready(function () {
     $('#tableClient').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'copy',
+                text: 'Copy',
+                className: 'btn btn-dark btn-sm',
+                exportOptions: {
+                    columns: ':visible:not(.no-export)'
+                }
+            },
+            {
+                extend: 'excel',
+                text: 'Export to Excel',
+                className: 'btn btn-success btn-sm',
+                exportOptions: {
+                    columns: ':visible:not(.no-export)'
+                },
+            },
+            {
+                extend: 'pdf',
+                text: 'Export to PDF',
+                className: 'btn btn-danger btn-sm',
+                exportOptions: {
+                    columns: ':visible:not(.no-export)'
+                },
+                customize: function (doc) {
+                    doc.pageOrientation = 'landscape';
+                    doc.pageSize = 'A3';
+                }
+            },
+            {
+                extend: 'print',
+                text: 'Print',
+                className: 'btn btn-info btn-sm',
+                exportOptions: {
+                    columns: ':visible:not(.no-export)'
+                },
+                customize: function (win) {
+                    $(win.document.body).css('font-size', '12px');
+                    $(win.document.body).find('table').addClass('compact').css('font-size', 'inherit');
+                }
+            },
+            {
+                extend: 'colvis',
+                className: 'btn btn-primary btn-sm',
+                postfixButtons: ['colvisRestore']
+            }
+        ],
+        scrollX: true,
+        columnDefs: [
+            {
+                visible: false
+            }
+        ],
+
         ajax: {
             url: '/Employee/GetClientData',
             type: 'GET',
@@ -430,18 +661,42 @@ $(document).ready(function () {
             { data: 'fullName' },
             { data: 'gender' },
             { data: 'email' },
-            { data: 'statusAccount' },
+            {
+                data: 'statusAccount',
+                render: function (data, type, row) {
+                    var statusText = data;
+                    var badgeClass = "bg-success";
+
+                    if (data === "Approved") {
+                        statusText = "Approved";
+                    } else if (data === "Requested") {
+                        statusText = "Requested";
+                        badgeClass = "bg-dark"; 
+                    } else if (data === "Rejected") {
+                        statusText = "Reject";
+                        badgeClass = "bg-danger";
+                    } else if (data === "NonAktif") {
+                        statusText = "NonAktif";
+                        badgeClass = "bg-secondary";
+                    } 
+
+                    return `
+                        <div class="text-center">
+                            <span class="badge bg-glow ${badgeClass}">${statusText}</span>
+                        </div>`;
+                }
+            },
             { data: 'phoneNumber' },
-            { data: 'statusEmployee' },
+            /*{ data: 'statusEmployee' },*/
             { data: 'nameCompany' },
             { data: 'address' },
             {
                 data: null,
-                render: function (data, type, row, meta) {
+                render: function (data, type, row) {
 
                     return `<div class="btn-group">
-                            <button type="button" class="btn btn-danger waves-effect waves-light">Actions</button>
-                            <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split waves-effect waves-light" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button type="button" class="btn btn-primary waves-effect waves-light btn-sm">Actions</button>
+                            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split waves-effect waves-light" data-bs-toggle="dropdown" aria-expanded="false">
                               <span class="visually-hidden">Toggle Dropdown</span>
                             </button>
                             <ul class="dropdown-menu" style="">
@@ -449,12 +704,13 @@ $(document).ready(function () {
                                  <a class="dropdown-item" data-guid="${data.employeeGuid}" data-status="2">Reject</a>
                                  <a class="dropdown-item" data-guid="${data.employeeGuid}" data-status="4">Non Active</a>
                             </ul>
-                          </div>
-                         <button type="button" class="btn btn-primary btn-update" data-guid="${data.employeeGuid}" data-bs-toggle="modal" data-bs-target="#modalUpdateClient">Update</button> `;
+                          </div><br/><br/>
+                         <button type="button" class="btn btn-warning btn-sm btn-update" data-guid="${data.employeeGuid}" data-bs-toggle="modal" data-bs-target="#modalUpdateClient">Update</button> `;
                 }
             },
         ]
     });
+    $('.dt-buttons').removeClass('dt-buttons');
 
     //Action tombol dropdown
     $('#tableClient').on('click', '.dropdown-item', function () {
@@ -467,7 +723,7 @@ $(document).ready(function () {
     // function update Account status
     function updateAccountStatus(guid, status) {
         $.ajax({
-            url: '/Account/GuidClient/' + guid,
+            url: '/Account/GuidAccount/' + guid,
             type: 'GET',
             dataType: 'json',
             dataSrc: 'data',
@@ -484,7 +740,7 @@ $(document).ready(function () {
                     };
 
                     $.ajax({
-                        url: '/Account/UpdateClient/' + guid,
+                        url: '/Account/UpdateAccount/' + guid,
                         type: 'PUT',
                         data: JSON.stringify(dataToUpdate),
                         contentType: 'application/json',
@@ -494,14 +750,26 @@ $(document).ready(function () {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Pembaruan berhasil',
-                                text: 'Status akun klien telah diubah.'
+                                text: 'Status akun klien telah diubah !',
+                                showCloseButton: false,
+                                focusConfirm: false,
+                                customClass: {
+                                    confirmButton: 'btn btn-primary'
+                                },
+                                buttonsStyling: false,
                             });
                         },
                         error: function () {
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Pembaruan gagal',
-                                text: 'Terjadi kesalahan saat mencoba mengubah status akun klien.'
+                                title: 'Pembaruan Gagal',
+                                text: 'Terjadi kesalahan saat mencoba mengubah status akun klien !',
+                                showCloseButton: false,
+                                focusConfirm: false,
+                                customClass: {
+                                    confirmButton: 'btn btn-primary'
+                                },
+                                buttonsStyling: false,
                             });
                         }
                     });
@@ -509,7 +777,13 @@ $(document).ready(function () {
                     Swal.fire({
                         icon: 'error',
                         title: 'Data tidak ditemukan',
-                        text: 'Data akun klien tidak ditemukan.'
+                        text: 'Data akun klien tidak ditemukan !',
+                        showCloseButton: false,
+                        focusConfirm: false,
+                        customClass: {
+                            confirmButton: 'btn btn-primary'
+                        },
+                        buttonsStyling: false,
                     });
                 }
             },
@@ -517,7 +791,13 @@ $(document).ready(function () {
                 Swal.fire({
                     icon: 'error',
                     title: 'Kesalahan',
-                    text: 'Terjadi kesalahan saat mencoba mendapatkan data akun klien.'
+                    text: 'Terjadi kesalahan saat mencoba mendapatkan data akun klien.',
+                    showCloseButton: false,
+                    focusConfirm: false,
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false,
                 });
             }
         });
@@ -581,7 +861,16 @@ $(document).ready(function () {
             console.error("employeeGuid atau companyGuid belum di-set.");
             return;
         }
+        $('.btn-save').attr('disabled', true);
+        $('.btn-save').text('Saving...');
+        $('.spinner-border').show();
+
         updateClientDetails(employeeGuid, companyGuid);
+        setTimeout(function () {
+            $('.btn-save').attr('disabled', false);
+            $('.btn-save').text('Save');
+            $('.spinner-border').hide();
+        }, 5000);
     });
 
 
@@ -625,8 +914,10 @@ $(document).ready(function () {
             contentType: false,
             processData: false, // Diperlukan untuk FormData
             success: function (response) {
+                $('spinner-border').hide();
                 $('#tableClient').DataTable().ajax.reload();
                 if (response.status == "OK") {
+                    $('#modalUpdateClient').modal('hide');
                     Swal.fire({
                         icon: 'success',
                         title: 'Pembaruan berhasil',
@@ -640,6 +931,7 @@ $(document).ready(function () {
                     });
                 }
                 else if (response.status === "Error") {
+                    $('spinner-border').hide();
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal Update!',
@@ -655,7 +947,7 @@ $(document).ready(function () {
 
             },
             error: function (xhr, status, error) {
-                
+                $('spinner-border').hide();
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
