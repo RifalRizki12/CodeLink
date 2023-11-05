@@ -410,7 +410,7 @@ $(document).ready(function () {
 
           
           <td class="text-right" data-title="Lolos">
-        <button ${disabledAttribute} style="display: block; margin-left: auto; margin-right: auto; background-color: #6baf92; color: white; border-radius: 20px; padding: 8px 20px; border: none; outline: none; font-size: 0.9em; ${ratedStyle}" class="btn-sm btn-rating" data-rated="${isRated ? 'true' : 'false'}" data-guid1="${item.interviewGuid}" data-guid2="${btnGuid}" data-end-contract="${item.endContract}" data-status-interview="${item.statusInterview}" data-remaks="${item.remarks}" data-start-contract="${item.startContract}" data-bs-toggle="modal" data-bs-target="#ratingInterview">Rating</button>
+        <button ${disabledAttribute} style="display: block; margin-left: auto; margin-right: auto; background-color: #6baf92; color: white; border-radius: 20px; padding: 8px 20px; border: none; outline: none; font-size: 0.9em; ${ratedStyle}" class="btn-sm btn-rating" data-rated="${isRated ? 'true' : 'false'}" data-guid1="${item.interviewGuid}" data-guid2="${btnGuid}" data-bs-toggle="modal" data-bs-target="#ratingInterview">Rating</button>
 
 
                </td>
@@ -496,26 +496,17 @@ $(document).ready(function () {
         var btn = $(this); // Tombol yang diklik
         guidInterview = btn.data('guid1');
         guidEmp = btn.data('guid2');
-        endContractDate = btn.data('end-contract');
-        startContractDate = btn.data('start-contract');
-        statusInterviews = btn.data('status-interview');
-        remaks = btn.data('remaks');
 
-        console.log("remaks:", remaks)
-        console.log("statusInterview:", statusInterviews)
-        console.log("End Contract Date:", endContractDate)
-        console.log("Start Contract Date:", startContractDate)
+
         console.log("guid emp:", guidEmp)
     });
 
     $("#ratingForm").submit(function (event) {
         event.preventDefault();
-        rateInterview(guidInterview, endContractDate, statusInterviews, remaks, startContractDate);
+        rateInterview(guidInterview);
     });
-    function rateInterview(guidInterview, endContractDate, statusInterviews, remaks, startContractDate) {
+    function rateInterview(guidInterview) {
         console.log("ini guid di update", guidInterview);
-        console.log("ini guid di statusInterviews", statusInterviews);
-        console.log("ini guid di remaks", remaks);
 
         var feedbackInput = $("#feedback").val();
         var rateInput;
@@ -541,23 +532,16 @@ $(document).ready(function () {
 
         var obj = {
             guid: guidInterview,
-            employeeGuid: guidEmp,
-            ownerGuid: guid,
             feedBack: feedbackInput,
             rate: rateInput,
-            endContract: endContractDate,
-            startContract: startContractDate,
-            statusIntervew: statusInterviews,
-            remarks: remaks
-
-/*            statusIntervew: statusIntervews*/
+            
 
         };
 
         console.log(obj);
         // lnjut disini, belum bikin controller dan repo
         $.ajax({
-            url: '/Interview/Announcement/' + guidInterview,
+            url: '/Rating/UpdateRating',
             type: 'PUT',
             data: JSON.stringify(obj),
             contentType: 'application/json',
