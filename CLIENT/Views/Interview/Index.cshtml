@@ -8,19 +8,8 @@
 
 <!-- Complex Headers -->
 <div class="card">
-    <h5 class="card-header">Data Employee</h5>
+    <h5 class="card-header">Data Inteview</h5>
     <div class="dt-action-buttons text-end pt-3 pt-md-0">
-        <div class="datatable-buttons">
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCenter">
-                Create
-            </button>
-            <button id="custom-copy-button" class="btn btn-secondary">Copy</button>
-            <button id="custom-excel-button" class="btn btn-secondary">Excel</button>
-            <button id="custom-pdf-button" class="btn btn-secondary">PDF</button> <!-- Sudah diperbaiki -->
-            <button id="custom-print-button" class="btn btn-secondary">Print</button>
-            <button id="custom-visibility" class="btn btn-secondary">Visibility</button>
-        </div>
     </div>
     <div class="card-datatable text-nowrap table-responsive">
         <table id="tableInterview" class="dt-complex-header table table-bordered dt-responsive table datatables-basic table">
@@ -35,7 +24,7 @@
                     <th>Type</th>
                     <th>Location</th>
                     <th>Status</th>
-                    <th>Action</th>
+                    <th class="no-export">Action</th>
                 </tr>
             </thead>
         </table>
@@ -74,7 +63,11 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary btn-save">Save</button>
+                        <div class="spinner-border text-dark" role="status" style="display: none;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
                     </div>
+
                 </form>
             </div>
         </div>

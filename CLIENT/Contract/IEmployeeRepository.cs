@@ -10,7 +10,7 @@ namespace CLIENT.Contract
     {
         Task<ResponseOKHandler<IEnumerable<EmployeeDetailDto>>> GetDetailIdle();
 
-        Task<ResponseOKHandler<Employee>> RegisterIdle(RegisterIdleDto registrationDto);
+        Task<object> RegisterIdle(RegisterIdleDto registrationDto);
         Task<object> RegisterClient(RegisterClientDto registrationCDto);
 
 

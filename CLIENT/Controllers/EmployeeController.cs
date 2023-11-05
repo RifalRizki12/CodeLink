@@ -48,28 +48,20 @@ namespace CLIENT.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterIdle([FromForm] RegisterIdleDto registrationDto)
         {
-            if (ModelState.IsValid)
-            {
-                // Anda sekarang bisa mengakses registrationDto.Skills sebagai List<string>
-                var skills = registrationDto.Skills;
-                var result = await repository.RegisterIdle(registrationDto);
+            var result = await repository.RegisterIdle(registrationDto);
 
-                if (result.Status == "OK")
-                {
-                    // Pendaftaran berhasil
-                    return Json(new { success = true, redirectTo = Url.Action("Index", "Employee") });
-                }
-                else
-                {
-                    // Pendaftaran gagal atau ada kesalahan
-                    return Json(new { success = false, message = "Pendaftaran gagal atau terjadi kesalahan." });
-                }
-            }
-            else
+            if (result is ResponseOKHandler<Employee> successResult)
             {
-                // Data yang dikirim tidak valid
-                return Json(new { success = false, message = "Data tidak valid." });
+                // Pendaftaran berhasil
+                return Json(new { status = "OK", message = successResult });
             }
+            else if (result is ResponseErrorHandler errorResult)
+            {
+                // Pendaftaran gagal atau ada kesalahan
+                return Json(new { status = "Error", message = errorResult });
+            }
+
+            return Json(new { success = false, message = "Data tidak valid." });
         }
 
         [AllowAnonymous]
