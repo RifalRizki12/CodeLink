@@ -1,5 +1,6 @@
 ﻿using API.DTOs.Accounts;
 using API.DTOs.Employees;
+using API.Models;
 using API.Utilities.Handler;
 using CLIENT.Contract;
 using CLIENT.Models;
@@ -161,10 +162,10 @@ namespace CLIENT.Controllers
 
                 var result = await repository.UpdateClient(updateDto);
 
-                if (result is ResponseOKHandler<UpdateClientDto> successResult)
+                if (result is ResponseOKHandler<Company> successResult)
                 {
                     // Pembaruan berhasil
-                    return Json(successResult);
+                    return Json(new { status = "OK", message = successResult });
                 }
                 else if (result is ResponseErrorHandler errorResult)
                 {
@@ -185,22 +186,18 @@ namespace CLIENT.Controllers
 
               var result = await repository.UpdateIdle(updateDto);
 
-                if (result.Status == "OK")
+                if (result is ResponseOKHandler<Employee> successResult)
                 {
                     // Pembaruan berhasil
-                    return Json(new { success = true, redirectTo = Url.Action("Index", "Employee") });
+                    return Json(new { status = "OK", message = successResult });
                 }
-                else
+                else if (result is ResponseErrorHandler errorResult)
                 {
                     // Pembaruan gagal atau ada kesalahan
-                    return Json(new { success = false, message = "Pembaruan gagal atau terjadi kesalahan." });
+                    return Json(new { status = "Error", message = errorResult });
                 }
             }
-            else
-            {
-                // Data yang dikirim tidak valid
-                return Json(new { success = false, message = "Data tidak valid." });
-            }
+            return Json(new { success = false, message = "Data tidak valid." });
         }
 
         public IActionResult GetChart()

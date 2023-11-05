@@ -21,7 +21,7 @@ namespace CLIENT.Contract
 
 
         Task<object> UpdateClient(UpdateClientDto clientDto);
-        Task<ResponseOKHandler<Employee>> UpdateIdle(UpdateIdleDto idleDto);
+        Task<object> UpdateIdle(UpdateIdleDto idleDto);
         Task<ResponseOKHandler<ClientDetailDto>> GetGuidClient(Guid guid);
         Task<ResponseOKHandler<EmployeeDetailDto>> GetGuidEmployee(Guid guid);
 

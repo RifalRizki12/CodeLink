@@ -230,6 +230,7 @@ namespace CLIENT.Repository
         {
             try
             {
+
                 using (var content = new MultipartFormDataContent())
                 {
                     foreach (var prop in clientDto.GetType().GetProperties())
@@ -407,7 +408,7 @@ namespace CLIENT.Repository
             return entity;
         }
 
-        public async Task<ResponseOKHandler<Employee>> UpdateIdle(UpdateIdleDto idleDto)
+        public async Task<object> UpdateIdle(UpdateIdleDto idleDto)
         {
             try
             {
@@ -453,21 +454,43 @@ namespace CLIENT.Repository
                             var entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<Employee>>(apiResponse);
                             return entityVM;
                         }
-                        else
+                        else if (response.StatusCode == HttpStatusCode.BadRequest)
                         {
-                            // Handle non-success status codes as needed
-                            if (response.StatusCode == HttpStatusCode.UnsupportedMediaType)
+                            dynamic dynamicResponse = JsonConvert.DeserializeObject(apiResponse);
+
+                            // Handle pesan kesalahan validasi di sini
+                            if (dynamicResponse != null)
                             {
-                                Console.WriteLine("415 Unsupported Media Type - Ensure the server accepts JSON.");
+                                var errors = dynamicResponse.error.ToObject<List<string>>() ?? "";
+                                var errorString = string.Join(", ", errors);
+
+                                // Mengembalikan objek ResponseErrorHandler dengan kesalahan validasi
+                                try
+                                {
+                                    var errorResponse = new ResponseErrorHandler
+                                    {
+                                        Code = dynamicResponse.code,
+                                        Status = dynamicResponse.status,
+                                        Message = dynamicResponse.message,
+                                        Error = errorString
+                                    };
+                                    return errorResponse;
+                                }
+                                catch (Exception ex)
+                                {
+                                    // Tampilkan pesan pengecualian ke konsol atau log
+                                    Console.WriteLine("Exception: " + ex.Message);
+                                }
                             }
-                            else
-                            {
-                                Console.WriteLine($"Request failed with status code {response.StatusCode}: {response.ReasonPhrase}");
-                            }
-                            Console.WriteLine($"Response Content: {apiResponse}");
-                            // You might want to return a specific response or throw an exception here
-                            return null;
                         }
+                        // Handle respons lainnya seperti sebelumnya
+                        return new ResponseErrorHandler
+                        {
+                            Code = StatusCodes.Status500InternalServerError,
+                            Status = HttpStatusCode.InternalServerError.ToString(),
+                            Message = "Terjadi kesalahan server. Silakan coba lagi nanti.",
+                            Error = null
+                        };
                     }
                 }
             }

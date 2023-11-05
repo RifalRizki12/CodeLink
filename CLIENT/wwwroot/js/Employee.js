@@ -147,11 +147,11 @@
                         skillSelect.val(data.selectedSkills).trigger('change');
                     }
 
-                    $("#profilePictureInput").text(data.foto);
+                    $("#InputFoto").text(data.foto);
 
                     $("#editProfilePicPreview").attr("src", imageUrl1);
 
-                    $("#cvInput").text(data.cv);
+                    $("#AddCv").text(data.cv);
 
                     $("#cvPreview").attr("src", imageUrl2);
 
@@ -183,7 +183,7 @@
     });
 
 
-    // function update data Client
+    // function update data idle
     function updateIdleDetails(employeeGuid) {
         console.log("ini di parameter update ");
 
@@ -195,43 +195,13 @@
         var gender = ($('#editGender').val() === 'Male') ? 1 : 0;
         var grade = ($("#editGrade").val() === 'B') ? 1 : 0;
         var statusEmployee = ($("#editStatusEmploye").val() === 'owner') ? 1 : 0;
-        var skills = $('#editSkills').val(); 
+        var skills = $('#editSkills').val();
 
-        var profilePictureInput = document.getElementById('profilePictureInput');
+        var profilePictureInput = document.getElementById('InputFoto');
         var profilePictureFile = profilePictureInput.files[0];
 
-        var cvInput = document.getElementById('cvInput');
+        var cvInput = document.getElementById('AddCv');
         var cvFile = cvInput.files[0];
-
-        if (firstName === "" || lastName === "" || phoneNumber === "" || email === "" ||
-            gender === null || skills === "" ) {
-            Swal.fire({
-                text: 'Data Inputan Tidak Boleh Kosong',
-                icon: 'info',
-                showCloseButton: false,
-                focusConfirm: false,
-                customClass: {
-                    confirmButton: 'btn btn-primary'
-                },
-                buttonsStyling: false
-            })
-            return;
-        }
-
-        if (!profilePictureFile || cvFile ) {
-            Swal.fire({
-                text: 'Gambar Profil atau CV Harus Diisi',
-                icon: 'info',
-                showCloseButton: false,
-                focusConfirm: false,
-                customClass: {
-                    confirmButton: 'btn btn-primary'
-                },
-                buttonsStyling: false
-            });
-            return;
-        }
-
 
         // Buat objek FormData dan tambahkan data
         var dataToUpdate = new FormData();
@@ -243,6 +213,9 @@
         dataToUpdate.append('gender', gender);
         dataToUpdate.append('grade', grade);
         dataToUpdate.append('statusEmployee', statusEmployee);
+        dataToUpdate.append('ProfilePictureFile', profilePictureFile);
+        dataToUpdate.append('cvFile', cvFile);
+
         if (typeof skills === 'string') {
             skills.split(',').forEach((skill, index) => {
                 dataToUpdate.append('skills[' + index + ']', skill.trim());
@@ -265,17 +238,6 @@
             });
         }
 
-        if (profilePictureFile) {
-            dataToUpdate.append('ProfilePictureFile', profilePictureFile);
-        } else {
-            console.log("No profile picture file selected");
-        }
-        if (cvFile) {
-            dataToUpdate.append('cvFile', cvFile);
-        } else {
-            console.log("No CV file selected");
-        }
-
         $.ajax({
             url: '/Employee/updateIdle',
             type: 'PUT',
@@ -283,13 +245,34 @@
             contentType: false,
             processData: false, // Diperlukan untuk FormData
             success: function (response) {
-                $('#modalEditEmployee').modal('hide');
                 $('#tableEmployee').DataTable().ajax.reload();
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Pembaruan berhasil',
-                    text: 'Data Idle berhasil diperbarui.'
-                });
+                if (response.status == "OK") {
+                    $('#modalEditEmployee').modal('hide');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Pembaruan berhasil',
+                        text: 'Data idle berhasil diperbarui.',
+                        showCloseButton: false,
+                        focusConfirm: false,
+                        customClass: {
+                            confirmButton: 'btn btn-primary'
+                        },
+                        buttonsStyling: false,
+                    });
+                }
+                else if (response.status === "Error") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Update!',
+                        text: response.message.error || response.message.message,
+                        showCloseButton: false,
+                        focusConfirm: false,
+                        customClass: {
+                            confirmButton: 'btn btn-primary'
+                        },
+                        buttonsStyling: false,
+                    });
+                }
             },
             error: function (response) {
                 Swal.fire({
@@ -618,35 +601,7 @@ $(document).ready(function () {
 
         var profilePictureFile = $('#profilePictureInput').prop('files')[0];
 
-        if (firstName === "" || lastName === "" || phoneNumber === "" || email === "" ||
-            gender === null || nameCompany === "" || addressCompany === "") {
-            Swal.fire({
-                text: 'Data Inputan Tidak Boleh Kosong',
-                icon: 'info',
-                showCloseButton: false,
-                focusConfirm: false,
-                customClass: {
-                    confirmButton: 'btn btn-primary'
-                },
-                buttonsStyling: false
-            })
-            return;
-        }
-
         var profilePictureInput = document.getElementById('profilePictureInput');  // Ambil file gambar dari input
-        if (!profilePictureFile) {
-            Swal.fire({
-                text: 'Gambar Profil Harus Diisi',
-                icon: 'info',
-                showCloseButton: false,
-                focusConfirm: false,
-                customClass: {
-                    confirmButton: 'btn btn-primary'
-                },
-                buttonsStyling: false
-            });
-            return;
-        }
         var profilePictureFile = profilePictureInput.files[0];
 
         // Buat objek FormData dan tambahkan data
@@ -670,34 +625,42 @@ $(document).ready(function () {
             contentType: false,
             processData: false, // Diperlukan untuk FormData
             success: function (response) {
-                $('#modalUpdateClient').modal('hide');
                 $('#tableClient').DataTable().ajax.reload();
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Pembaruan berhasil',
-                    text: 'Data client berhasil diperbarui.'
-                });
-            },
-            error: function (xhr, status, error) {
-                if (xhr.status === 400) {
+                if (response.status == "OK") {
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Validation Error',
-                        text: xhr.responseText
-                    });
-                } else if (xhr.status === 404) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Employee data not found.'
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'An error occurred while updating employee data.'
+                        icon: 'success',
+                        title: 'Pembaruan berhasil',
+                        text: 'Data client berhasil diperbarui.',
+                        showCloseButton: false,
+                        focusConfirm: false,
+                        customClass: {
+                            confirmButton: 'btn btn-primary'
+                        },
+                        buttonsStyling: false,
                     });
                 }
+                else if (response.status === "Error") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Update!',
+                        text: response.message.error || response.message.message,
+                        showCloseButton: false,
+                        focusConfirm: false,
+                        customClass: {
+                            confirmButton: 'btn btn-primary'
+                        },
+                        buttonsStyling: false,
+                    });
+                }
+
+            },
+            error: function (xhr, status, error) {
+                
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while updating employee data.'
+                });
             }
         });
 
