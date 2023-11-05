@@ -103,8 +103,8 @@ namespace CLIENT.Controllers
         }
 
 
-        [HttpGet("Account/GuidClient/{guid}")]
-        public async Task<JsonResult> GuidClient(Guid guid)
+        [HttpGet("Account/GuidAccount/{guid}")]
+        public async Task<JsonResult> GuidAccount(Guid guid)
         {
             var result = await _accountRepository.Get(guid);
             var employee = new AccountDto();
@@ -121,8 +121,8 @@ namespace CLIENT.Controllers
 
 
 
-        [HttpPut("Account/UpdateClient/{guid}")]
-        public async Task<JsonResult> UpdateClient(Guid guid, [FromBody] AccountDto accountDto)
+        [HttpPut("Account/UpdateAccount/{guid}")]
+        public async Task<JsonResult> UpdateAccount(Guid guid, [FromBody] AccountDto accountDto)
         {
             var response = await _accountRepository.Put(guid, accountDto);
 

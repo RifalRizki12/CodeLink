@@ -139,13 +139,20 @@
                     </div>`; // Pesan jika URL gambar tidak tersedia
                 }
             },
+            { data: 'statusAccount' },
             {
                 data: null,
                 render: function (data, type, row) {
                     return `
+                     <div class="text-center">
+                        <button type="button" class="btn btn-danger nonAktif" data-guid="${data.guid}" data-bs-toggle="modal" data-bs-target="#modalEditEmployee">NonAktif</button>
+                    </div> <br/> 
                     <div class="text-center">
                         <button type="button" class="btn btn-warning edit-button" data-guid="${data.guid}" data-bs-toggle="modal" data-bs-target="#modalEditEmployee">Update</button>
-                    </div>`;
+                    </div>
+
+
+                    `;
                 }
             },
 
@@ -160,6 +167,11 @@
         updateIdleGuid = $(this).data('guid'); // Mengambil GUID dari tombol "Update" yang diklik
         console.log('Employee Guid update', updateIdleGuid);
         getIdleByGuid(updateIdleGuid);
+    });
+
+    $('#tableEmployee').on('click', '.nonAktif', function () {
+        var guid = $(this).data('guid');
+        updateAccountStatus(guid);
     });
 
     // Tambahkan event listener untuk tombol "Edit"
@@ -375,6 +387,90 @@
             }
         });
     }
+
+
+    function updateAccountStatus(guid) {
+        $.ajax({
+            url: '/Account/GuidAccount/' + guid,
+            type: 'GET',
+            dataType: 'json',
+            dataSrc: 'data',
+            success: function (data) {
+                if (data) {
+                    var dataToUpdate = {
+                        guid: data.guid,
+                        expiredTime: data.expiredTime,
+                        isUsed: data.isUsed,
+                        otp: data.otp,
+                        password: data.password,
+                        roleGuid: data.roleGuid,
+                        status: 4,
+                    };
+
+                    $.ajax({
+                        url: '/Account/UpdateAccount/' + guid,
+                        type: 'PUT',
+                        data: JSON.stringify(dataToUpdate),
+                        contentType: 'application/json',
+
+                        success: function (response) {
+                            $('#tableClient').DataTable().ajax.reload();
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Pembaruan berhasil',
+                                text: 'Status akun klien telah diubah !',
+                                showCloseButton: false,
+                                focusConfirm: false,
+                                customClass: {
+                                    confirmButton: 'btn btn-primary'
+                                },
+                                buttonsStyling: false,
+                            });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Pembaruan Gagal',
+                                text: 'Terjadi kesalahan saat mencoba mengubah status akun klien !',
+                                showCloseButton: false,
+                                focusConfirm: false,
+                                customClass: {
+                                    confirmButton: 'btn btn-primary'
+                                },
+                                buttonsStyling: false,
+                            });
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Data tidak ditemukan',
+                        text: 'Data akun klien tidak ditemukan !',
+                        showCloseButton: false,
+                        focusConfirm: false,
+                        customClass: {
+                            confirmButton: 'btn btn-primary'
+                        },
+                        buttonsStyling: false,
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Kesalahan',
+                    text: 'Terjadi kesalahan saat mencoba mendapatkan data akun klien.',
+                    showCloseButton: false,
+                    focusConfirm: false,
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false,
+                });
+            }
+        });
+    }
+
 });
 $(document).ready(function () {
 
@@ -627,7 +723,7 @@ $(document).ready(function () {
     // function update Account status
     function updateAccountStatus(guid, status) {
         $.ajax({
-            url: '/Account/GuidClient/' + guid,
+            url: '/Account/GuidAccount/' + guid,
             type: 'GET',
             dataType: 'json',
             dataSrc: 'data',
@@ -644,7 +740,7 @@ $(document).ready(function () {
                     };
 
                     $.ajax({
-                        url: '/Account/UpdateClient/' + guid,
+                        url: '/Account/UpdateAccount/' + guid,
                         type: 'PUT',
                         data: JSON.stringify(dataToUpdate),
                         contentType: 'application/json',
