@@ -370,11 +370,16 @@ $(document).ready(function () {
     function buildEmployeeItem(item) {
         const baseURL = "https://localhost:7051/";
         const photoURL = `${baseURL}ProfilePictures/${item.foto}`;
-        console.log("Sebelum konversi:", item.statusInterview);
-        if (item.statusInterview !== null && item.statusInterview !== "") {
+        if (item.statusInterview !== undefined) {
+            // Memastikan bahwa properti statusInterview ada
             item.statusInterview = parseInt(item.statusInterview);
+
+            // Sekarang Anda dapat menggunakan item.statusInterview dengan aman
+        } else {
+            // Menangani kasus jika properti statusInterview tidak ada
+            console.log("Properti statusInterview tidak ada dalam data.");
         }
-        console.log("Setelah konversi:", item.statusInterview);
+
 
 
         const btnGuid = item.employeeGuid; // Asumsikan employeeGuid adalah unik
@@ -403,13 +408,11 @@ $(document).ready(function () {
           </td>
           <td class="product-des product-name" data-title="date">
               <h6 class="text-brand">${item.endContract}</h6>
-              <h6 class="text-brand">${item.statusInterview}</h6>
-              <h6 class="text-brand">${item.remarks}</h6>
           </td>
 
           
           <td class="text-right" data-title="Lolos">
-          <button ${disabledAttribute} style="${ratedStyle}" class="btn-danger btn-sm btn-rating" data-rated="${isRated ? 'true' : 'false'}" data-guid1="${item.interviewGuid}" data-guid2="${btnGuid}" data-end-contract="${item.endContract}" data-statusInterview="${item.statusInterview}" data-remaks="${item.remarks}" data-start-contract="${item.startContract}" data-bs-toggle="modal" data-bs-target="#ratingInterview" >Rating</button>
+          <button ${disabledAttribute} style="${ratedStyle}" class="btn-danger btn-sm btn-rating" data-rated="${isRated ? 'true' : 'false'}" data-guid1="${item.interviewGuid}" data-guid2="${btnGuid}" data-end-contract="${item.endContract}" data-status-interview="${item.statusInterview}" data-remaks="${item.remarks}" data-start-contract="${item.startContract}" data-bs-toggle="modal" data-bs-target="#ratingInterview" >Rating</button>
                </td>
             </tr>
         `;
@@ -495,8 +498,8 @@ $(document).ready(function () {
         guidEmp = btn.data('guid2');
         endContractDate = btn.data('end-contract');
         startContractDate = btn.data('start-contract');
-        statusInterviews = btn.data('statusInterview')
-        remaks = btn.data('remaks')
+        statusInterviews = btn.data('status-interview');
+        remaks = btn.data('remaks');
 
         console.log("remaks:", remaks)
         console.log("statusInterview:", statusInterviews)

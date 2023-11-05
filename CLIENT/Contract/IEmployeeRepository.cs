@@ -11,7 +11,7 @@ namespace CLIENT.Contract
         Task<ResponseOKHandler<IEnumerable<EmployeeDetailDto>>> GetDetailIdle();
 
         Task<ResponseOKHandler<Employee>> RegisterIdle(RegisterIdleDto registrationDto);
-        Task<ResponseOKHandler<Company>> RegisterClient(RegisterClientDto registrationCDto);
+        Task<object> RegisterClient(RegisterClientDto registrationCDto);
 
 
    /*     Task<ResponseOKHandler<UpdateIdleDto>> UpdateIdle(UpdateIdleDto employeeDto);*/
@@ -20,8 +20,8 @@ namespace CLIENT.Contract
         Task<ResponseOKHandler<ChartDto>> GetDetailChart();
 
 
-        Task<ResponseOKHandler<Company>> UpdateClient(UpdateClientDto clientDto);
-        Task<ResponseOKHandler<Employee>> UpdateIdle(UpdateIdleDto idleDto);
+        Task<object> UpdateClient(UpdateClientDto clientDto);
+        Task<object> UpdateIdle(UpdateIdleDto idleDto);
         Task<ResponseOKHandler<ClientDetailDto>> GetGuidClient(Guid guid);
         Task<ResponseOKHandler<EmployeeDetailDto>> GetGuidEmployee(Guid guid);
 
