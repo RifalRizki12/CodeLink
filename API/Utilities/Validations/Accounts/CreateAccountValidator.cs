@@ -20,10 +20,10 @@ namespace API.Utilities.Validations.Accounts
                 .NotEmpty();        // Properti tidak boleh kosong
 
             RuleFor(a => a.Status)
-             .NotEmpty();        // Properti tidak boleh kosong
+                .NotEmpty();        // Properti tidak boleh kosong
 
             RuleFor(a => a.RoleGuid)
-            .NotEmpty();
+                .NotEmpty();
 
         }
     }
