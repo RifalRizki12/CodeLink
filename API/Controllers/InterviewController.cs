@@ -124,6 +124,9 @@ public class InterviewController : ControllerBase
         _emailHandler.Send(subject, body, adminEmail);
     }
 
+    
+
+
     [HttpPut("Announcement")]
     public IActionResult Announcement(AnnouncmentDto announcment)
     {
@@ -235,7 +238,7 @@ public class InterviewController : ControllerBase
                             }
 
                         }*/
-            if (specificEmployee != null)
+            if (specificEmployee != null && rating.Rate == null)
             {
                 if (entity.EndContract == null) // annaouncment lolos / tidak 
                 {
