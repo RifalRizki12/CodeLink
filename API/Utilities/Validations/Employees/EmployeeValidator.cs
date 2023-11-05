@@ -22,8 +22,8 @@ namespace API.Utilities.Validations.Employees
 
             // Aturan validasi untuk properti 'Email' dalam objek EmployeeDto
             RuleFor(e => e.Email)
-                .NotEmpty().WithMessage("Tidak Boleh Kosong")  // Properti tidak boleh kosong, dengan pesan kustom jika tidak terpenuhi
-                .EmailAddress().WithMessage("Format Email Salah");  // Properti harus merupakan alamat email yang valid, dengan pesan kustom jika tidak terpenuhi
+                .NotEmpty()  // Properti tidak boleh kosong, dengan pesan kustom jika tidak terpenuhi
+                .EmailAddress();  // Properti harus merupakan alamat email yang valid, dengan pesan kustom jika tidak terpenuhi
 
             // Aturan validasi untuk properti 'PhoneNumber' dalam objek EmployeeDto
             RuleFor(e => e.PhoneNumber)

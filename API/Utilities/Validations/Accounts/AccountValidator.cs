@@ -3,10 +3,10 @@ using FluentValidation;
 
 namespace API.Utilities.Validations.Accounts
 {
-    public class CreateAccountValidator : AbstractValidator<CreateAccountDto>
+    public class AccountValidator : AbstractValidator<AccountDto>
     {
         // Konstruktor kelas CreateAccountValidator
-        public CreateAccountValidator()
+        public AccountValidator()
         {
             // Aturan validasi untuk properti 'Password' dalam objek CreateAccountDto
             RuleFor(a => a.Password)
@@ -25,6 +25,8 @@ namespace API.Utilities.Validations.Accounts
             RuleFor(a => a.RoleGuid)
                 .NotEmpty();
 
+            RuleFor(a=> a.Guid)
+                .NotEmpty();
         }
     }
 }

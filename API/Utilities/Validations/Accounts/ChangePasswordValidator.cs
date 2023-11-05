@@ -11,7 +11,7 @@ namespace API.Utilities.Validations.Accounts
             // Aturan validasi untuk properti 'Password' dalam objek CreateAccountDto
             RuleFor(e => e.Email)
                 .NotEmpty()         // Properti tidak boleh kosong
-                .EmailAddress().WithMessage("Format Email Salah");  // Panjang minimal 8 karakter
+                .EmailAddress();  // Panjang minimal 8 karakter
 
             // Aturan validasi untuk properti 'IsUsed' dalam objek CreateAccountDto
             RuleFor(e => e.Otp)
