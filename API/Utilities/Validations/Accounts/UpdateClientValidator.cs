@@ -20,14 +20,14 @@ namespace API.Utilities.Validations.Accounts
             // Aturan validasi untuk properti 'Email' dalam objek EmployeeDto
             RuleFor(e => e.Email)
                 .NotEmpty() // Properti tidak boleh kosong, dengan pesan kustom jika tidak terpenuhi
-                .EmailAddress().WithMessage("Format Email Salah");  // Properti harus merupakan alamat email yang valid, dengan pesan kustom jika tidak terpenuhi
+                .EmailAddress();  // Properti harus merupakan alamat email yang valid, dengan pesan kustom jika tidak terpenuhi
 
             // Aturan validasi untuk properti 'PhoneNumber' dalam objek EmployeeDto
 
             RuleFor(e => e.PhoneNumber)
-                .NotEmpty().WithMessage("Phone Number tidak boleh kosong")
+                .NotEmpty()
                 .MaximumLength(16)
-                .Matches(@"^0\d*$").WithMessage("Phone Number harus dimulai dengan 0 dan hanya berisi angka");
+                .Matches(@"^0\d*$");
 
             RuleFor(e => e.NameCompany)
                 .NotEmpty()
