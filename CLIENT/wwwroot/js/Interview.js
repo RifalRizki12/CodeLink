@@ -128,8 +128,23 @@
                 buttonsStyling: false
             })
             return;
+        } if (typeInpt === 0) {
+            // Gunakan ekspresi reguler untuk memeriksa apakah locInput adalah tautan
+            var linkPattern = /^(https?:\/\/[^\s]+)/;
+            if (!linkPattern.test(locInput)) {
+                Swal.fire({
+                    text: 'Location harus berupa tautan (misal: https://zoom.com)',
+                    icon: 'info',
+                    showCloseButton: false,
+                    focusConfirm: false,
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false
+                });
+                return;
+            }
         };
-
 
         var obj = {
             guid: intGuid,
@@ -151,8 +166,14 @@
                 $('#tableInterview').DataTable().ajax.reload();
                 Swal.fire({
                     icon: 'success',
-                    title: 'Pembaruan berhasil',
-                    text: 'Data client berhasil diperbarui.'
+                    title: 'Success!',
+                    text: 'Detail Schedule Berhasil Ditambahkan!.',
+                    showCloseButton: false,
+                    focusConfirm: false,
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false
                 });
             },
             error: function (response) {
@@ -160,7 +181,14 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Pembaruan gagal',
-                    text: 'Terjadi kesalahan saat mencoba update data client.'
+                    text: 'Terjadi kesalahan saat mencoba update data client.',
+                    showCloseButton: false,
+                    focusConfirm: false,
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false
+
                 });
             }
         })

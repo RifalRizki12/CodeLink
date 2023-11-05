@@ -11,7 +11,7 @@ namespace CLIENT.Contract
     public interface IAccountRepository : IRepository<AccountDto, Guid>
     {
         Task<ResponseOKHandler<ClaimsDto>> GetClaimsAsync(string token);
-        Task<ResponseOKHandler<TokenDto>> Login(LoginDto login);
+        Task<object> Login(LoginDto login);
         Task<ResponseOKHandler<ForgotPasswordDto>> ForgotPassword(string email, ForgotPasswordDto forgotDto);
         Task<ResponseOKHandler<ChangePasswordDto>> ChangePassword(string email, ChangePasswordDto changePsswdDto);
         

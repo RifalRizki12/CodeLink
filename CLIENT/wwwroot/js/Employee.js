@@ -77,7 +77,7 @@
                     </div>`;
                 }
             },
-            
+
         ]
     });
     $('.dt-buttons').removeClass('dt-buttons');
@@ -195,24 +195,42 @@
         var gender = ($('#editGender').val() === 'Male') ? 1 : 0;
         var grade = ($("#editGrade").val() === 'B') ? 1 : 0;
         var statusEmployee = ($("#editStatusEmploye").val() === 'owner') ? 1 : 0;
-        var skills = $('#editSkills').val(); // Menambahkan data skill ke variabel
+        var skills = $('#editSkills').val(); 
 
-        // Ambil file gambar dari input
         var profilePictureInput = document.getElementById('profilePictureInput');
-        console.log(profilePictureInput.files);
         var profilePictureFile = profilePictureInput.files[0];
 
         var cvInput = document.getElementById('cvInput');
         var cvFile = cvInput.files[0];
 
-        console.log(firstName);
-        console.log(lastName);
-        console.log(phoneNumber);
-        console.log(email);
-        console.log(gender);
-        console.log(grade);
-        console.log(statusEmployee);
-        console.log(skills);
+        if (firstName === "" || lastName === "" || phoneNumber === "" || email === "" ||
+            gender === null || skills === "" ) {
+            Swal.fire({
+                text: 'Data Inputan Tidak Boleh Kosong',
+                icon: 'info',
+                showCloseButton: false,
+                focusConfirm: false,
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            })
+            return;
+        }
+
+        if (!profilePictureFile || cvFile ) {
+            Swal.fire({
+                text: 'Gambar Profil atau CV Harus Diisi',
+                icon: 'info',
+                showCloseButton: false,
+                focusConfirm: false,
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            });
+            return;
+        }
 
 
         // Buat objek FormData dan tambahkan data
@@ -238,10 +256,12 @@
                 title: 'Format Skill Salah !',
                 icon: 'info',
                 html: 'Skills harus berupa string atau array',
-                showCloseButton: true,
+                showCloseButton: false,
                 focusConfirm: false,
-                confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
-                confirmButtonAriaLabel: 'Thumbs up, great!',
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
             });
         }
 
@@ -287,6 +307,39 @@ $(document).ready(function () {
     $('#createEmployeeForm').on('submit', function (event) {
         event.preventDefault();
 
+        var profilePictureFile = $('#profilePictureInput').prop('files')[0];
+        var cvFile = $('#cvInput').prop('files')[0];
+
+        if ($('#firstNameInput').val() === "" || parseInt($('#genderInput').val()) === null || parseInt($('#gradeInput').val()) === null ||
+            $('#emailInput').val() === "" || $('#phoneNumberInput').val() === "" || parseInt($('#statusEmployeeInput').val()) === null ||
+            $('#passwordInput').val() === "" || $('#confirmPasswordInput').val() === "") {
+            Swal.fire({
+                text: 'Data Inputan Tidak Boleh Kosong',
+                icon: 'info',
+                showCloseButton: false,
+                focusConfirm: false,
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            })
+            return;
+        }
+
+
+        if (!profilePictureFile) {
+            Swal.fire({
+                text: 'Gambar Profil Harus Diisi',
+                icon: 'info',
+                showCloseButton: false,
+                focusConfirm: false,
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            });
+            return;
+        }
         var formData = new FormData();
 
         // Tambahkan data teks ke formData
@@ -324,10 +377,12 @@ $(document).ready(function () {
                 title: 'Format Skill Salah !',
                 icon: 'info',
                 html: 'Skills harus berupa string atau array',
-                showCloseButton: true,
+                showCloseButton: false,
                 focusConfirm: false,
-                confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
-                confirmButtonAriaLabel: 'Thumbs up, great!',
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
             });
         }
 
@@ -360,7 +415,7 @@ $(document).ready(function () {
             }
         });
     });
-  
+
 });
 
 $(document).ready(function () {
@@ -485,8 +540,6 @@ $(document).ready(function () {
         });
     }
 
-    //inisiasi variabel untuk nampung data sebelumnya
-
     var updateGuid; //menyimpan guid di tombol save
     var employeeGuid;
     var companyGuid;
@@ -563,8 +616,37 @@ $(document).ready(function () {
         var addressCompany = $('#addressCompany').val();
         var description = $('#description').val();
 
-        // Ambil file gambar dari input
-        var profilePictureInput = document.getElementById('profilePictureInput');
+        var profilePictureFile = $('#profilePictureInput').prop('files')[0];
+
+        if (firstName === "" || lastName === "" || phoneNumber === "" || email === "" ||
+            gender === null || nameCompany === "" || addressCompany === "") {
+            Swal.fire({
+                text: 'Data Inputan Tidak Boleh Kosong',
+                icon: 'info',
+                showCloseButton: false,
+                focusConfirm: false,
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            })
+            return;
+        }
+
+        var profilePictureInput = document.getElementById('profilePictureInput');  // Ambil file gambar dari input
+        if (!profilePictureFile) {
+            Swal.fire({
+                text: 'Gambar Profil Harus Diisi',
+                icon: 'info',
+                showCloseButton: false,
+                focusConfirm: false,
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            });
+            return;
+        }
         var profilePictureFile = profilePictureInput.files[0];
 
         // Buat objek FormData dan tambahkan data

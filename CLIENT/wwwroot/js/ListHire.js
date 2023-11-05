@@ -108,9 +108,9 @@ $(document).ready(function () {
                 confirmButtonAriaLabel: 'Thumbs up, great!',
             })
             return;
-        } else if (endContractDate <= today) {
+        } else if (endContractDate <= today || endContractDate < startContractDate) {
             Swal.fire({
-                title: 'Tanggal End Contract tidak boleh kurang dari atau sama dengan hari ini',
+                title: 'Tanggal End Contract Tidak Valid',
                 icon: 'info',
                 showCloseButton: true,
                 focusConfirm: false,
@@ -140,7 +140,6 @@ $(document).ready(function () {
             success: function (response) {
                 console.log(response);
                 $('#lolosInterview').modal('hide');
-                //$('#tableListHire').DataTable().ajax.reload();
                 Swal.fire({
                     icon: 'success',
                     title: 'Proses Rekrutmen Berhasil',
