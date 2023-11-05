@@ -56,27 +56,27 @@ namespace CLIENT.Repository
 
 
 
-      /*  public async Task<ResponseOKHandler<UpdateIdleDto>> UpdateIdle(UpdateIdleDto employeeDto)
-        {
-            string requestUrl = "updateIdle"; // Sesuaikan dengan URL endpoint yang benar
-            var content = new StringContent(JsonConvert.SerializeObject(employeeDto), Encoding.UTF8, "application/json");
+        /*  public async Task<ResponseOKHandler<UpdateIdleDto>> UpdateIdle(UpdateIdleDto employeeDto)
+          {
+              string requestUrl = "updateIdle"; // Sesuaikan dengan URL endpoint yang benar
+              var content = new StringContent(JsonConvert.SerializeObject(employeeDto), Encoding.UTF8, "application/json");
 
-            using (var response = await httpClient.PutAsync(request + requestUrl, content))
-            {
-                if (response.IsSuccessStatusCode)
-                {
-                    var apiResponse = await response.Content.ReadAsStringAsync();
-                    var entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<UpdateIdleDto>>(apiResponse);
-                    return entityVM;
-                }
-                else
-                {
-                    throw new HttpRequestException($"HTTP error: {response.StatusCode}");
-                }
-            }
-        }*/
+              using (var response = await httpClient.PutAsync(request + requestUrl, content))
+              {
+                  if (response.IsSuccessStatusCode)
+                  {
+                      var apiResponse = await response.Content.ReadAsStringAsync();
+                      var entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<UpdateIdleDto>>(apiResponse);
+                      return entityVM;
+                  }
+                  else
+                  {
+                      throw new HttpRequestException($"HTTP error: {response.StatusCode}");
+                  }
+              }
+          }*/
 
-        public async Task<ResponseOKHandler<Employee>> RegisterIdle(RegisterIdleDto registrationDto)
+        public async Task<object> RegisterIdle(RegisterIdleDto registrationDto)
         {
             try
             {
@@ -122,21 +122,43 @@ namespace CLIENT.Repository
                             var entityVM = JsonConvert.DeserializeObject<ResponseOKHandler<Employee>>(apiResponse);
                             return entityVM;
                         }
-                        else
+                        else if (response.StatusCode == HttpStatusCode.BadRequest)
                         {
-                            // Handle non-success status codes as needed
-                            if (response.StatusCode == HttpStatusCode.UnsupportedMediaType)
+                            dynamic dynamicResponse = JsonConvert.DeserializeObject(apiResponse);
+
+                            // Handle pesan kesalahan validasi di sini
+                            if (dynamicResponse != null)
                             {
-                                Console.WriteLine("415 Unsupported Media Type - Ensure the server accepts JSON.");
+                                var errors = dynamicResponse.error.ToObject<List<string>>() ?? "";
+                                var errorString = string.Join(", ", errors);
+
+                                // Mengembalikan objek ResponseErrorHandler dengan kesalahan validasi
+                                try
+                                {
+                                    var errorResponse = new ResponseErrorHandler
+                                    {
+                                        Code = dynamicResponse.code,
+                                        Status = dynamicResponse.status,
+                                        Message = dynamicResponse.message,
+                                        Error = errorString
+                                    };
+                                    return errorResponse;
+                                }
+                                catch (Exception ex)
+                                {
+                                    // Tampilkan pesan pengecualian ke konsol atau log
+                                    Console.WriteLine("Exception: " + ex.Message);
+                                }
                             }
-                            else
-                            {
-                                Console.WriteLine($"Request failed with status code {response.StatusCode}: {response.ReasonPhrase}");
-                            }
-                            Console.WriteLine($"Response Content: {apiResponse}");
-                            // You might want to return a specific response or throw an exception here
-                            return null;
                         }
+                        // Handle respons lainnya seperti sebelumnya
+                        return new ResponseErrorHandler
+                        {
+                            Code = StatusCodes.Status500InternalServerError,
+                            Status = HttpStatusCode.InternalServerError.ToString(),
+                            Message = "Terjadi kesalahan server. Silakan coba lagi nanti.",
+                            Error = null
+                        };
                     }
                 }
             }

@@ -58,7 +58,8 @@ namespace API.Utilities.Handler
                         EmployeeGuid = Guid.Parse(identity.FindFirst("EmployeeGuid")?.Value ?? ""),
                         FullName = identity.FindFirst("Fullname")?.Value,
                         Email = identity.FindFirst("Email")?.Value,
-                        Foto = identity.FindFirst("Foto")?.Value
+                        Foto = identity.FindFirst("Foto")?.Value,
+                        StatusAccount = identity.FindFirst("StatusAccount")?.Value,
                     };
 
                     var roles = identity.Claims.Where(c => c.Type == ClaimTypes.Role).Select(claim => claim.Value).ToList();

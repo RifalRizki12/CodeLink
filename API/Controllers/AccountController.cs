@@ -143,6 +143,7 @@ namespace API.Controllers
                 // Cari pengguna (akun) berdasarkan alamat email
                 var user = _accountRepository.GetByEmployeeEmail(request.Email);
                 var employee = _employeeRepository.GetByEmployeeEmail(request.Email);
+                var account = _accountRepository.GetByGuid(employee.Guid);
 
                 if (user == null || !HashHandler.VerifyPassword(request.Password, user.Password))
                 {
@@ -159,6 +160,7 @@ namespace API.Controllers
                 claims.Add(new Claim("Fullname", string.Concat(employee.FirstName + " " + employee.LastName)));
                 claims.Add(new Claim("StatusEmployee", employee.StatusEmployee.ToString()));
                 claims.Add(new Claim("Foto", employee.Foto ?? ""));
+                claims.Add(new Claim("StatusAccount", account.Status.ToString() ?? ""));
 
                 // Mengambil rata-rata rating dari tabel Rating berdasarkan Guid Employee
                 double? averageRating = _ratingRepository.GetAverageRatingByEmployee(employee.Guid);
@@ -494,7 +496,7 @@ namespace API.Controllers
                 Account toUpdate = accountDto;
                 //menyimpan createdate yg lama 
                 toUpdate.CreatedDate = entity.CreatedDate;
-                toUpdate.Password = HashHandler.HashPassword(accountDto.Password);
+                toUpdate.Password = entity.Password;
 
                 //update Account dalam repository
                 _accountRepository.Update(toUpdate);
