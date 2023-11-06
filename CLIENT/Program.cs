@@ -19,7 +19,7 @@ builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<ISkillRepository, SkillRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IInterviewRepository, InterviewRepository>();
-builder.Services.AddScoped<IRatingRepository, RatingRepository>();
+
 
 builder.Services.AddScoped<IHomeClientRepository, HomeClientRepository>();
 
