@@ -195,6 +195,7 @@
         var inputDate = new Date(dateInput);
         var today = new Date();
         today.setHours(0, 0, 0, 0);
+        inputDate.setHours(0, 0, 0, 0);
 
         if (inputDate <= today) {
             Swal.fire({
@@ -240,7 +241,7 @@
                     $('#modalInterview').modal('hide');
                     Swal.fire({
                         icon: 'error',
-                        title: 'Pembaruan gagal',
+                        title: 'Gagal',
                         text: 'Terjadi kesalahan saat mencoba menambahkan data schedule!!.'
                     });
                 }
@@ -248,7 +249,7 @@
         } else {
             Swal.fire({
                 icon: 'error',
-                title: 'Pembaruan gagal',
+                title: 'Gagal Menambahkan Jadwal',
                 text: 'Anda hanya dapat mengirimkan sekali dalam sehari per idle !!'
             });
         }
