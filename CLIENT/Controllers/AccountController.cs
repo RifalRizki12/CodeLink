@@ -60,7 +60,7 @@ namespace CLIENT.Controllers
                         if (role == "admin")
                         {
                             // Pengguna memiliki peran "admin", lakukan tindakan admin
-                            return Json(new { redirectTo = Url.Action("Index", "Employee") });
+                            return Json(new { redirectTo = Url.Action("GetGrafik", "Employee") });
                         }
                         else if (statusAccount == "Requested")
                         {

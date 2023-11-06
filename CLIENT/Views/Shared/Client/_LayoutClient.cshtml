@@ -10,15 +10,28 @@
 
     var token = Context.Session.GetString("JWToken");
     var isAuthenticated = token != null;
-}
 
-@{
+
     Layout = "/Views/Shared/Client/_StyleLayout.cshtml";
 }
 
 <!DOCTYPE HTML>
 <html class="no-js" lang="en">
+    @section styleSheet {
+    <style>
+        .logo-link {
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+        }
 
+        .logo-img {
+            max-width: 100px; /* Maksimum lebar gambar, sesuaikan dengan yang Anda inginkan */
+            height: auto; /* Memastikan gambar tetap proporsional */
+        }
+
+    </style>
+    }
 <body>
     @section header {
         <header class="header-area header-style-1 header-height-2">
@@ -62,12 +75,14 @@
                 <div class="container">
                     <div class="header-wrap">
                         <div class="logo logo-width-1">
-                            <a href="index.html"><img src="../../TClient/assets/imgs/theme/logo.svg" alt="logo" /></a>
+                            <a href="/HomeClient/HomeClient" class="logo-link">
+                                <img src="/logo/2codelink.png" alt="logo" class="logo-img" />
+                            </a>
                         </div>
                         <div class="header-right">
                             <div class="search-style-1">
                                 <form action="#">
-                                    <input type="text" placeholder="Search for items..." />
+                                    @* <input type="text" placeholder="Search for items..." /> *@
                                 </form>
                             </div>
                             <div class="header-action-right">
@@ -87,16 +102,23 @@
                                     }
                                     <div class="header-action-icon-2">
                                         <span>
-                                            <img style="max-width:50px; max-height:50px;border-radius: 50%;" class="svgInject" alt="Nest" src="@photoURL" />
-                                            <span class="lable ml-0">@fullName</span>
+                                            @if(isAuthenticated && photoURL != null)
+                                            {
+                                                <img style="max-width:50px; max-height:50px;border-radius: 50%;" class="svgInject" alt="Nest" src="@photoURL" />
+                                                <span class="lable ml-0">@fullName</span>
+                                            }else{
+                                                <img class="svgInject" alt="Nest" src="../../TClient/assets/imgs/theme/icons/icon-user.svg">
+                                                <span class="lable ml-0">My Account</span>
+                                            }
+
                                         </span>
                                         <div class="cart-dropdown-wrap cart-dropdown-hm2 account-dropdown">
                                             <ul>
-                                                <li>
-                                                    <a href="/HomeClient/MyAccount"><i class="fi fi-rs-user mr-10"></i>My Account</a>
-                                                </li>
                                                 @if (isAuthenticated)
                                                 {
+                                                    <li>
+                                                        <a href="/HomeClient/MyAccount"><i class="fi fi-rs-user mr-10"></i>My Account</a>
+                                                    </li>
                                                     @if (role == "client")
                                                     {
                                                         <li>
@@ -104,9 +126,6 @@
                                                         </li>
                                                     }
                                                 }
-                                                <li>
-                                                    <a href=""><i class="fi fi-rs-settings-sliders mr-10"></i>Setting</a>
-                                                </li>
                                                 @if (isAuthenticated)
                                                 {
                                                     <li>
@@ -133,31 +152,36 @@
                 <div class="container">
                     <div class="header-wrap header-space-between position-relative">
                         <div class="logo logo-width-1 d-block d-lg-none">
-                            <a href="index.html"><img src="../../TClient/assets/imgs/theme/logo.svg" alt="logo" /></a>
+                            <a href="#"><img src="../../TClient/assets/imgs/theme/logo.svg" alt="logo" /></a>
                         </div>
                         <div class="header-nav d-none d-lg-flex">
                             <div class="main-categori-wrap d-none d-lg-block">
-                                <a class="categories-button-active" href="#">
-                                    <span class="fi-rs-apps"></span> <span class="et">Browse</span> All Categories
-                                    <i class="fi-rs-angle-down"></i>
+                                <a class="categories-button-active" href="/HomeClient/HomeClient">
+                                    <span class="fi-rs-apps"></span> <span class="et">Code</span> Link
                                 </a>
                             </div>
                             <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block font-heading">
                                 <nav>
                                     <ul>
-                                        <li class="hot-deals"><img src="../../TClient/assets/imgs/theme/icons/icon-hot.svg" alt="hot deals" /><a href="/">Deals</a></li>
-                                        <li>
-                                            <a href="/Interview/ListHireIdle">Interview</a>
-                                            @* <ul class="sub-menu">
-                                        <li><a href="index.html">Home 1</a></li>
-                                        </ul> *@
-                                        </li>
-                                        <li>
-                                            <a href="/Interview/ListOnSite">Employee</a>
-                                        </li>
-                                        <li>
-                                            <a href="/Interview/GetIdleHistory">History</a>
-                                        </li>
+                                        <li class="hot-deals"><img src="../../TClient/assets/imgs/theme/icons/icon-hot.svg" alt="hot deals" /><a href="/HomeClient/HomeClient">Home</a></li>
+                                        @if (isAuthenticated)
+                                        {
+                                            @if(role == "client")
+                                            {
+                                                <li>
+                                                    <a href="/Interview/ListHireIdle">Interview</a>
+                                                    @* <ul class="sub-menu">
+                                                <li><a href="index.html">Home 1</a></li>
+                                                </ul> *@
+                                                </li>
+                                                <li>
+                                                    <a href="/Interview/ListOnSite">Employee</a>
+                                                </li>
+                                                <li>
+                                                    <a href="/Interview/GetIdleHistory">History</a>
+                                                </li>
+                                            }
+                                        }
                                     </ul>
                                 </nav>
                             </div>
@@ -191,12 +215,6 @@
                     </div>
                 </div>
                 <div class="mobile-header-content-area">
-                    <div class="mobile-search search-style-3 mobile-header-border">
-                        <form action="#">
-                            <input type="text" placeholder="Search for items…" />
-                            <button type="submit"><i class="fi-rs-search"></i></button>
-                        </form>
-                    </div>
                     <div class="mobile-menu-wrap mobile-header-border">
                         <!-- mobile menu start -->
                         <nav>
@@ -236,43 +254,6 @@
         <!--End header-->
     }
 
-    <main class="main">
-        <section class="home-slider position-relative mb-30">
-            <div class="container">
-                <div class="home-slide-cover mt-30">
-                    <div class="hero-slider-1 style-4 dot-style-1 dot-style-1-position-1">
-                        <div class="single-hero-slider single-animation-wrap" style="background-image: url(../../TClient/assets/imgs/slider/slider-1.png)">
-                            <div class="slider-content">
-                                <h1 class="display-2 mb-40">
-                                    Don’t miss amazing<br />
-                                    grocery deals
-                                </h1>
-                                <p class="mb-65">Sign up for the daily newsletter</p>
-                                <form class="form-subcriber d-flex">
-                                    <input type="email" placeholder="Your emaill address" />
-                                    <button class="btn" type="submit">Subscribe</button>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="single-hero-slider single-animation-wrap" style="background-image: url(../../TClient/assets/imgs/slider/slider-2.png)">
-                            <div class="slider-content">
-                                <h1 class="display-2 mb-40">
-                                    Fresh Vegetables<br />
-                                    Big discount
-                                </h1>
-                                <p class="mb-65">Save up to 50% off on your first order</p>
-                                <form class="form-subcriber d-flex">
-                                    <input type="email" placeholder="Your emaill address" />
-                                    <button class="btn" type="submit">Subscribe</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slider-arrow hero-slider-1-arrow"></div>
-                </div>
-            </div>
-        </section>
-    </main>
     @RenderBody();
 
     @section footer {

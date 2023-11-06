@@ -27,6 +27,10 @@ namespace CLIENT.Controllers
         {
             return View();
         }
+        public async Task<IActionResult> GetGrafik()
+        {
+            return View();
+        }
 
         [AllowAnonymous]
         public async Task<JsonResult> GetEmployeeData()
@@ -183,12 +187,6 @@ namespace CLIENT.Controllers
                 }
             }
             return Json(new { success = false, message = "Data tidak valid." });
-        }
-
-        public IActionResult GetChart()
-        {
-            // Pastikan Anda memasukkan data yang diperlukan ke dalam View jika diperlukan
-            return View();
         }
 
         [HttpGet]
