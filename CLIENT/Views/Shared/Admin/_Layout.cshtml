@@ -138,17 +138,15 @@
 
                 <ul class="menu-inner py-1">
                     <!-- Dashboards -->
-                    <li class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Dashboard" ? "active open" : "")">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon tf-icons ti ti-smart-home"></i>
-                            <div data-i18n="Dashboards">Dashboards</div>
-                            <div class="badge bg-primary rounded-pill ms-auto">5</div>
+                    <li class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Employee" && ViewContext.RouteData.Values["Action"].ToString() == "GetGrafik" ? "active open" : "")">
+                        <a class="menu-link" asp-area="" asp-controller="Employee" asp-action="GetGrafik">
+                            <i class="menu-icon tf-icons ti ti-tada ti-smart-home"></i>
+                            <div data-i18n="Dashboard">Dashboard</div>
                         </a>
-                        
                     </li>
                     @if (role == "admin")
                     {
-                        <li class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Employee" ? "active open" : "")">
+                        <li class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Employee" && ViewContext.RouteData.Values["Action"].ToString() == "GetClient" ? "active open" : "")">
                             <a href="javascript:void(0);" class="menu-link menu-toggle">
                                 <i class="menu-icon tf-icons ti-user-dollar ti ti-tada ti-md"></i>
                                 <div data-i18n="Data Client">Client</div>
@@ -164,7 +162,7 @@
 
                     }
                     
-                    <li class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Employee" ? "active open" : "")">
+                    <li class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Employee" && ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "active open" : "")">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon tf-icons ti-user-code ti ti-tada ti-md"></i>
                             <div data-i18n="Data Idle">Idle</div>

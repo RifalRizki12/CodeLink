@@ -148,12 +148,16 @@
         console.log("GUID saat form disubmit:", guid);
         console.log("Company GUID saat form disubmit:", cmpGuid);
 
-        if (canSubmit(guid, cmpGuid)) {
-            localStorage.setItem('lastSubmit_' + guid + '_' + cmpGuid, new Date().getTime());
-            addScheduleInterview();
-        } else {
-            alert('Anda hanya dapat mengirimkan sekali dalam sehari.');
-        }
+        $('.btn-save').attr('disabled', true);
+        $('.btn-save').text('Create...');
+
+        addScheduleInterview(guid, cmpGuid);
+        
+        setTimeout(function () {
+            $('.btn-save').attr('disabled', false);
+            $('.btn-save').text('Save');
+        }, 5000);
+
     });
 
     function canSubmit(guid, cmpGuid) {
@@ -169,11 +173,11 @@
     }
 
     function addScheduleInterview() {
-
         var compGuid = sessionStorage.getItem('employeeGuid');
         var nameInput = $("#nameInput").val();
         var dateInput = $("#dateInput").val();
 
+        // Validasi input
         if (nameInput === "" || dateInput === "") {
             Swal.fire({
                 text: 'Data Input Tidak Boleh Kosong',
@@ -184,15 +188,15 @@
                     confirmButton: 'btn btn-primary'
                 },
                 buttonsStyling: false
-            })
+            });
             return;
-        };
+        }
+
         var inputDate = new Date(dateInput);
         var today = new Date();
         today.setHours(0, 0, 0, 0);
 
         if (inputDate <= today) {
-
             Swal.fire({
                 text: 'Tanggal interview tidak boleh kurang atau sama dengan dari hari ini',
                 icon: 'info',
@@ -200,44 +204,56 @@
                 focusConfirm: false,
                 confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
                 confirmButtonAriaLabel: 'Thumbs up, great!',
-            })
+            });
             return;
         }
 
-        var obj = {
-            name: nameInput,
-            date: dateInput,
-            employeeGuid: guid,
-            ownerGuid: compGuid
-        };
-        console.log(obj);
+        var guid = $('#modalDetail').data('employee-guid');
 
-        $.ajax({
-            url: "/Interview/AddSchedule", // Ganti dengan URL yang sesuai
-            method: "POST",
-            data: JSON.stringify(obj),
-            contentType: 'application/json',
+        // Cek apakah pengguna sudah submit hari ini
+        if (canSubmit(guid, compGuid)) {
+            var obj = {
+                name: nameInput,
+                date: dateInput,
+                employeeGuid: guid,
+                ownerGuid: compGuid
+            };
 
-            success: function (response) {
-                console.log(response);
-                $('#modalInterview').modal('hide');
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Pembaruan berhasil',
-                    text: 'Data schedule berhasil ditambahkan!!.'
-                });
-            },
-            error: function (response) {
-                $('#modalInterview').modal('hide');
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Pembaruan gagal',
-                    text: 'Terjadi kesalahan saat mencoba menambahkan data schedule!!.'
-                });
-            }
-        });
+            $.ajax({
+                url: "/Interview/AddSchedule", // Ganti dengan URL yang sesuai
+                method: "POST",
+                data: JSON.stringify(obj),
+                contentType: 'application/json',
+                success: function (response) {
+                    console.log(response);
+                    $('#modalInterview').modal('hide');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Pembaruan berhasil',
+                        text: 'Data schedule berhasil ditambahkan!!.'
+                    });
 
-    };
+                    // Set timestamp di localStorage
+                    localStorage.setItem('lastSubmit_' + guid + '_' + compGuid, new Date().getTime());
+                },
+                error: function (response) {
+                    $('#modalInterview').modal('hide');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Pembaruan gagal',
+                        text: 'Terjadi kesalahan saat mencoba menambahkan data schedule!!.'
+                    });
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Pembaruan gagal',
+                text: 'Anda hanya dapat mengirimkan sekali dalam sehari per idle !!'
+            });
+        }
+    }
+
 });
 
 $(document).ready(function () {

@@ -10,6 +10,7 @@ using NuGet.Protocol.Core.Types;
 
 namespace CLIENT.Controllers
 {
+    [Authorize]
     public class InterviewController : Controller
     {
 
@@ -20,6 +21,7 @@ namespace CLIENT.Controllers
             _repository = repository;
         }
 
+        [Authorize (Roles = "admin")]
         public IActionResult Index()
         {
             return View();

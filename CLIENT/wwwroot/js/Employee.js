@@ -123,6 +123,28 @@
 
             },
             {
+                data: 'statusAccount',
+                render: function (data, type, row) {
+                    var statusText = data;
+                    var badgeClass = "bg-success";
+
+                    if (data === "Approved") {
+                        statusText = "Approved";
+                    } else if (data === "Rejected") {
+                        statusText = "Reject";
+                        badgeClass = "bg-danger";
+                    } else if (data === "NonAktif") {
+                        statusText = "NonAktif";
+                        badgeClass = "bg-secondary";
+                    }
+
+                    return `
+                        <div class="text-center">
+                            <span class="badge bg-glow ${badgeClass}">${statusText}</span>
+                        </div>`;
+                }
+            },
+            {
                 data: 'cv',
                 render: function (data, type, row) {
                     if (type === 'display' && data) {
@@ -139,16 +161,15 @@
                     </div>`; // Pesan jika URL gambar tidak tersedia
                 }
             },
-            { data: 'statusAccount' },
             {
                 data: null,
                 render: function (data, type, row) {
                     return `
                      <div class="text-center">
-                        <button type="button" class="btn btn-danger nonAktif" data-guid="${data.guid}" data-bs-toggle="modal" data-bs-target="#modalEditEmployee">NonAktif</button>
+                        <button type="button" class="btn btn-danger btn-sm nonAktif" data-guid="${data.guid}" data-bs-toggle="modal" data-bs-target="#modalEditEmployee">NonAktif</button>
                     </div> <br/> 
                     <div class="text-center">
-                        <button type="button" class="btn btn-warning edit-button" data-guid="${data.guid}" data-bs-toggle="modal" data-bs-target="#modalEditEmployee">Update</button>
+                        <button type="button" class="btn btn-warning btn-sm edit-button" data-guid="${data.guid}" data-bs-toggle="modal" data-bs-target="#modalEditEmployee">Update</button>
                     </div>
 
 

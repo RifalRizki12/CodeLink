@@ -20,7 +20,6 @@ builder.Services.AddScoped<ISkillRepository, SkillRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IInterviewRepository, InterviewRepository>();
 
-
 builder.Services.AddScoped<IHomeClientRepository, HomeClientRepository>();
 
 //builder JWT yang berfungsi sebagai authenticaion pada saat pengguna ingin mengakses method method yang ada pada program

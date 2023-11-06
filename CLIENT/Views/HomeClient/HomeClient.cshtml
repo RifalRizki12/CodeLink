@@ -1,7 +1,48 @@
 ﻿@{
     ViewData["Title"] = "Home Client";
     Layout = "/Views/Shared/Client/_LayoutClient.cshtml";
+
+    var role = Context.Session.GetString("Role");
+    var token = Context.Session.GetString("JWToken");
 }
+
+<main class="main">
+    <section class="home-slider position-relative mb-30">
+        <div class="container">
+            <div class="home-slide-cover mt-30">
+                <div class="hero-slider-1 style-4 dot-style-1 dot-style-1-position-1">
+                    <div class="single-hero-slider single-animation-wrap" style="background-image: url(../../TClient/assets/imgs/slider/slider-1.png)">
+                        <div class="slider-content">
+                            <h1 class="display-2 mb-40">
+                                Don’t miss amazing<br />
+                                grocery deals
+                            </h1>
+                            <p class="mb-65">Sign up for the daily newsletter</p>
+                            <form class="form-subcriber d-flex">
+                                <input type="email" placeholder="Your emaill address" />
+                                <button class="btn" type="submit">Subscribe</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="single-hero-slider single-animation-wrap" style="background-image: url(../../TClient/assets/imgs/slider/slider-2.png)">
+                        <div class="slider-content">
+                            <h1 class="display-2 mb-40">
+                                Fresh Vegetables<br />
+                                Big discount
+                            </h1>
+                            <p class="mb-65">Save up to 50% off on your first order</p>
+                            <form class="form-subcriber d-flex">
+                                <input type="email" placeholder="Your emaill address" />
+                                <button class="btn" type="submit">Subscribe</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="slider-arrow hero-slider-1-arrow"></div>
+            </div>
+        </div>
+    </section>
+</main>
 
 <section class="product-tabs section-padding position-relative">
     <div class="container">
@@ -45,46 +86,56 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-outline-primary btn-hire" data-bs-dismiss="modal">Hire</button>
+                @if (token != null && role == "client")
+                {
+                    <button type="button" class="btn btn-outline-primary btn-hire" data-bs-dismiss="modal">Hire</button>
+                }
+                else if (token == null && role != "client")
+                {
+                    <button type="button" class="btn btn-outline-primary" onclick="redirectToLogin()">Hire</button>
+                }
             </div>
         </div>
     </div>
 </div>
 
+@if (token != null && role == "client")
+{
+    <div class="modal fade" id="modalInterview" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Add Schedule Interview</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="formAddSchedule">
+                        <div class="form-group">
+                            <label>Name of Interview</label>
+                            <input type="text" id="nameInput" />
+                        </div>
+                        <div class="form-group">
+                            <label>Date Interview</label>
+                            <input type="datetime-local" id="dateInput" />
+                        </div>
+                        <div class="form-group">
 
-<div class="modal fade" id="modalInterview" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Add Schedule Interview</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                            <button type="submit" class="btn btn-outline-success btn-submit btn-save" data-guid="GUID_EMPLOYEE">Submit</button>
+
+
+
+                        </div>
+                    </form>
+                </div>
+
             </div>
-            <div class="modal-body">
-                <form id="formAddSchedule">
-                    <div class="form-group">
-                        <label>Name of Interview</label>
-                        <input type="text" id="nameInput" />
-                    </div>
-                    <div class="form-group">
-                        <label>Date Interview</label>
-                        <input type="datetime-local" id="dateInput" />
-                    </div>
-                    <div class="form-group">
-
-                        <button type="submit" class="btn btn-outline-success btn-submit btn-save" data-guid="GUID_EMPLOYEE">Submit</button>
-
-
-
-                    </div>
-                </form>
-            </div>
-
         </div>
     </div>
-</div>
-<!--Products Tabs-->
+    <!--Products Tabs-->
+}
+
 @section scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
@@ -94,4 +145,25 @@
 
 
     <script src="~/js/HomeClient.js" asp-append-version="true"></script>
+
+    <script>
+        function redirectToLogin() {
+            Swal.fire({
+                title: 'Login Required',
+                text: 'You must be logged in as a client to hire.',
+                icon: 'warning',
+                showCloseButton: false,
+                focusConfirm: false,
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/Account/Logins'; // Ganti dengan URL halaman login Anda
+                }
+            });
+        }
+    </script>
+
 }
