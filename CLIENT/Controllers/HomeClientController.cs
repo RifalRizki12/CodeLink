@@ -13,6 +13,7 @@ using System.Net;
 
 namespace CLIENT.Controllers
 {
+    [Authorize]
     public class HomeClientController : Controller
     {
 
@@ -23,6 +24,7 @@ namespace CLIENT.Controllers
             _homeClientRepository = homeClientRepository;
         }
 
+        [AllowAnonymous]
         public IActionResult HomeClient()
         {
             return View();
@@ -32,7 +34,8 @@ namespace CLIENT.Controllers
         {
             return View();
         }
-        
+
+        [Authorize(Roles = "client")]
         public IActionResult ListHireIdle()
         {
             return View();

@@ -10,6 +10,7 @@ using NuGet.Protocol.Core.Types;
 
 namespace CLIENT.Controllers
 {
+    [Authorize]
     public class RatingController : Controller
     {
 
@@ -24,25 +25,31 @@ namespace CLIENT.Controllers
 
 
         [HttpPut]
-        public async Task<JsonResult> UpdateRating([FromBody] RatingDto rating)
+        public async Task<ActionResult> UpdateRating([FromBody] RatingDto rating)
         {
             var response = await _repository.Put(rating.Guid, rating);
 
-            if (response != null)
+            if (ModelState.IsValid)
             {
-                if (response.Code == 200)
+                if (response != null)
                 {
-                    return Json(new { data = response.Data });
+                    if (response.Code == 200)
+                    {
+                        return Json(new { data = response.Data });
+                    }
+                    else
+                    {
+                        return Json(new { error = response.Message });
+                    }
                 }
                 else
                 {
-                    return Json(new { error = response.Message });
+                    return Json(new { error = "An error occurred while updating the employee." });
                 }
+
             }
-            else
-            {
-                return Json(new { error = "An error occurred while updating the employee." });
-            }
+            return View();
+
         }
     }
 }
