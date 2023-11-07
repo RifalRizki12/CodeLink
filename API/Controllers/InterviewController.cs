@@ -117,15 +117,11 @@ public class InterviewController : ControllerBase
         }
     }
 
-
     private void SendEmailToBoth(string subject, string body, string employeeEmail, string adminEmail)
     {
         _emailHandler.Send(subject, body, employeeEmail);
         _emailHandler.Send(subject, body, adminEmail);
     }
-
-    
-
 
     [HttpPut("Announcement")]
     public IActionResult Announcement(AnnouncmentDto announcment)
@@ -252,9 +248,6 @@ public class InterviewController : ControllerBase
         }
     }
 
-
-
-
     // GET api/interview
     [HttpGet]
     public IActionResult GetAll()
@@ -262,6 +255,7 @@ public class InterviewController : ControllerBase
         // Memanggil metode GetAll dari _interviewRepository untuk mendapatkan semua data Interview.
         var interviews = _interviewRepository.GetAll();
         var employees = _employeeRepository.GetAll();
+        var ratings = _ratingRepository.GetAll();
 
         // Memeriksa apakah hasil query tidak mengandung data.
         if (!interviews.Any())
@@ -278,6 +272,7 @@ public class InterviewController : ControllerBase
         var interviewDto = (from interview in interviews
                             join empInterviewer in employees on interview.OwnerGuid equals empInterviewer.Guid
                             join empIdle in employees on interview.EmployeeGuid equals empIdle.Guid
+                            join rat in ratings on interview.Guid equals rat.Guid
                             select new InterviewDto
                             {
                                 Guid = interview.Guid,
@@ -292,7 +287,9 @@ public class InterviewController : ControllerBase
                                 StatusIdle = empIdle.StatusEmployee.ToString(),
                                 Type = interview.Type,
                                 Location = interview.Location,
-                                StatusInterview = interview.StatusIntervew
+                                StatusInterview = interview.StatusIntervew,
+                                rate = rat.Rate,
+                                feedback = rat.Feedback
 
                             }).ToList();
 
@@ -461,8 +458,6 @@ public class InterviewController : ControllerBase
 
         return Ok(new ResponseOKHandler<IEnumerable<GetInterviewDto>>(getinterviewDto));
     }
-
-
 
     [HttpGet("GetOnsite/{companyGuid}")]
     public IActionResult GetOnsite(Guid companyGuid)

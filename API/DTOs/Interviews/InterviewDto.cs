@@ -19,6 +19,8 @@ public class InterviewDto //untuk update interview yang biasa
     public TypeInterview? Type {  get; set; }
     public string Location { get; set; }
     public StatusIntervew? StatusInterview { get; set; }
+    public int? rate { get; set; }
+    public string feedback { get; set; }
 
     public static explicit operator InterviewDto(Employee employee)
     {
@@ -28,6 +30,15 @@ public class InterviewDto //untuk update interview yang biasa
             Idle = employee.FirstName + " " + employee.LastName,
             StatusIdle = employee.StatusEmployee.ToString(),
 
+        };
+    }
+
+    public static explicit operator InterviewDto(Rating rating)
+    {
+        return new InterviewDto
+        {
+            rate = rating.Rate,
+            feedback = rating.Feedback
         };
     }
 
