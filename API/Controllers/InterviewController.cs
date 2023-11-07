@@ -7,6 +7,7 @@ using API.Utilities.Handler;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Net;
+using System.Net.Mail;
 
 namespace API.Controllers;
 
@@ -59,6 +60,7 @@ public class InterviewController : ControllerBase
             toUpdate.CreatedDate = entity.CreatedDate;
             toUpdate.Name = entity.Name;
             toUpdate.Date = entity.Date;
+            toUpdate.Remarks = entity.Remarks;
 
 
             // Memanggil metode Update dari _interviewRepository untuk memperbarui data Interview.
@@ -71,36 +73,40 @@ public class InterviewController : ControllerBase
                 return BadRequest("Failed to create data");
             }
 
-            // Mengirim email ke employee dengan GUID tertentu
+           
+            string emailTemplatePath = "utilities/TemplateEmail/ScheduleDetails.html"; // Sesuaikan path Anda.
+            string emailTemplate = System.IO.File.ReadAllText(emailTemplatePath);
+
+            // mengganti variabel dalam template dengan data yang sesuai
+            emailTemplate = emailTemplate
+                .Replace("{InterviewName}", toUpdate.Name)
+                .Replace("{InterviewDate}", toUpdate.Date.ToString())
+                .Replace("{InterviewType}", schedule.Type.ToString())
+                .Replace("{InterviewLocation}", schedule.Location)
+                .Replace("{InterviewRemarks}", schedule.Remarks)
+                .Replace("{CompanyName}", company.Name);
+
             var specificEmployee = _employeeRepository.GetByGuid(schedule.EmployeeGuid);
+            var employeeOwner = _employeeRepository.GetByGuid(schedule.OwnerGuid);
+
             if (specificEmployee != null)
             {
-
-                _emailHandler.Send("Interview Schedule Details",
-                    $"Mohon perhatian, akan dilaksanakan {toUpdate.Name} pada\n " +
-                    $"Tanggal               : {toUpdate.Date}\n " +
-                    $"Pelaksanaan           : {schedule.Type}\n " +
-                    $"Lokasi                : {schedule.Location}\n " +
-                    $"Nama Company          : {company.Name}\n " +
-                    $"Keterangan Tambahan   : {schedule.Remarks}", specificEmployee.Email);
+                // Hilangkan seluruh baris yang mengandung placeholder nama peserta
+                string emailTemplateSpecificEmployee = emailTemplate
+                    .Replace("<td>Nama Peserta</td>", "")
+                    .Replace("<td id=\"peserta\">:</td>", "")
+                    .Replace("<td>{SpecificEmployeeName}</td>", "");
+                _emailHandler.Send("Interview Schedule Details", emailTemplateSpecificEmployee, specificEmployee.Email);
             }
 
 
-            var employeeOwner = _employeeRepository.GetByGuid(schedule.OwnerGuid);
             if (employeeOwner != null)
             {
-
-                _emailHandler.Send("Interview Schedule Details",
-                    $"Mohon perhatian, akan dilaksanakan {toUpdate.Name} pada\n" +
-                    $"Tanggal               : {toUpdate.Date}\n" +
-                    $"Pelaksanaan           : {schedule.Type}" +
-                    $"Lokasi                : {schedule.Location}\n" +
-                    $"Nama Company          : {company.Name}\n" +
-                    $"Peserta               : {specificEmployee.FirstName} {specificEmployee.LastName}\n" +
-                    $"Keterangan Tambahan   : {schedule.Remarks}", employeeOwner.Email);
+                string emailTemplateOwner = emailTemplate.Replace("{SpecificEmployeeName}", specificEmployee.FirstName + " " + specificEmployee.LastName);
+                _emailHandler.Send("Interview Schedule Details", emailTemplateOwner, employeeOwner.Email);
             }
 
-            // Mengembalikan data yang berhasil dibuat dalam respons OK.
+
             return Ok(new ResponseOKHandler<string>("Announcement sent successfully"));
 
         }
