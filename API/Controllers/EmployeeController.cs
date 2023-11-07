@@ -1,6 +1,7 @@
 ﻿using API.Contracts;
 using API.DTOs.Accounts;
 using API.DTOs.Employees;
+using API.DTOs.Interviews;
 using API.Models;
 using API.Repositories;
 using API.Utilities.Enums;
@@ -26,9 +27,13 @@ namespace API.Controllers
         private readonly ISkillRepository _skillRepository;
         private readonly IRatingRepository _ratingRepository;
         private readonly IInterviewRepository _interviewRepository;
+        private readonly IEmailHandler _emailHandler;
 
 
-        public EmployeeController(IEmployeeRepository employeeRepository, IAccountRepository accountRepository, IRoleRepository roleRepository, ICompanyRepository companyRepository, ICurriculumVitaeRepository curriculumVitaeRepository, ISkillRepository skillRepository, IRatingRepository ratingRepository, IInterviewRepository interviewRepository)
+        public EmployeeController(IEmployeeRepository employeeRepository, IAccountRepository accountRepository, 
+            IRoleRepository roleRepository, ICompanyRepository companyRepository, ICurriculumVitaeRepository curriculumVitaeRepository, 
+            ISkillRepository skillRepository, IRatingRepository ratingRepository, IInterviewRepository interviewRepository,
+            IEmailHandler emailHandler)
         {
             _employeeRepository = employeeRepository;
             _accountRepository = accountRepository;
@@ -38,6 +43,7 @@ namespace API.Controllers
             _skillRepository = skillRepository;
             _ratingRepository = ratingRepository;
             _interviewRepository = interviewRepository;
+            _emailHandler = emailHandler;
         }
 
         [HttpGet("GetChart")]
@@ -120,6 +126,13 @@ namespace API.Controllers
 
                         // Simpan Account dalam repository
                         _accountRepository.Create(account);
+
+                        var adminEmployee = _employeeRepository.GetAdminEmployee();
+                        if (adminEmployee != null)
+                        {
+                            _emailHandler.Send("Account Requested", $"Akun dengan email {employee.Email} atas nama {employee.FirstName} {employee.LastName} " +
+                                $"dari perusahaan {company.Name} alamat : {company.Address}. Mohon dipastikan kebenarannya dan segera di approve", adminEmployee.Email);
+                        }
 
                         // Commit transaksi jika semua operasi berhasil
                         transactionScope.Complete();
@@ -370,6 +383,12 @@ namespace API.Controllers
                             var resultSkl = _skillRepository.Create(skill);
                         }
 
+                        if (resultAcc != null)
+                        {
+                            _emailHandler.Send("Password Account", $"Akun dengan email {employee.Email} atas nama {employee.FirstName} {employee.LastName} " +
+                                $"password nya adalah FirstName + 12345. Firstname menggunakan huruf besar, example Donal12345. " +
+                                $"Mohon segera melakukan change password. Terima Kasih", employee.Email);
+                        }
 
                         // Commit transaksi jika semua operasi berhasil
                         transactionScope.Complete();
