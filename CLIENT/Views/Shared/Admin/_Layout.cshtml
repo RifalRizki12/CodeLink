@@ -188,6 +188,13 @@
                                 </a>
                             </li>
                         </ul>
+                        <ul class="menu-sub">
+                            <li class="menu-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Interview" && ViewContext.RouteData.Values["Action"].ToString() == "HistoryInterview" ? "active open" : "")">
+                                <a class="menu-link" asp-area="" asp-controller="Interview" asp-action="HistoryInterview">
+                                    <div data-i18n="History Interview">History Interview</div>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
 

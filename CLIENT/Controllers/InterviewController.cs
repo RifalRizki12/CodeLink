@@ -27,6 +27,12 @@ namespace CLIENT.Controllers
             return View();
         }
 
+        [Authorize(Roles = "admin")]
+        public IActionResult HistoryInterview()
+        {
+            return View();
+        }
+
         [HttpGet]
         public async Task<JsonResult> InterviewData()
         {
