@@ -16,9 +16,7 @@
                 <table id="tableListHire" class="table table-wishlist">
                     <thead>
                         <tr style="text-align:center;" class="main-heading">
-                            <th scope="col" colspan="2">Identitas</th>
-                            <th scope="col" colspan="1">Date</th>
-                            <th style="padding: 8px; text-align: center;" scope="col">Action</th>
+                            <th scope="col" colspan="2">Data Idle</th>
 
                         </tr>
                     </thead>
@@ -44,12 +42,14 @@
                     <div class="row">
                         <div class="col mb-3">
                             <label for="startContractInp" class="form-label">Start Contract</label>
-                            <input type="datetime-local" id="startContractInp" class="form-control"  />
+                            <input type="datetime-local" id="startContractInp" class="form-control" />
                         </div>
                     </div>
                     <div class="row">
-                        <label for="endContractInp" class="form-label">End Contract</label>
-                        <input type="datetime-local" id="endContractInp" class="form-control"  />
+                        <div class="col mb-3">
+                            <label for="endContractInp" class="form-label">End Contract</label>
+                            <input type="datetime-local" id="endContractInp" class="form-control" />
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal" style="background-color: #d9534f; color: white; padding: 10px 20px; border: none; font-size: 1em; border-radius: 5px; width: 100px;">Close</button>
@@ -104,5 +104,5 @@
 
 
     <script src="~/js/ListHire.js" asp-append-version="true"></script>
-    
+
 }

@@ -252,6 +252,8 @@
                         icon: 'success',
                         title: 'Pembaruan berhasil',
                         text: 'Data schedule berhasil ditambahkan!!.'
+                    }).then(function () {
+                        location.reload(); // Reload halaman setelah pengguna menekan tombol "OK"
                     });
 
                     // Set timestamp di localStorage
