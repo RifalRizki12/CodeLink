@@ -1,16 +1,12 @@
 ﻿$(document).ready(function () {
-    $.ajax({
-        url: "/Employee/GetEmployeeData", // Ganti dengan URL yang sesuai
-        method: "GET",
-        dataType: 'json',
-        dataSrc: 'data',
-    }).done(function (result) {
-        console.log("Data dari server:", result);
+    var allData = []; // Data awal
 
-        const employeeGrid = $("#employeeGrid");
+    // Fungsi untuk menampilkan semua data
+    function displayAllData(data) {
+        var employeeGrid = $("#employeeGrid");
         employeeGrid.empty();
 
-        $.each(result.data, function (key, val) {
+        $.each(data, function (key, val) {
             if (val.statusEmployee === "idle") {
                 const baseURL = "https://localhost:7051/";
                 const photoURL = `${baseURL}ProfilePictures/${val.foto}`;
@@ -18,48 +14,72 @@
 
                 const employeeItem = `
                     <div class="col-lg-1-5 col-md-4 col-12 col-sm-6">
-  <div class="product-cart-wrap mb-30 wow animate__animated animate__fadeIn" data-wow-delay=".1s" style="box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);">
-    <div class="product-img-action-wrap" style="margin-bottom: 0;">
-      <div class="product-img product-img-zoom" style="height: 200px; overflow: hidden; text-align: center;">
-        <a href="shop-product-right.html">
-          <img class="img-fluid" src="${photoURL}" alt="Employee Photo">
-        </a>
-      </div>
-    </div>
-        <div class="product-content-wrap" style="padding: 16px; text-align: center;">
-      <div class="product-category">
-        <span style="color: #6c757d; font-size: 0.9rem;">${val.statusEmployee}</span>
-      </div>
-      <h2 style="font-size: 1.2rem; font-weight: 600; margin-top: 8px;"><a href="" style="color: #333; text-decoration: none;">${val.fullName}</a></h2>
-      <div class="product-rate-cover" style="margin: 8px 0;">
-        <div class="product-rate d-inline-block">
-          <div class="product-rating" style="width: ${val.averageRating * 20}%;"></div>
-        </div>
-        <span class="font-small ml-5 text-muted"> (${val.averageRating})</span>
-      </div>
-      <div>
-        <span class="font-small text-muted">${val.skill.join(', ')}</span>
-      </div>
-      <div class="product-card-bottom" style="margin-top: 12px;">
-        <div class="add-cart">
-          <button type="button" class="btn btn-outline-success btn-detail" data-guid="${val.guid}" data-bs-toggle="modal" data-bs-target="#modalDetail" style="margin-right: 8px;">Detail</button>
-        </div>
-        <a href="${cvURL}" target="_blank">
-          <button type="button" class="btn btn-outline-info">Show CV</button> 
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
+                      <div class="product-cart-wrap mb-30 wow animate__animated animate__fadeIn" data-wow-delay=".1s" style="box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);">
+                        <div class="product-img-action-wrap" style="margin-bottom: 0;">
+                          <div class="product-img product-img-zoom" style="height: 200px; overflow: hidden; text-align: center;">
+                            <a href="shop-product-right.html">
+                              <img class="img-fluid" src="${photoURL}" alt="Employee Photo">
+                            </a>
+                          </div>
+                        </div>
+                            <div class="product-content-wrap" style="padding: 16px; text-align: center;">
+                          <div class="product-category">
+                            <span style="color: #6c757d; font-size: 0.9rem;">${val.statusEmployee}</span>
+                          </div>
+                          <h2 style="font-size: 1.2rem; font-weight: 600; margin-top: 8px;"><a href="" style="color: #333; text-decoration: none;">${val.fullName}</a></h2>
+                          <div class="product-rate-cover" style="margin: 8px 0;">
+                            <div class="product-rate d-inline-block">
+                              <div class="product-rating" style="width: ${val.averageRating * 20}%;"></div>
+                            </div>
+                            <span class="font-small ml-5 text-muted"> (${val.averageRating})</span>
+                          </div>
+                          <div>
+                            <span class="font-small text-muted">${val.skill.join(', ')}</span>
+                          </div>
+                          <div class="product-card-bottom" style="margin-top: 12px;">
+                            <div class="add-cart">
+                              <button type="button" class="btn btn-outline-success btn-detail" data-guid="${val.guid}" data-bs-toggle="modal" data-bs-target="#modalDetail" style="margin-right: 8px;">Detail</button>
+                            </div>
+                            <a href="${cvURL}" target="_blank">
+                              <button type="button" class="btn btn-outline-info">Show CV</button> 
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
                     `;
                 employeeGrid.append(employeeItem);
             }
         });
+    }
+
+    $.ajax({
+        url: "/Employee/GetEmployeeData", // Ganti dengan URL yang sesuai
+        method: "GET",
+        dataType: 'json',
+        dataSrc: 'data',
+    }).done(function (result) {
+        console.log("Data dari server:", result);
+        allData = result.data; // Simpan semua data dalam variabel allData
+        displayAllData(allData); // Tampilkan semua data
 
     }).fail(function (error) {
         console.log(error);
     });
+
+    // Logika pencarian
+    $("#search-input").on("input", function () {
+        var searchKeyword = $(this).val().toLowerCase();
+        var filteredData = allData.filter(function (val) {
+            return val.statusEmployee === "idle" && (
+                val.fullName.toLowerCase().includes(searchKeyword) || // Cari berdasarkan nama
+                val.skill.some(skill => skill.toLowerCase().includes(searchKeyword)) // Cari berdasarkan skill
+            );
+        });
+        displayAllData(filteredData); // Tampilkan data yang difilter
+    });
+
 
     var guid
     $('#employeeGrid').on('click', '.btn-detail', function () {
