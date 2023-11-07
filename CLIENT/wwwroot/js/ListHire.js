@@ -80,7 +80,7 @@ $(document).ready(function () {
 
         if (contractStart === "" || contractEnd === "") {
             Swal.fire({
-                title: 'Data Inputan Tidak Boleh Kosong',
+                text: 'Data Inputan Tidak Boleh Kosong',
                 icon: 'info',
                 showCloseButton: true,
                 focusConfirm: false,
@@ -101,7 +101,7 @@ $(document).ready(function () {
         if (startContractDate <= today) {
             
             Swal.fire({
-                title: 'Tanggal start contract tidak boleh kurang dari hari ini',
+                text: 'Tanggal start contract tidak boleh kurang dari hari ini',
                 icon: 'info',
                 showCloseButton: true,
                 focusConfirm: false,
@@ -111,7 +111,7 @@ $(document).ready(function () {
             return;
         } else if (endContractDate <= today || endContractDate < startContractDate) {
             Swal.fire({
-                title: 'Tanggal End Contract Tidak Valid',
+                text: 'Tanggal End Contract Tidak Valid',
                 icon: 'info',
                 showCloseButton: true,
                 focusConfirm: false,
@@ -173,7 +173,7 @@ $(document).ready(function () {
 
         if ($("#feedback").val() === "") {
             Swal.fire({
-                title: 'Kasih FeedBack dulu yaaa!!!',
+                text: 'Kasih FeedBack dulu yaaa!!!',
                 icon: 'info',
                 showCloseButton: true,
                 focusConfirm: false,
@@ -298,7 +298,7 @@ $(document).ready(function () {
 
         if ($("#remarks").val() === "") {
             Swal.fire({
-                title: 'Alasan end contractnya diisi dulu ya Kakak!!!',
+                text: 'Alasan end contractnya diisi dulu ya Kakak!!!',
                 icon: 'info',
                 showCloseButton: true,
                 focusConfirm: false,
@@ -529,7 +529,7 @@ $(document).ready(function () {
       
         if (feedbackInput === "" || rateInput === 0 ) {
             Swal.fire({
-                title: 'Isi semua datanya dong Kakak!!!',
+                text: 'Isi semua datanya dong Kakak!!!',
                 icon: 'info',
                 showCloseButton: true,
                 focusConfirm: false,
@@ -575,8 +575,8 @@ $(document).ready(function () {
                 $('#ratingInterview').modal('hide');
                 Swal.fire({
                     icon: 'error',
-                    title: 'Pembaruan data tidak lolos gagal',
-                    text: 'Terjadi kesalahan saat anda mencoba menolak partner.'
+                    title: 'Rating gagal ditambahkan',
+                    text: 'Terjadi kesalahan saat anda mencoba memberikan rating.'
                 });
             }
         });
