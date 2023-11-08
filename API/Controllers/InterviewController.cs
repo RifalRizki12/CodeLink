@@ -7,6 +7,9 @@ using API.Utilities.Handler;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Net;
+using System.Net.Mail;
+using System.Text.RegularExpressions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace API.Controllers;
 
@@ -60,7 +63,6 @@ public class InterviewController : ControllerBase
             toUpdate.Name = entity.Name;
             toUpdate.Date = entity.Date;
 
-
             // Memanggil metode Update dari _interviewRepository untuk memperbarui data Interview.
             var result = _interviewRepository.Update(toUpdate);
 
@@ -71,36 +73,40 @@ public class InterviewController : ControllerBase
                 return BadRequest("Failed to create data");
             }
 
-            // Mengirim email ke employee dengan GUID tertentu
+
+            string emailTemplatePath = "utilities/TemplateEmail/ScheduleDetails.html"; // Sesuaikan path Anda.
+            string emailTemplate = System.IO.File.ReadAllText(emailTemplatePath);
+
+            // mengganti variabel dalam template dengan data yang sesuai
+            emailTemplate = emailTemplate
+                .Replace("{InterviewName}", toUpdate.Name)
+                .Replace("{InterviewDate}", toUpdate.Date.ToString())
+                .Replace("{InterviewType}", schedule.Type.ToString())
+                .Replace("{InterviewLocation}", schedule.Location)
+                .Replace("{InterviewRemarks}", schedule.Remarks)
+                .Replace("{CompanyName}", company.Name);
+
             var specificEmployee = _employeeRepository.GetByGuid(schedule.EmployeeGuid);
+            var employeeOwner = _employeeRepository.GetByGuid(schedule.OwnerGuid);
+
             if (specificEmployee != null)
             {
-
-                _emailHandler.Send("Interview Schedule Details",
-                    $"Mohon perhatian, akan dilaksanakan {toUpdate.Name} pada\n " +
-                    $"Tanggal               : {toUpdate.Date}\n " +
-                    $"Pelaksanaan           : {schedule.Type}\n " +
-                    $"Lokasi                : {schedule.Location}\n " +
-                    $"Nama Company          : {company.Name}\n " +
-                    $"Keterangan Tambahan   : {schedule.Remarks}", specificEmployee.Email);
+                // Hilangkan seluruh baris yang mengandung placeholder nama peserta
+                string emailTemplateSpecificEmployee = emailTemplate
+                    .Replace("<td>Nama Peserta</td>", "")
+                    .Replace("<td id=\"peserta\">:</td>", "")
+                    .Replace("<td>{SpecificEmployeeName}</td>", "");
+                _emailHandler.Send("Interview Schedule Details", emailTemplateSpecificEmployee, specificEmployee.Email);
             }
 
 
-            var employeeOwner = _employeeRepository.GetByGuid(schedule.OwnerGuid);
             if (employeeOwner != null)
             {
-
-                _emailHandler.Send("Interview Schedule Details",
-                    $"Mohon perhatian, akan dilaksanakan {toUpdate.Name} pada\n" +
-                    $"Tanggal               : {toUpdate.Date}\n" +
-                    $"Pelaksanaan           : {schedule.Type}" +
-                    $"Lokasi                : {schedule.Location}\n" +
-                    $"Nama Company          : {company.Name}\n" +
-                    $"Peserta               : {specificEmployee.FirstName} {specificEmployee.LastName}\n" +
-                    $"Keterangan Tambahan   : {schedule.Remarks}", employeeOwner.Email);
+                string emailTemplateOwner = emailTemplate.Replace("{SpecificEmployeeName}", specificEmployee.FirstName + " " + specificEmployee.LastName);
+                _emailHandler.Send("Interview Schedule Details", emailTemplateOwner, employeeOwner.Email);
             }
 
-            // Mengembalikan data yang berhasil dibuat dalam respons OK.
+
             return Ok(new ResponseOKHandler<string>("Announcement sent successfully"));
 
         }
@@ -155,6 +161,7 @@ public class InterviewController : ControllerBase
             toUpdate.Date = entity.Date;
             toUpdate.Location = entity.Location;
             toUpdate.Type = entity.Type;
+            toUpdate.Remarks = entity.Remarks;
 
             var result = _interviewRepository.Update(toUpdate);
 
@@ -176,39 +183,61 @@ public class InterviewController : ControllerBase
 
             if (specificEmployee != null && rating.Rate == null)
             {
+                string emailTemplatePath = "utilities/TemplateEmail/Announcement.html"; // Sesuaikan path tempat template.
+                string emailTemplate = System.IO.File.ReadAllText(emailTemplatePath);
+
+
                 if (entity.EndContract == null) // annaouncment lolos / tidak 
                 {
-                    string emailBody = $"Terimakasih atas partisipasinya telah mengikuti proses {toUpdate.Name} pada\n " +
-                                      $"Date                  : {toUpdate.Date}\n " +
-                                      $"kami nyatakan anda    : {announcment.StatusIntervew} \n ";
-                    //ini untuk if lolos
-                    if (announcment.StartContract != null && announcment.EndContract != null)
+                    // mengganti variabel dalam template dengan data yang sesuai
+                    emailTemplate = emailTemplate
+                   .Replace("{InterviewName}", toUpdate.Name)
+                   .Replace("{InterviewDate}", toUpdate.Date.ToString())
+                   .Replace("{CompanyName}", company.Name)
+                   .Replace("{EmployeeName}", specificEmployee.FirstName + " " + specificEmployee.LastName)
+                   .Replace("{StatusIntervew}", announcment.StatusIntervew.ToString());
+
+                    if (announcment.StatusIntervew == StatusIntervew.Lolos)
                     {
-                        emailBody += $"Start Contract        : {announcment.StartContract} \n" +
-                                     $"End Contract          : {announcment.EndContract}\n";
+                        // Menggantikan div dengan id "contractTermination" dengan string kosong
+                        string emailLolos = Regex.Replace(emailTemplate, "<div id=\"contractTermination\"[^>]*>.*?</div>", "", RegexOptions.Singleline)
+                                                .Replace("{StartContract}", announcment.StartContract.ToString())
+                                                .Replace("{EndContract}", announcment.EndContract.ToString())
+                                                .Replace(" <tr>\r\n                <td>FeedBack</td>\r\n                <td>:</td>\r\n                <td>{feedback}</td>\r\n            </tr>", "");
 
                         specificEmployee.StatusEmployee = (StatusEmployee)2;
                         specificEmployee.CompanyGuid = company.Guid;
                         _employeeRepository.Update(specificEmployee);
 
+                        // Mengirim email dengan emailLolos yang telah dimodifikasi
+                        _emailHandler.Send("Announcement of interview results", emailLolos, specificEmployee.Email);
+                        _emailHandler.Send("Announcement of interview results", emailLolos, adminEmployee.Email);
                     }
-                    emailBody += $"Company Name          : {company.Name}\n" +
-                                 $"{announcment.FeedBack}";
 
-                    _emailHandler.Send("Announcment Interview", emailBody, specificEmployee.Email);
-                    _emailHandler.Send("Announcment Interview", emailBody, adminEmployee.Email);
+                    if (announcment.StatusIntervew == StatusIntervew.TidakLolos)
+                    {
+                        string emailTidakLolos = Regex.Replace(emailTemplate, "<div id=\"contractTermination\"[^>]*>.*?</div>", "", RegexOptions.Singleline)
+                                    .Replace("<tr>\r\n                <td>Start Contract</td>\r\n                <td>:</td>\r\n                <td>{StartContract}</td>\r\n            </tr>", "")
+                                    .Replace("<tr>\r\n                <td>End Contract</td>\r\n                <td>:</td>\r\n                <td>{EndContract}</td>\r\n            </tr>", "")
+                                    .Replace("{feedback}", announcment.FeedBack);
+
+                        _emailHandler.Send("Announcement of interview results", emailTidakLolos, specificEmployee.Email);
+                        _emailHandler.Send("Announcement of interview results", emailTidakLolos, adminEmployee.Email);
+
+                    }
                 }
                 //ini untuk contract termination
                 if (announcment.EndContract != null && announcment.EndContract.Value.Date == dateNow.Date)
                 {
-                    _emailHandler.Send("Contract Termination ", $"Kami menguncapkan mohon maaf atas ketidaknyamanannya" +
-                        $"kami terpaksa harus memutuskan kontrak untuk saudara/i {specificEmployee.FirstName} {specificEmployee.LastName} " +
-                        $"dikarenakan {announcment.Remarks} Terimakasih atas kerjasamanya", specificEmployee.Email);
+                    emailTemplate = emailTemplate
+                        .Replace("{EmployeeName}", specificEmployee.FirstName + " " + specificEmployee.LastName)
+                        .Replace("{Remarks}", announcment.Remarks)
+                        .Replace("{companyName}", company.Name);
 
-                    _emailHandler.Send("Contract Termination ", $"Kami menguncapkan mohon maaf atas ketidaknyamanannya" +
-                      $"kami terpaksa harus memutuskan kontrak untuk saudara/i {specificEmployee.FirstName} {specificEmployee.LastName} " +
-                      $"dikarenakan  {announcment.Remarks} Terimakasih atas kerjasamanya", adminEmployee.Email);
-
+                    string emailEndcontract = Regex.Replace(emailTemplate, "<div id=\"Lolos\"[^>]*>.*?</div>", "", RegexOptions.Singleline);
+                  
+                    _emailHandler.Send("Contract Termination", emailEndcontract, specificEmployee.Email);
+                    _emailHandler.Send("Contract Termination", emailEndcontract, adminEmployee.Email);
 
                     specificEmployee.StatusEmployee = StatusEmployee.idle;
                     specificEmployee.CompanyGuid = null;
@@ -345,16 +374,34 @@ public class InterviewController : ControllerBase
             var specificEmployee = _employeeRepository.GetByGuid(interviewDto.EmployeeGuid); // Ganti dengan metode yang sesuai
 
 
+            string emailTemplatePath = "utilities/TemplateEmail/Schedule.html"; // Sesuaikan path tempat template.
+            string emailTemplate = System.IO.File.ReadAllText(emailTemplatePath); 
+
             if (adminEmployee != null)
             {
-                _emailHandler.Send("Interview Schedule", $"Kami akan mengadakan {interviewDto.Name} pada {interviewDto.Date} untuk Idle dengan nama " +
-                    $"{specificEmployee.FirstName + " " + specificEmployee.LastName} Email : {specificEmployee.Email}", adminEmployee.Email);
+                emailTemplate = emailTemplate
+                      .Replace("{adminName}", adminEmployee.FirstName)
+                      .Replace("{interviewName}", interviewDto.Name)
+                      .Replace("{interviewDate}", interviewDto.Date.ToString())
+                      .Replace("{idleName}", specificEmployee.FirstName + " " + specificEmployee.LastName)
+                      .Replace("{emailIdle}", specificEmployee.Email);
+
+                string emailAdmin = Regex.Replace(emailTemplate, "<div id=\"idle\"[^>]*>.*?</div>", "", RegexOptions.Singleline);
+
+                _emailHandler.Send("Schdule Interview", emailAdmin, adminEmployee.Email);
             }
 
             // Mengirim email ke employee dengan GUID tertentu
             if (specificEmployee != null)
             {
-                _emailHandler.Send("Interview Schedule", $"Akan diadakan {interviewDto.Name} pada {interviewDto.Date}", specificEmployee.Email);
+                emailTemplate = emailTemplate
+                     .Replace("{interviewName}", interviewDto.Name)
+                     .Replace("{interviewDate}", interviewDto.Date.ToString())
+                     .Replace("{employeeName}", specificEmployee.FirstName + " " + specificEmployee.LastName);
+
+                string emailIdle = Regex.Replace(emailTemplate, "<div id=\"admin\"[^>]*>.*?</div>", "", RegexOptions.Singleline);
+
+                _emailHandler.Send("Schdule Interview", emailIdle, specificEmployee.Email);
             }
 
             // Mengembalikan data yang berhasil dibuat dalam respons OK.
