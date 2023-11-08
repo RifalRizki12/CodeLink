@@ -1,6 +1,7 @@
 ﻿using API.Contracts;
 using API.Data;
 using API.Models;
+using API.Utilities.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories
@@ -23,6 +24,34 @@ namespace API.Repositories
         public List<Interview> GetByEmployeeGuid(Guid employeeGuid)
         {
              return _context.Tests.Where(i => i.EmployeeGuid == employeeGuid).ToList();
+        }
+        public int GetCaountLolos()
+        {
+            int lolosInterviewCount = _context.Tests
+                 .Count(e => e.StatusIntervew == StatusIntervew.Lolos);
+
+            return lolosInterviewCount;
+        }
+        public int GetCaountTidakLolos()
+        {
+            int tidakLolosInterviewCount = _context.Tests
+                 .Count(e => e.StatusIntervew == StatusIntervew.TidakLolos);
+
+            return tidakLolosInterviewCount;
+        }
+        public int GetCaountContarctTermination()
+        {
+            int contarctTerminationInterviewCount = _context.Tests
+                 .Count(e => e.StatusIntervew == StatusIntervew.ContarctTermination);
+
+            return contarctTerminationInterviewCount;
+        }
+        public int GetCaountEndContract()
+        {
+            int endContractInterviewCount = _context.Tests
+                 .Count(e => e.StatusIntervew == StatusIntervew.EndContract);
+
+            return endContractInterviewCount;
         }
     }
 }

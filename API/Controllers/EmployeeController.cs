@@ -51,7 +51,18 @@ namespace API.Controllers
         {
             var hireEmp = _employeeRepository.GetCaountHired();
             var idleEmp = _employeeRepository.GetCountIdle();
+            var adminEmp = _employeeRepository.GetCaountAdmin();
             var company = _companyRepository.GetCaount();
+            var nonAktif = _accountRepository.GetCaountNonAktif();
+            var rejected = _accountRepository.GetCaountRejected();
+            var canceled = _accountRepository.GetCaountCanceled();
+            var approved = _accountRepository.GetCaountApproved();
+            var requested = _accountRepository.GetCaountRequested();
+            var lolos = _interviewRepository.GetCaountLolos();
+            var tidakLolos = _interviewRepository.GetCaountTidakLolos();
+            var contarctTermination = _interviewRepository.GetCaountContarctTermination();
+            var endContract = _interviewRepository.GetCaountEndContract();
+
 
             if (hireEmp == null && idleEmp == null && company == null)
             {
@@ -67,7 +78,18 @@ namespace API.Controllers
             {
                 HiredEmployeesCount = hireEmp,
                 IdleEmployeesCount = idleEmp,
-                CompaniesCount = company
+                AdminEmployeesCount = adminEmp,
+                CompaniesCount = company,
+                NonAktifAccountCount = nonAktif,
+                RejectedAccountCount = rejected,
+                ApprovedAccountCount= approved,
+                CanceledAccountCount = canceled,
+                RequestedAccountCount = requested,
+                LolosInterviewCount = lolos,
+                TidakLolosInterviewCount = tidakLolos,
+                ContarctTerminationInterviewCount = contarctTermination,
+                EndContractInterviewCount = endContract
+
             };
 
             return Ok(new ResponseOKHandler<ChartDto>(chartData));

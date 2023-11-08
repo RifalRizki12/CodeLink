@@ -1,6 +1,7 @@
 ﻿using API.Contracts;
 using API.Data;
 using API.Models;
+using API.Utilities.Enums;
 
 namespace API.Repositories
 {
@@ -37,6 +38,43 @@ namespace API.Repositories
 
             return account;
         }
+        
+        public int GetCaountRequested()
+        {
+            int requestedAccountCount = _context.Accounts
+                .Count(e => e.Status == StatusLevel.Requested);
 
+            return requestedAccountCount;
+        }
+
+        public int GetCaountCanceled()
+        {
+            int canceledAccountCount = _context.Accounts
+                .Count(e => e.Status == StatusLevel.Canceled);
+
+            return canceledAccountCount;
+        }
+
+        public int GetCaountApproved()
+        {
+            int approvedAccountCount = _context.Accounts
+                .Count(e => e.Status == StatusLevel.Approved);
+
+            return approvedAccountCount;
+        }
+        public int GetCaountRejected()
+        {
+            int rejectedAccountCount = _context.Accounts
+                .Count(e => e.Status == StatusLevel.Rejected);
+
+            return rejectedAccountCount;
+        }
+        public int GetCaountNonAktif()
+        {
+            int nonAktifAccountCount = _context.Accounts
+                .Count(e => e.Status == StatusLevel.NonAktif);
+
+            return nonAktifAccountCount;
+        }
     }
 }
