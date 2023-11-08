@@ -23,8 +23,21 @@ function updateCards(data) {
     // Mengupdate kotak kedua dengan jumlah "Idle Employees"
     $(".card-border-shadow-warning h4").text(data.hiredEmployeesCount);
     $(".card-border-shadow-danger h4").text(data.companiesCount);
+    $(".card-border-shadow-info h4").text(data.adminEmployeesCount);
+    $(".user-progress1 h6").text(data.requestedAccountCount);
+    $(".user-progress2 h6").text(data.approvedAccountCount);
+    $(".user-progress3 h6").text(data.rejectedAccountCount);
+    $(".user-progress4 h6").text(data.canceledAccountCount);
+    $(".user-progress5 h6").text(data.nonAktifAccountCount);
+    $(".user-progress11 h6").text(data.tidakLolosInterviewCount);
+    $(".user-progress12 h6").text(data.lolosInterviewCount);
+    $(".user-progress13 h6").text(data.contarctTerminationInterviewCount);
+    $(".user-progress14 h6").text(data.endContractInterviewCount);
+
+
 
     
     // $(".card-border-shadow-danger h4").text(data.someOtherDataCount);
     // $(".card-border-shadow-info h4").text(data.anotherDataCount);
 }
+

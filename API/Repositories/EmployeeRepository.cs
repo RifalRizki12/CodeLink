@@ -41,6 +41,13 @@ namespace API.Repositories
 
             return hiredEmployeeCount;
         }
+        public int GetCaountAdmin()
+        {
+            int adminEmployeeCount = _context.Employees
+                 .Count(e => e.StatusEmployee == StatusEmployee.admin);
+
+            return adminEmployeeCount;
+        }
 
         public Employee GetByGuid(Guid? employeeGuid)
         {
