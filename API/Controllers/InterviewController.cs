@@ -40,6 +40,9 @@ public class InterviewController : ControllerBase
     {
         try
         {
+            // Dapatkan data interview berdasarkan Guid.
+            // var existInterview = _interviewRepository.GetByGuid(announcment.Guid);
+
             var company = _companyRepository.GetCompany(schedule.OwnerGuid);
 
             var entity = _interviewRepository.GetByGuid(schedule.Guid);
@@ -92,14 +95,17 @@ public class InterviewController : ControllerBase
                 string emailTemplateSpecificEmployee = emailTemplate
                     .Replace("<td>Nama Peserta</td>", "")
                     .Replace("<td id=\"peserta\">:</td>", "")
-                    .Replace("<td>{SpecificEmployeeName}</td>", "");
+                    .Replace("<td>{SpecificEmployeeName}</td>", "")
+                    .Replace("{fullName}", specificEmployee.FirstName + " " + specificEmployee.LastName); ;
                 _emailHandler.Send("Interview Schedule Details", emailTemplateSpecificEmployee, specificEmployee.Email);
             }
 
 
             if (employeeOwner != null)
             {
-                string emailTemplateOwner = emailTemplate.Replace("{SpecificEmployeeName}", specificEmployee.FirstName + " " + specificEmployee.LastName);
+                string emailTemplateOwner = emailTemplate
+                    .Replace("{SpecificEmployeeName}", specificEmployee.FirstName + " " + specificEmployee.LastName)
+                    .Replace("{fullName}", employeeOwner.FirstName + " " + employeeOwner.LastName);
                 _emailHandler.Send("Interview Schedule Details", emailTemplateOwner, employeeOwner.Email);
             }
 
@@ -187,54 +193,74 @@ public class InterviewController : ControllerBase
                 if (entity.EndContract == null) // annaouncment lolos / tidak 
                 {
                     // mengganti variabel dalam template dengan data yang sesuai
-                    emailTemplate = emailTemplate
+                    // Menggantikan div dengan id "contractTermination" dengan string kosong
+                    emailTemplate = Regex.Replace(emailTemplate, "<div id=\"contractTermination\"[^>]*>.*?</div>", "", RegexOptions.Singleline)
                    .Replace("{InterviewName}", toUpdate.Name)
                    .Replace("{InterviewDate}", toUpdate.Date.ToString())
                    .Replace("{CompanyName}", company.Name)
                    .Replace("{EmployeeName}", specificEmployee.FirstName + " " + specificEmployee.LastName)
                    .Replace("{StatusIntervew}", announcment.StatusIntervew.ToString());
 
+                    
+                   
                     if (announcment.StatusIntervew == StatusIntervew.Lolos)
                     {
-                        // Menggantikan div dengan id "contractTermination" dengan string kosong
-                        string emailLolos = Regex.Replace(emailTemplate, "<div id=\"contractTermination\"[^>]*>.*?</div>", "", RegexOptions.Singleline)
-                                                .Replace("{StartContract}", announcment.StartContract.ToString())
-                                                .Replace("{EndContract}", announcment.EndContract.ToString())
-                                                .Replace(" <tr>\r\n                <td>FeedBack</td>\r\n                <td>:</td>\r\n                <td>{feedback}</td>\r\n            </tr>", "");
-
                         specificEmployee.StatusEmployee = (StatusEmployee)2;
                         specificEmployee.CompanyGuid = company.Guid;
                         _employeeRepository.Update(specificEmployee);
 
-                        // Mengirim email dengan emailLolos yang telah dimodifikasi
+
+                        emailTemplate = emailTemplate.Replace("{StartContract}", announcment.StartContract.ToString())
+                                           .Replace("{EndContract}", announcment.EndContract.ToString())
+                                           .Replace("<tr>\r\n                <td>FeedBack</td>\r\n                <td>:</td>\r\n                <td>{feedback}</td>\r\n            </tr>", ""); ;
+                        
+                        string emailLolos = Regex.Replace(emailTemplate, "<p id=\"toAdmin\"[^>]*>.*?</p>", "", RegexOptions.Singleline)
+                                         .Replace("{fullName}", specificEmployee.FirstName + " " + specificEmployee.LastName);
+
+
                         _emailHandler.Send("Announcement of interview results", emailLolos, specificEmployee.Email);
-                        _emailHandler.Send("Announcement of interview results", emailLolos, adminEmployee.Email);
+
+                        string adminLolos = Regex.Replace(emailTemplate, "<p id=\"toIdle\"[^>]*>.*?</p>", "", RegexOptions.Singleline)
+                                             .Replace("{fullName}", adminEmployee.FirstName);
+
+                        _emailHandler.Send("Announcement of interview results", adminLolos, adminEmployee.Email);
                     }
 
                     if (announcment.StatusIntervew == StatusIntervew.TidakLolos)
                     {
-                        string emailTidakLolos = Regex.Replace(emailTemplate, "<div id=\"contractTermination\"[^>]*>.*?</div>", "", RegexOptions.Singleline)
-                                    .Replace("<tr>\r\n                <td>Start Contract</td>\r\n                <td>:</td>\r\n                <td>{StartContract}</td>\r\n            </tr>", "")
-                                    .Replace("<tr>\r\n                <td>End Contract</td>\r\n                <td>:</td>\r\n                <td>{EndContract}</td>\r\n            </tr>", "")
-                                    .Replace("{feedback}", announcment.FeedBack);
+                        emailTemplate = emailTemplate.Replace("{feedback}", announcment.FeedBack)
+                                                     .Replace("<tr>\r\n                <td>Start Contract</td>\r\n                <td>:</td>\r\n                <td>{StartContract}</td>\r\n            </tr>", "")
+                                                     .Replace("<tr>\r\n                <td>End Contract</td>\r\n                <td>:</td>\r\n                <td>{EndContract}</td>\r\n            </tr>", "")
+;
+                        string tidakLolos = Regex.Replace(emailTemplate, "<p id=\"toAdmin\"[^>]*>.*?</p>", "", RegexOptions.Singleline)
+                                                      .Replace("{fullName}", specificEmployee.FirstName + " " + specificEmployee.LastName);
 
-                        _emailHandler.Send("Announcement of interview results", emailTidakLolos, specificEmployee.Email);
-                        _emailHandler.Send("Announcement of interview results", emailTidakLolos, adminEmployee.Email);
+                        _emailHandler.Send("Announcement of interview results", tidakLolos, specificEmployee.Email);
+
+                        string adminTdkLolos = Regex.Replace(emailTemplate, "<p id=\"toIdle\"[^>]*>.*?</p>", "", RegexOptions.Singleline)
+                                                 .Replace("{fullName}", adminEmployee.FirstName);
+
+                        _emailHandler.Send("Announcement of interview results", adminTdkLolos, adminEmployee.Email);
 
                     }
                 }
                 //ini untuk contract termination
                 if (announcment.EndContract != null && announcment.EndContract.Value.Date == dateNow.Date)
                 {
-                    emailTemplate = emailTemplate
-                        .Replace("{EmployeeName}", specificEmployee.FirstName + " " + specificEmployee.LastName)
+                    emailTemplate = Regex.Replace(emailTemplate, "<div id=\"Lolos\"[^>]*>.*?</div>", "", RegexOptions.Singleline)
                         .Replace("{Remarks}", announcment.Remarks)
-                        .Replace("{companyName}", company.Name);
+                        .Replace("{companyName}", company.Name)
+                        .Replace("{EmployeeName}", specificEmployee.FirstName + " " + specificEmployee.LastName);
 
-                    string emailEndcontract = Regex.Replace(emailTemplate, "<div id=\"Lolos\"[^>]*>.*?</div>", "", RegexOptions.Singleline);
-                  
+                    string emailEndcontract = emailTemplate.Replace("{fullName}", specificEmployee.FirstName + " " + specificEmployee.LastName);
+
                     _emailHandler.Send("Contract Termination", emailEndcontract, specificEmployee.Email);
-                    _emailHandler.Send("Contract Termination", emailEndcontract, adminEmployee.Email);
+
+
+                    string adminEndContract = emailTemplate.Replace("{fullName}", adminEmployee.FirstName);
+                    _emailHandler.Send("Contract Termination", adminEndContract, adminEmployee.Email);
+
+                    // _emailHandler.Send("Contract Termination", emailEndcontract, adminEmployee.Email);
 
                     specificEmployee.StatusEmployee = StatusEmployee.idle;
                     specificEmployee.CompanyGuid = null;
@@ -294,7 +320,7 @@ public class InterviewController : ControllerBase
                 Message = "Data Interview Not Found"
             });
         }
-
+        // Gabungkan data dari tabel sesuai dengan hubungannya
         var interviewDto = (from interview in interviews
                             join empInterviewer in employees on interview.OwnerGuid equals empInterviewer.Guid
                             join empIdle in employees on interview.EmployeeGuid equals empIdle.Guid
@@ -329,9 +355,10 @@ public class InterviewController : ControllerBase
         // Memanggil metode GetByGuid dari _interviewRepository dengan parameter GUID.
         var result = _interviewRepository.GetByGuid(guid);
 
-
+        // Memeriksa apakah hasil query tidak ditemukan (null).
         if (result is null)
         {
+            // Mengembalikan respons Not Found jika data Interview dengan GUID tertentu tidak ditemukan.
             return NotFound(new ResponseErrorHandler
             {
                 Code = StatusCodes.Status404NotFound,
@@ -367,11 +394,11 @@ public class InterviewController : ControllerBase
 
             // Get employee dengan role "admin"
             var adminEmployee = _employeeRepository.GetAdminEmployee();
-            var specificEmployee = _employeeRepository.GetByGuid(interviewDto.EmployeeGuid);
+            var specificEmployee = _employeeRepository.GetByGuid(interviewDto.EmployeeGuid); // Ganti dengan metode yang sesuai
 
 
-            string emailTemplatePath = "utilities/TemplateEmail/Schedule.html";
-            string emailTemplate = System.IO.File.ReadAllText(emailTemplatePath); 
+            string emailTemplatePath = "utilities/TemplateEmail/Schedule.html"; // Sesuaikan path tempat template.
+            string emailTemplate = System.IO.File.ReadAllText(emailTemplatePath);
 
             if (adminEmployee != null)
             {
@@ -481,7 +508,7 @@ public class InterviewController : ControllerBase
             });
         }
 
-        var currentDate = DateTime.Now;
+        var currentDate = DateTime.Now; // Ambil tanggal saat ini
 
 
         var getinterviewDto = (from interview in interviews

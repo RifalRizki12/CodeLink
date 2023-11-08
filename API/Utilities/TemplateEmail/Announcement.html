@@ -13,8 +13,9 @@
 
 
     <div id="Lolos" style="max-width: 50%; margin: 0 auto; padding: 20px;">
-        <p><b>Dear {EmployeeName} </b></p>
-        <p>Terimakasih atas partisipasinya telah mengikuti proses {InterviewName} pada:</p>
+        <p><b>Dear {fullName} </b></p>
+        <p id="toIdle">Terimakasih kepada {EmployeeName} atas partisipasinya yang telah mengikuti {InterviewName} pada:</p>
+        <p id="toAdmin">Saudara/i {EmployeeName} telah mengikuti {InterviewName} pada:</p>
         <table>
             <tr>
                 <td>Tanggal</td>
@@ -50,7 +51,7 @@
     </div>
 
     <div id="contractTermination" style="max-width: 50%; margin: 0 auto; padding: 20px;">
-        <p><b>Dear {EmployeeName} </b></p>
+        <p><b>Dear {fullName} </b></p>
         <p>
             Kami menguncapkan mohon maaf atas ketidaknyamanannya, berdasarkan data evaluasi, kami terpaksa harus memutuskan kontrak untuk saudara/i {EmployeeName}
             dikarenakan {Remarks}
