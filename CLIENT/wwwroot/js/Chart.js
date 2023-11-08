@@ -17,6 +17,14 @@
 });
 
 function updateCards(data) {
+    var tanggalHariIni = new Date();
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    var tanggalFormatted = tanggalHariIni.toLocaleDateString('id-ID', options); // Format tanggal sesuai preferensi Anda
+    $(".d-flex1 h6").text(tanggalFormatted);
+
+    // Menambahkan jam hari ini
+    var jamHariIni = tanggalHariIni.toLocaleTimeString('id-ID');
+    $(".d-flex2 h6").text(jamHariIni);
     // Contoh: mengupdate kotak pertama dengan jumlah "Hired Employees"
     $(".card-border-shadow-primary h4").text(data.idleEmployeesCount);
 
