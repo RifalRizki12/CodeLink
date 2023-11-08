@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Net;
 using System.Net.Mail;
+using System.Text.RegularExpressions;
 
 namespace API.Controllers;
 
@@ -60,8 +61,6 @@ public class InterviewController : ControllerBase
             toUpdate.CreatedDate = entity.CreatedDate;
             toUpdate.Name = entity.Name;
             toUpdate.Date = entity.Date;
-            toUpdate.Remarks = entity.Remarks;
-
 
             // Memanggil metode Update dari _interviewRepository untuk memperbarui data Interview.
             var result = _interviewRepository.Update(toUpdate);
@@ -73,7 +72,7 @@ public class InterviewController : ControllerBase
                 return BadRequest("Failed to create data");
             }
 
-           
+
             string emailTemplatePath = "utilities/TemplateEmail/ScheduleDetails.html"; // Sesuaikan path Anda.
             string emailTemplate = System.IO.File.ReadAllText(emailTemplatePath);
 
@@ -161,6 +160,7 @@ public class InterviewController : ControllerBase
             toUpdate.Date = entity.Date;
             toUpdate.Location = entity.Location;
             toUpdate.Type = entity.Type;
+            toUpdate.Remarks = entity.Remarks;
 
             var result = _interviewRepository.Update(toUpdate);
 
@@ -182,39 +182,61 @@ public class InterviewController : ControllerBase
 
             if (specificEmployee != null && rating.Rate == null)
             {
+                string emailTemplatePath = "utilities/TemplateEmail/Announcement.html"; // Sesuaikan path Anda.
+                string emailTemplate = System.IO.File.ReadAllText(emailTemplatePath);
+
+
                 if (entity.EndContract == null) // annaouncment lolos / tidak 
                 {
-                    string emailBody = $"Terimakasih atas partisipasinya telah mengikuti proses {toUpdate.Name} pada\n " +
-                                      $"Date                  : {toUpdate.Date}\n " +
-                                      $"kami nyatakan anda    : {announcment.StatusIntervew} \n ";
-                    //ini untuk if lolos
-                    if (announcment.StartContract != null && announcment.EndContract != null)
+                    // mengganti variabel dalam template dengan data yang sesuai
+                    emailTemplate = emailTemplate
+                   .Replace("{InterviewName}", toUpdate.Name)
+                   .Replace("{InterviewDate}", toUpdate.Date.ToString())
+                   .Replace("{CompanyName}", company.Name)
+                   .Replace("{EmployeeName}", specificEmployee.FirstName + " " + specificEmployee.LastName)
+                   .Replace("{StatusIntervew}", announcment.StatusIntervew.ToString());
+
+                    if (announcment.StatusIntervew == StatusIntervew.Lolos)
                     {
-                        emailBody += $"Start Contract        : {announcment.StartContract} \n" +
-                                     $"End Contract          : {announcment.EndContract}\n";
+                        // Menggantikan div dengan id "contractTermination" dengan string kosong
+                        string emailLolos = Regex.Replace(emailTemplate, "<div id=\"contractTermination\"[^>]*>.*?</div>", "", RegexOptions.Singleline)
+                                                .Replace("{StartContract}", announcment.StartContract.ToString())
+                                                .Replace("{EndContract}", announcment.EndContract.ToString())
+                                                .Replace(" <tr>\r\n                <td>FeedBack</td>\r\n                <td>:</td>\r\n                <td>{feedback}</td>\r\n            </tr>", "");
 
                         specificEmployee.StatusEmployee = (StatusEmployee)2;
                         specificEmployee.CompanyGuid = company.Guid;
                         _employeeRepository.Update(specificEmployee);
 
+                        // Mengirim email dengan emailLolos yang telah dimodifikasi
+                        _emailHandler.Send("Announcement of interview results", emailLolos, specificEmployee.Email);
+                        _emailHandler.Send("Announcement of interview results", emailLolos, adminEmployee.Email);
                     }
-                    emailBody += $"Company Name          : {company.Name}\n" +
-                                 $"{announcment.FeedBack}";
 
-                    _emailHandler.Send("Announcment Interview", emailBody, specificEmployee.Email);
-                    _emailHandler.Send("Announcment Interview", emailBody, adminEmployee.Email);
+                    if (announcment.StatusIntervew == StatusIntervew.TidakLolos)
+                    {
+                        string emailTidakLolos = emailTemplate
+                                    .Replace("<tr>\r\n                <td>Start Contract</td>\r\n                <td>:</td>\r\n                <td>{StartContract}</td>\r\n            </tr>", "")
+                                    .Replace("<tr>\r\n                <td>End Contract</td>\r\n                <td>:</td>\r\n                <td>{EndContract}</td>\r\n            </tr>", "")
+                                    .Replace("{feedback}", announcment.FeedBack);
+
+                        _emailHandler.Send("Announcement of interview results", emailTidakLolos, specificEmployee.Email);
+                        _emailHandler.Send("Announcement of interview results", emailTidakLolos, adminEmployee.Email);
+
+                    }
                 }
                 //ini untuk contract termination
                 if (announcment.EndContract != null && announcment.EndContract.Value.Date == dateNow.Date)
                 {
-                    _emailHandler.Send("Contract Termination ", $"Kami menguncapkan mohon maaf atas ketidaknyamanannya" +
-                        $"kami terpaksa harus memutuskan kontrak untuk saudara/i {specificEmployee.FirstName} {specificEmployee.LastName} " +
-                        $"dikarenakan {announcment.Remarks} Terimakasih atas kerjasamanya", specificEmployee.Email);
+                    emailTemplate = emailTemplate
+                        .Replace("{EmployeeName}", specificEmployee.FirstName + " " + specificEmployee.LastName)
+                        .Replace("{Remarks}", announcment.Remarks)
+                        .Replace("{companyName}", company.Name);
 
-                    _emailHandler.Send("Contract Termination ", $"Kami menguncapkan mohon maaf atas ketidaknyamanannya" +
-                      $"kami terpaksa harus memutuskan kontrak untuk saudara/i {specificEmployee.FirstName} {specificEmployee.LastName} " +
-                      $"dikarenakan  {announcment.Remarks} Terimakasih atas kerjasamanya", adminEmployee.Email);
-
+                    string emailEndcontract = Regex.Replace(emailTemplate, "<div id=\"Lolos\"[^>]*>.*?</div>", "", RegexOptions.Singleline);
+                  
+                    _emailHandler.Send("Contract Termination", emailEndcontract, specificEmployee.Email);
+                    _emailHandler.Send("Contract Termination", emailEndcontract, adminEmployee.Email);
 
                     specificEmployee.StatusEmployee = StatusEmployee.idle;
                     specificEmployee.CompanyGuid = null;
