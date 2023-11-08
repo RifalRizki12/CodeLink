@@ -9,6 +9,7 @@ using System.Data;
 using System.Net;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace API.Controllers;
 
@@ -182,7 +183,7 @@ public class InterviewController : ControllerBase
 
             if (specificEmployee != null && rating.Rate == null)
             {
-                string emailTemplatePath = "utilities/TemplateEmail/Announcement.html"; // Sesuaikan path Anda.
+                string emailTemplatePath = "utilities/TemplateEmail/Announcement.html"; // Sesuaikan path tempat template.
                 string emailTemplate = System.IO.File.ReadAllText(emailTemplatePath);
 
 
@@ -373,16 +374,34 @@ public class InterviewController : ControllerBase
             var specificEmployee = _employeeRepository.GetByGuid(interviewDto.EmployeeGuid); // Ganti dengan metode yang sesuai
 
 
+            string emailTemplatePath = "utilities/TemplateEmail/Schedule.html"; // Sesuaikan path tempat template.
+            string emailTemplate = System.IO.File.ReadAllText(emailTemplatePath); 
+
             if (adminEmployee != null)
             {
-                _emailHandler.Send("Interview Schedule", $"Kami akan mengadakan {interviewDto.Name} pada {interviewDto.Date} untuk Idle dengan nama " +
-                    $"{specificEmployee.FirstName + " " + specificEmployee.LastName} Email : {specificEmployee.Email}", adminEmployee.Email);
+                emailTemplate = emailTemplate
+                      .Replace("{adminName}", adminEmployee.FirstName)
+                      .Replace("{interviewName}", interviewDto.Name)
+                      .Replace("{interviewDate}", interviewDto.Date.ToString())
+                      .Replace("{idleName}", specificEmployee.FirstName + " " + specificEmployee.LastName)
+                      .Replace("{emailIdle}", specificEmployee.Email);
+
+                string emailAdmin = Regex.Replace(emailTemplate, "<div id=\"idle\"[^>]*>.*?</div>", "", RegexOptions.Singleline);
+
+                _emailHandler.Send("Schdule Interview", emailAdmin, adminEmployee.Email);
             }
 
             // Mengirim email ke employee dengan GUID tertentu
             if (specificEmployee != null)
             {
-                _emailHandler.Send("Interview Schedule", $"Akan diadakan {interviewDto.Name} pada {interviewDto.Date}", specificEmployee.Email);
+                emailTemplate = emailTemplate
+                     .Replace("{interviewName}", interviewDto.Name)
+                     .Replace("{interviewDate}", interviewDto.Date.ToString())
+                     .Replace("{employeeName}", specificEmployee.FirstName + " " + specificEmployee.LastName);
+
+                string emailIdle = Regex.Replace(emailTemplate, "<div id=\"admin\"[^>]*>.*?</div>", "", RegexOptions.Singleline);
+
+                _emailHandler.Send("Schdule Interview", emailIdle, specificEmployee.Email);
             }
 
             // Mengembalikan data yang berhasil dibuat dalam respons OK.

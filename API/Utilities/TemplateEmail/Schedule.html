@@ -1,8 +1,5 @@
 ﻿<!DOCTYPE html>
 <html>
-<head>
-    <title>Judul Email Anda</title>
-</head>
 <body>
     <div style="max-width: 50%; margin: 0 auto;  padding: 20px; text-align: center;">
         <img src='cid:MIILogo' alt='Mii' width='100' height='100'>
@@ -11,42 +8,43 @@
     <div style="max-width: 50%; margin: 0 auto; background-color: #184698; padding: 20px; text-align: center;">
         <p><b style="color: white;">CODE LINK</b></p>
     </div>
- 
 
-    <div style="max-width: 50%; margin: 0 auto; padding: 20px;">
-        <p>Mohon perhatian, akan dilaksanakan {InterviewName} pada:</p>
+
+    <div id="admin" style="max-width: 50%; margin: 0 auto; padding: 20px;">
+        <p><b>Dear {adminName} </b></p>
+        <p>Akan diadakan {interviewName} pada:</p>
         <table>
             <tr>
                 <td>Tanggal</td>
                 <td>:</td>
-                <td>{InterviewDate}</td>
+                <td>{interviewDate}</td>
             </tr>
             <tr>
-                <td>Pelaksanaan</td>
+                <td>Nama Idle</td>
                 <td>:</td>
-                <td>{InterviewType}</td>
+                <td>{idleName}</td>
             </tr>
             <tr>
-                <td>Lokasi</td>
+                <td>Email Idle</td>
                 <td>:</td>
-                <td>{InterviewLocation}</td>
-            </tr>
-            <tr>
-                <td>Company Name</td>
-                <td>:</td>
-                <td id="companyNamePlaceholder">{CompanyName}</td>
-            </tr>
-            <tr>
-                <td>Nama Peserta</td>
-                <td id="peserta">:</td>
-                <td>{SpecificEmployeeName}</td>
-            </tr>
-            <tr>
-                <td>Keterangan Tambahan</td>
-                <td>:</td>
-                <td>{InterviewRemarks}</td>
+                <td>{emailIdle}</td>
             </tr>
         </table>
+        <p>Mohon segera melakukan check website dan menambahkan detail schedulenya </p>
+
+    </div>
+
+    <div id="idle" style="max-width: 50%; margin: 0 auto; padding: 20px;">
+        <p><b>Dear {employeeName} </b></p>
+        <p>Akan diadakan {interviewName} pada:</p>
+        <table>
+            <tr>
+                <td>Tanggal</td>
+                <td>:</td>
+                <td>{interviewDate}</td>
+            </tr>
+        </table>
+        <p>Mohon menunggu informasi lebih lanjut mengenai detail schdule interview</p>
     </div>
 
     <div style="max-width: 50%; margin: 0 auto; background-color: #184698; padding: 20px; text-align: center;">
