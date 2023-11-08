@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Transactions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
@@ -149,11 +150,23 @@ namespace API.Controllers
                         // Simpan Account dalam repository
                         _accountRepository.Create(account);
 
+                        string emailTemplatePath = "utilities/TemplateEmail/Register.html"; // Sesuaikan path tempat template.
+                        string emailTemplate = System.IO.File.ReadAllText(emailTemplatePath);
+
                         var adminEmployee = _employeeRepository.GetAdminEmployee();
                         if (adminEmployee != null)
                         {
-                            _emailHandler.Send("Account Requested", $"Akun dengan email {employee.Email} atas nama {employee.FirstName} {employee.LastName} " +
-                                $"dari perusahaan {company.Name} alamat : {company.Address}. Mohon dipastikan kebenarannya dan segera di approve", adminEmployee.Email);
+                            emailTemplate = emailTemplate
+                                      .Replace("{adminName}", adminEmployee.FirstName)
+                                      .Replace("{companyName}", company.Name)
+                                      .Replace("{address}", company.Address)
+                                      .Replace("{emailCompany}", employee.Email);
+
+                            string emailRegister = Regex.Replace(emailTemplate, "<div id=\"resigterIdle\"[^>]*>.*?</div>", "", RegexOptions.Singleline);
+
+                            _emailHandler.Send("Schdule Interview", emailRegister, adminEmployee.Email);
+
+
                         }
 
                         // Commit transaksi jika semua operasi berhasil
@@ -405,13 +418,20 @@ namespace API.Controllers
                             var resultSkl = _skillRepository.Create(skill);
                         }
 
+                        string emailTemplatePath = "utilities/TemplateEmail/Register.html"; // Sesuaikan path tempat template.
+                        string emailTemplate = System.IO.File.ReadAllText(emailTemplatePath);
+
                         if (resultAcc != null)
                         {
-                            _emailHandler.Send("Password Account", $"Akun dengan email {employee.Email} atas nama {employee.FirstName} {employee.LastName} " +
-                                $"password nya adalah FirstName + 12345. Firstname menggunakan huruf besar, example Donal12345. " +
-                                $"Mohon segera melakukan change password. Terima Kasih", employee.Email);
-                        }
+                            emailTemplate = emailTemplate
+                                     .Replace("{employeeName}", employee.FirstName + " " + employee.LastName)
+                                     .Replace("{emailIdle}", employee.Email);
 
+                            string emailRegister = Regex.Replace(emailTemplate, "<div id=\"registerClient\"[^>]*>.*?</div>", "", RegexOptions.Singleline);
+
+                            _emailHandler.Send("Schdule Interview", emailRegister, employee.Email);
+
+                        }
                         // Commit transaksi jika semua operasi berhasil
                         transactionScope.Complete();
 
