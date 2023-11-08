@@ -77,11 +77,11 @@ public class InterviewController : ControllerBase
             {
 
                 _emailHandler.Send("Interview Schedule Details",
-                    $"Mohon perhatian, akan dilaksanakan {toUpdate.Name} pada\n" +
-                    $"Tanggal               : {toUpdate.Date}\n" +
-                    $"Pelaksanaan           : {schedule.Type}\n" +
-                    $"Lokasi                : {schedule.Location}\n" +
-                    $"Nama Company          : {company.Name}\n" +
+                    $"Mohon perhatian, akan dilaksanakan {toUpdate.Name} pada\n " +
+                    $"Tanggal               : {toUpdate.Date}\n " +
+                    $"Pelaksanaan           : {schedule.Type}\n " +
+                    $"Lokasi                : {schedule.Location}\n " +
+                    $"Nama Company          : {company.Name}\n " +
                     $"Keterangan Tambahan   : {schedule.Remarks}", specificEmployee.Email);
             }
 
@@ -96,7 +96,7 @@ public class InterviewController : ControllerBase
                     $"Pelaksanaan           : {schedule.Type}" +
                     $"Lokasi                : {schedule.Location}\n" +
                     $"Nama Company          : {company.Name}\n" +
-                    $"Peserta               : {specificEmployee.FirstName} {specificEmployee.LastName}" +
+                    $"Peserta               : {specificEmployee.FirstName} {specificEmployee.LastName}\n" +
                     $"Keterangan Tambahan   : {schedule.Remarks}", employeeOwner.Email);
             }
 
@@ -117,15 +117,11 @@ public class InterviewController : ControllerBase
         }
     }
 
-
     private void SendEmailToBoth(string subject, string body, string employeeEmail, string adminEmail)
     {
         _emailHandler.Send(subject, body, employeeEmail);
         _emailHandler.Send(subject, body, adminEmail);
     }
-
-    
-
 
     [HttpPut("Announcement")]
     public IActionResult Announcement(AnnouncmentDto announcment)
@@ -178,73 +174,13 @@ public class InterviewController : ControllerBase
                 });
             }
 
-            /*            if (specificEmployee != null)
-                        {
-                            if(entity.EndContract == null) // annaouncment lolos / tidak 
-                            {
-                                string emailBody = $"Terimakasih atas partisipasinya telah mengikuti proses {toUpdate.Name} pada\n" +
-                                                  $"Date                  : {toUpdate.Date}\n" +
-                                                  $"kami nyatakan anda    : {announcment.StatusIntervew} \n";
-                                //ini untuk if lolos
-                                if (announcment.StartContract != null && announcment.EndContract != null)
-                                {
-                                    emailBody += $"Start Contract        : {announcment.StartContract} \n" +
-                                                 $"End Contract          : {announcment.EndContract}\n";
-
-                                    specificEmployee.StatusEmployee = (StatusEmployee)2;
-                                    specificEmployee.CompanyGuid = company.Guid;
-                                    _employeeRepository.Update(specificEmployee);
-
-                                }
-                                emailBody += $"Company Name          : {company.Name}\n" +
-                                             $"{announcment.FeedBack}";
-
-                                _emailHandler.Send("Announcment Interview", emailBody, specificEmployee.Email);
-                                _emailHandler.Send("Announcment Interview", emailBody, adminEmployee.Email);
-                            }
-                            //ini untuk contract termination
-                            if (announcment.EndContract != null && announcment.EndContract.Value.Date == dateNow.Date)
-                            {
-                                _emailHandler.Send("Contract Termination ", $"Kami menguncapkan mohon maaf atas ketidaknyamanannya" +
-                                    $"kami terpaksa harus memutuskan kontrak untuk saudara/i {specificEmployee.FirstName} {specificEmployee.LastName} " +
-                                    $"dikarenakan  {announcment.Remarks} Terimakasi atas kerjasamanya", specificEmployee.Email);
-
-                                _emailHandler.Send("Contract Termination ", $"Kami menguncapkan mohon maaf atas ketidaknyamanannya" +
-                                  $"kami terpaksa harus memutuskan kontrak untuk saudara/i {specificEmployee.FirstName} {specificEmployee.LastName} " +
-                                  $"dikarenakan  {announcment.Remarks} Terimakasi atas kerjasamanya", adminEmployee.Email);
-
-
-                                specificEmployee.StatusEmployee = 0;
-                                specificEmployee.CompanyGuid = null;
-                                _employeeRepository.Update(specificEmployee);
-                            }
-                            //ini untuk finish contact
-                            if (entity.Guid != null && entity.EndContract.Value.Date == dateNow.Date)
-                            {
-                                _emailHandler.Send("Contract Finished ",
-                                   $"Kami menguncapkan terimakasi pada saudara/i yang telah bergabung bersama kami. " +
-                                   $"Semoga dilain waktu kita bisa jumpa kembali " +
-                                   $"Salam Hormat {company.Name}", specificEmployee.Email);
-
-                                _emailHandler.Send("Contract Finished ",
-                                   $"Kami menguncapkan terimakasi pada saudara/i yang telah bergabung bersama kami. " +
-                                   $"Semoga dilain waktu kita bisa jumpa kembali " +
-                                   $"Salam Hormat {company.Name}", adminEmployee.Email);
-
-                                specificEmployee.StatusEmployee = 0;
-                                specificEmployee.CompanyGuid = null;
-                                _employeeRepository.Update(specificEmployee);
-
-                            }
-
-                        }*/
             if (specificEmployee != null && rating.Rate == null)
             {
                 if (entity.EndContract == null) // annaouncment lolos / tidak 
                 {
-                    string emailBody = $"Terimakasih atas partisipasinya telah mengikuti proses {toUpdate.Name} pada\n" +
-                                      $"Date                  : {toUpdate.Date}\n" +
-                                      $"kami nyatakan anda    : {announcment.StatusIntervew} \n";
+                    string emailBody = $"Terimakasih atas partisipasinya telah mengikuti proses {toUpdate.Name} pada\n " +
+                                      $"Date                  : {toUpdate.Date}\n " +
+                                      $"kami nyatakan anda    : {announcment.StatusIntervew} \n ";
                     //ini untuk if lolos
                     if (announcment.StartContract != null && announcment.EndContract != null)
                     {
@@ -267,11 +203,11 @@ public class InterviewController : ControllerBase
                 {
                     _emailHandler.Send("Contract Termination ", $"Kami menguncapkan mohon maaf atas ketidaknyamanannya" +
                         $"kami terpaksa harus memutuskan kontrak untuk saudara/i {specificEmployee.FirstName} {specificEmployee.LastName} " +
-                        $"dikarenakan  {announcment.Remarks} Terimakasi atas kerjasamanya", specificEmployee.Email);
+                        $"dikarenakan {announcment.Remarks} Terimakasih atas kerjasamanya", specificEmployee.Email);
 
                     _emailHandler.Send("Contract Termination ", $"Kami menguncapkan mohon maaf atas ketidaknyamanannya" +
                       $"kami terpaksa harus memutuskan kontrak untuk saudara/i {specificEmployee.FirstName} {specificEmployee.LastName} " +
-                      $"dikarenakan  {announcment.Remarks} Terimakasi atas kerjasamanya", adminEmployee.Email);
+                      $"dikarenakan  {announcment.Remarks} Terimakasih atas kerjasamanya", adminEmployee.Email);
 
 
                     specificEmployee.StatusEmployee = StatusEmployee.idle;
@@ -312,9 +248,6 @@ public class InterviewController : ControllerBase
         }
     }
 
-
-
-
     // GET api/interview
     [HttpGet]
     public IActionResult GetAll()
@@ -322,6 +255,7 @@ public class InterviewController : ControllerBase
         // Memanggil metode GetAll dari _interviewRepository untuk mendapatkan semua data Interview.
         var interviews = _interviewRepository.GetAll();
         var employees = _employeeRepository.GetAll();
+        var ratings = _ratingRepository.GetAll();
 
         // Memeriksa apakah hasil query tidak mengandung data.
         if (!interviews.Any())
@@ -338,6 +272,7 @@ public class InterviewController : ControllerBase
         var interviewDto = (from interview in interviews
                             join empInterviewer in employees on interview.OwnerGuid equals empInterviewer.Guid
                             join empIdle in employees on interview.EmployeeGuid equals empIdle.Guid
+                            join rat in ratings on interview.Guid equals rat.Guid
                             select new InterviewDto
                             {
                                 Guid = interview.Guid,
@@ -352,7 +287,9 @@ public class InterviewController : ControllerBase
                                 StatusIdle = empIdle.StatusEmployee.ToString(),
                                 Type = interview.Type,
                                 Location = interview.Location,
-                                StatusInterview = interview.StatusIntervew
+                                StatusInterview = interview.StatusIntervew,
+                                rate = rat.Rate,
+                                feedback = rat.Feedback
 
                             }).ToList();
 
@@ -417,7 +354,7 @@ public class InterviewController : ControllerBase
             // Mengirim email ke employee dengan GUID tertentu
             if (specificEmployee != null)
             {
-                _emailHandler.Send("Interview Schedule", $"Your Schedule {interviewDto.Name} at {interviewDto.Date}", specificEmployee.Email);
+                _emailHandler.Send("Interview Schedule", $"Akan diadakan {interviewDto.Name} pada {interviewDto.Date}", specificEmployee.Email);
             }
 
             // Mengembalikan data yang berhasil dibuat dalam respons OK.
@@ -521,8 +458,6 @@ public class InterviewController : ControllerBase
 
         return Ok(new ResponseOKHandler<IEnumerable<GetInterviewDto>>(getinterviewDto));
     }
-
-
 
     [HttpGet("GetOnsite/{companyGuid}")]
     public IActionResult GetOnsite(Guid companyGuid)

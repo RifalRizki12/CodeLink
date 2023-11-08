@@ -9,29 +9,23 @@ $(document).ready(function () {
         const photoURL = `${baseURL}ProfilePictures/${item.foto}`;
 
         return `
-            <tr class="pt-30" style="text-align:center;">
-              
-               <td class="image product-thumbnail pt-40">
+            <tr class="pt-30" style="text-align:center; display: flex; justify-content: space-between; align-items: center;">
+                <td class="image product-thumbnail pt-40">
                     <img src="${photoURL}" alt="${item.idle}">
                     <h6><a class="product-name mb-10" href="">${item.idle}</a></h6>
-               
-               </td>
-               <td class="product-des product-name">
-               </td>
-               <td class="product-des product-name" data-title="date">
-                   <h6 class="text-brand">${item.date}</h6>
-               </td>
-            
-                 <td class="text-center" style="padding: 8px;" data-title="Aksi">
-    <!-- Button Lolos dengan gaya inline -->
-    <button class="btn btn-lolos" style="background-color: #6baf92; color: white; border-radius: 20px; padding: 8px 15px; border: none; outline: none; font-size: 0.9em; margin-right: 10px;" data-guid1="${item.interviewGuid}" data-guid2="${item.employeGuid}" data-bs-toggle="modal" data-bs-target="#lolosInterview">Lolos</button>
-    <!-- Button Tidak Lolos dengan gaya inline -->
-    <button class="btn btn-tdkLolos" style="background-color: #d9534f; color: white; border-radius: 20px; padding: 8px 15px; border: none; outline: none; font-size: 0.9em;" data-guid1="${item.interviewGuid}" data-guid2="${item.employeGuid}" data-bs-toggle="modal" data-bs-target="#tdkLolosInterview">Tidak Lolos</button>
-</td>
-
-
-
+                </td>
+                <td class="product-des product-name">
+                </td>
+                <td class="product-des product-name" data-title="date">
+                    <h5 class="" style="color: black;">Date Interview</h6>
+                    <h6 class="text-brand">${item.date}</h6>
+                </td>
+                <td class="text-center" style="padding: 8px;" data-title="Aksi">
+                    <button class="btn btn-lolos" style="background-color: #6baf92; color: white; border-radius: 20px; padding: 8px 15px; border: none; outline: none; font-size: 0.9em; margin-right: 10px;" data-guid1="${item.interviewGuid}" data-guid2="${item.employeGuid}" data-bs-toggle="modal" data-bs-target="#lolosInterview">Lolos</button>
+                    <button class="btn btn-tdkLolos" style="background-color: #d9534f; color: white; border-radius: 20px; padding: 8px 15px; border: none; outline: none; font-size: 0.9em;" data-guid1="${item.interviewGuid}" data-guid2="${item.employeGuid}" data-bs-toggle="modal" data-bs-target="#tdkLolosInterview">Tidak Lolos</button>
+                </td>
             </tr>
+
         `;
     }
 
@@ -70,7 +64,16 @@ $(document).ready(function () {
 
     $("#lolosForm").submit(function (event) {
         event.preventDefault();
+
+        $('.btn-save').attr('disabled', true);
+        $('.btn-save').text('Loading...');
+
         lolosInterview(guidInterview);
+
+        setTimeout(function () {
+            $('.btn-save').attr('disabled', false);
+            $('.btn-save').text('Save');
+        }, 5000);
     });
 
     function lolosInterview(guidInterview) {
@@ -80,7 +83,7 @@ $(document).ready(function () {
 
         if (contractStart === "" || contractEnd === "") {
             Swal.fire({
-                title: 'Data Inputan Tidak Boleh Kosong',
+                text: 'Data Inputan Tidak Boleh Kosong',
                 icon: 'info',
                 showCloseButton: true,
                 focusConfirm: false,
@@ -101,7 +104,7 @@ $(document).ready(function () {
         if (startContractDate <= today) {
             
             Swal.fire({
-                title: 'Tanggal start contract tidak boleh kurang dari hari ini',
+                text: 'Tanggal start contract tidak boleh kurang dari hari ini',
                 icon: 'info',
                 showCloseButton: true,
                 focusConfirm: false,
@@ -111,7 +114,7 @@ $(document).ready(function () {
             return;
         } else if (endContractDate <= today || endContractDate < startContractDate) {
             Swal.fire({
-                title: 'Tanggal End Contract Tidak Valid',
+                text: 'Tanggal End Contract Tidak Valid',
                 icon: 'info',
                 showCloseButton: true,
                 focusConfirm: false,
@@ -145,6 +148,8 @@ $(document).ready(function () {
                     icon: 'success',
                     title: 'Proses Rekrutmen Berhasil',
                     text: 'Terimakasih Orang Baik!!!.'
+                }).then(function () {
+                    location.reload(); // Reload halaman setelah pengguna menekan tombol "OK"
                 });
             },
             error: function (response) {
@@ -153,6 +158,8 @@ $(document).ready(function () {
                     icon: 'error',
                     title: 'Perekrutan gagal',
                     text: 'Terjadi kesalahan saat mencoba merekrut partner.'
+                }).then(function () {
+                    location.reload(); // Reload halaman setelah pengguna menekan tombol "OK"
                 });
             }
         });
@@ -167,13 +174,22 @@ $(document).ready(function () {
 
     $("#tdkLolosForm").submit(function (event) {
         event.preventDefault();
+
+        $('.btn-save').attr('disabled', true);
+        $('.btn-save').text('Loading...');
+
         tidakLolosInterview(guidInterview);
+
+        setTimeout(function () {
+            $('.btn-save').attr('disabled', false);
+            $('.btn-save').text('Save');
+        }, 5000);
     });
     function tidakLolosInterview(guidInterview) {
 
         if ($("#feedback").val() === "") {
             Swal.fire({
-                title: 'Kasih FeedBack dulu yaaa!!!',
+                text: 'Kasih FeedBack dulu yaaa!!!',
                 icon: 'info',
                 showCloseButton: true,
                 focusConfirm: false,
@@ -205,6 +221,8 @@ $(document).ready(function () {
                     icon: 'success',
                     title: 'Rekrutmen Tidak Lolos',
                     text: 'Orang yang Anda pilih tidak lolos dalam rekrutmen.'
+                }).then(function () {
+                    location.reload(); // Reload halaman setelah pengguna menekan tombol "OK"
                 });
             },
             error: function (response) {
@@ -232,25 +250,26 @@ $(document).ready(function () {
         const photoURL = `${baseURL}ProfilePictures/${item.foto}`;
 
         return `
-            <tr class="pt-30" style="text-align:center;">
-               <td class="image product-thumbnail pt-40">
+            <tr class="pt-30" style="text-align: center; display: flex; justify-content: space-between; align-items: center;">
+                <td class="image product-thumbnail pt-40">
                     <img src="${photoURL}" alt="${item.idle}">
                     <h6><a class="product-name mb-10" href="">${item.idle}</a></h6>
-               
-               </td>
-               <td class="product-des product-name">
-               </td>
-               <td class="product-des product-name" data-title="date">
-                   <h6 class="text-brand">${item.startContract}</h6>
-               </td>
-               <td class="product-des product-name" data-title="date">
-                   <h6 class="text-brand">${item.endContract}</h6>
-               </td>
-               <td style="display: flex; justify-content: flex-end; align-items: center; height: 100%;">
-  <button class="btn btn-sm btn-endContract" style="background-color: #d9534f; color: white; border-radius: 20px; padding: 8px 20px; border: none; outline: none; font-size: 0.9em;" data-date="${item.startContract}" data-guid1="${item.interviewGuid}" data-guid2="${item.employeGuid}" data-bs-toggle="modal" data-bs-target="#endContract">EndContract</button>
-</td>
-
+                </td>
+                <td class="product-des product-name">
+                </td>
+                <td class="product-des product-name" data-title="date">
+                    <h5 class="" style="color: black;">Start Contract</h6>                    
+                    <h6 class="text-brand">${item.startContract}</h6>
+                </td>
+                <td class="product-des product-name" data-title="date">
+                    <h5 class="" style="color: black;">End Contract</h6>
+                    <h6 class="text-brand">${item.endContract}</h6>
+                </td>
+                <td style="text-align: right;">
+                    <button class="btn btn-sm btn-endContract" style="background-color: #d9534f; color: white; border-radius: 20px; padding: 8px 20px; border: none; outline: none; font-size: 0.9em;" data-date="${item.startContract}" data-guid1="${item.interviewGuid}" data-guid2="${item.employeGuid}" data-bs-toggle="modal" data-bs-target="#endContract">EndContract</button>
+                </td>
             </tr>
+
         `;
     }
 
@@ -291,14 +310,22 @@ $(document).ready(function () {
 
     $("#endContractForm").submit(function (event) {
         event.preventDefault();
-        endContract(guidInterview);
+        $('.btn-save').attr('disabled', true);
+        $('.btn-save').text('Loading...');
+
+        endContract(guidInterview);        
+
+        setTimeout(function () {
+            $('.btn-save').attr('disabled', false);
+            $('.btn-save').text('Save');
+        }, 5000);
     });
     
     function endContract(guidInterview) {
 
         if ($("#remarks").val() === "") {
             Swal.fire({
-                title: 'Alasan end contractnya diisi dulu ya Kakak!!!',
+                text: 'Alasan end contractnya diisi dulu ya Kakak!!!',
                 icon: 'info',
                 showCloseButton: true,
                 focusConfirm: false,
@@ -342,7 +369,9 @@ $(document).ready(function () {
                 Swal.fire({
                     icon: 'success',
                     title: 'End Contract Berhasil Dilakukan',
-                    text: 'Semoga cepat menemukan orang baru!.'
+                    text: 'Semoga cepat menemukan orang baru !'
+                }).then(function () {
+                    location.reload(); // Reload halaman setelah pengguna menekan tombol "OK"
                 });
             },
             error: function (response) {
@@ -350,7 +379,7 @@ $(document).ready(function () {
                 Swal.fire({
                     icon: 'error',
                     title: 'Pembaruan data tidak lolos gagal',
-                    text: 'Terjadi kesalahan saat anda mencoba menolak partner.'
+                    text: 'Terjadi kesalahan saat anda mencoba menolak partner !'
                 });
             }
         });
@@ -389,31 +418,24 @@ $(document).ready(function () {
         const disabledAttribute = isRated ? 'disabled' : ''; 
 
         return `
-       <tr class="pt-30" style="text-align:center;">
-          <td class="image product-thumbnail pt-40">
-               <img src="${photoURL}" alt="${item.idle}">
-          </td>
-          <td class="product-des product-name">
-          </td>
-          <td class="product-des product-name" data-title="date">
-              <h6 class="text-brand">${item.idle}</h6>
-          </td>
-
-          <td class="product-des product-name" data-title="date">
-          <div class="product-rate d-inline-block">
-                            <div class="product-rating" style="width: ${item.rate * 20}%"></div>
-                        </div>
-          </td>
-          <td class="product-des product-name" data-title="date">
-              <h6 class="text-brand">${item.endContract}</h6>
-          </td>
-
-          
-          <td class="text-right" data-title="Lolos">
-        <button ${disabledAttribute} style="display: block; margin-left: auto; margin-right: auto; background-color: #6baf92; color: white; border-radius: 20px; padding: 8px 20px; border: none; outline: none; font-size: 0.9em; ${ratedStyle}" class="btn-sm btn-rating" data-rated="${isRated ? 'true' : 'false'}" data-guid1="${item.interviewGuid}" data-guid2="${btnGuid}" data-end-contract="${item.endContract}" data-status-interview="${item.statusInterview}" data-remaks="${item.remarks}" data-start-contract="${item.startContract}" data-bs-toggle="modal" data-bs-target="#ratingInterview">Rating</button>
-
-
-               </td>
+           <tr class="pt-30" style="text-align: center; display: flex; justify-content: space-between; align-items: center;">
+                <td class="image product-thumbnail pt-40">
+                    <img src="${photoURL}" alt="${item.idle}">
+                    <h6><a class="product-name mb-10" href="" >${item.idle}</a></h6>
+                </td>
+                <td class="product-des product-name" data-title="date" style="margin-left: 10px;">
+                    <h5 class="" style="color: black;">Rating</h6>
+                    <div class="product-rate d-inline-block">
+                        <div class="product-rating" style="width: ${item.rate * 20}%"></div>
+                    </div>
+                </td>
+                <td class="product-des product-name" data-title="date" style="margin-left: 10px;">
+                    <h5 class="" style="color: black;">End Contract</h6>
+                    <h6 class="text-brand">${item.endContract}</h6>
+                </td>
+                <td class="text-right" data-title="Lolos">
+                    <button ${disabledAttribute} style="background-color: #6baf92; color: white; border-radius: 20px; padding: 8px 20px; border: none; outline: none; font-size: 0.9em; ${ratedStyle}" class="btn-sm btn-rating" data-rated="${isRated ? 'true' : 'false'}" data-guid1="${item.interviewGuid}" data-guid2="${btnGuid}" data-end-contract="${item.endContract}" data-status-interview="${item.statusInterview}" data-remaks="${item.remarks}" data-start-contract="${item.startContract}" data-bs-toggle="modal" data-bs-target="#ratingInterview">Rating</button>
+                </td>
             </tr>
         `;
     }
@@ -512,12 +534,21 @@ $(document).ready(function () {
 
     $("#ratingForm").submit(function (event) {
         event.preventDefault();
-        rateInterview(guidInterview, endContractDate, statusInterviews, remaks, startContractDate);
+        $('.btn-save').attr('disabled', true);
+        $('.btn-save').text('Loading...');
+
+        rateInterview(guidInterview, endContractDate, statusInterviews, remaks, startContractDate);        
+
+        setTimeout(function () {
+            $('.btn-save').attr('disabled', false);
+            $('.btn-save').text('Save');
+        }, 5000);
     });
     function rateInterview(guidInterview, endContractDate, statusInterviews, remaks, startContractDate) {
         console.log("ini guid di update", guidInterview);
 
         var feedbackInput = $("#feedback").val();
+        console.log("Feedback: ", feedbackInput)
         var rateInput;
         if ($('input[name="rating"]:checked').length > 0) {
             rateInput = parseInt($('input[name="rating"]:checked').val());
@@ -525,11 +556,11 @@ $(document).ready(function () {
             // Anda bisa menetapkan nilai default jika tidak ada bintang yang dipilih
             rateInput = 0;
         }
-        console.log(rateInput);
+        console.log("RateInput :", rateInput);
       
         if (feedbackInput === "" || rateInput === 0 ) {
             Swal.fire({
-                title: 'Isi semua datanya dong Kakak!!!',
+                text: 'Isi semua datanya dong Kakak!!!',
                 icon: 'info',
                 showCloseButton: true,
                 focusConfirm: false,
@@ -553,7 +584,7 @@ $(document).ready(function () {
 
         };
 
-        console.log(obj);
+        console.log("Obj :",obj);
         // lnjut disini, belum bikin controller dan repo
         $.ajax({
             url: '/Interview/Announcement/' + guidInterview,
@@ -568,15 +599,16 @@ $(document).ready(function () {
                     icon: 'success',
                     title: 'Terimakasih Atas Kepercayaanya',
                     text: 'Kami Tunggu Kembali Pesanan Anda.'
+                }).then(function () {
+                    location.reload(); // Reload halaman setelah pengguna menekan tombol "OK"
                 });
-
             },
             error: function (response) {
                 $('#ratingInterview').modal('hide');
                 Swal.fire({
                     icon: 'error',
-                    title: 'Pembaruan data tidak lolos gagal',
-                    text: 'Terjadi kesalahan saat anda mencoba menolak partner.'
+                    title: 'Rating gagal ditambahkan',
+                    text: 'Terjadi kesalahan saat anda mencoba memberikan rating.'
                 });
             }
         });

@@ -1,0 +1,66 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Index Employee";
+    Layout = "/Views/Shared/Admin/_Layout.cshtml";
+}
+<style>
+    /* Ganti warna teks saat di hover */
+    a.read-more:hover {
+        color: blue;
+    }
+
+    /* Ganti tampilan kursor saat di hover */
+    a.read-more:hover {
+        cursor: pointer;
+    }
+
+</style>
+<!-- Complex Headers -->
+<div class="card">
+    <h5 class="card-header">History Inteview</h5>
+    <div class="dt-action-buttons text-end pt-3 pt-md-0">
+    </div>
+    <div class="card-datatable text-nowrap table-responsive">
+        <table id="historyInterview" class="dt-complex-header table table-bordered dt-responsive table datatables-basic table">
+            <thead>
+                <tr>
+                    <th rowspan="2">No</th>
+                    <th colspan="5" style="text-align: center;">Data</th>
+                    <th colspan="3" style="text-align: center;">Info</th>
+                </tr>
+                <tr>
+                    <th>Idle Name </th>
+                    <th>Interviewer</th>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Contract</th>
+                    <th>Status Interview</th>
+                    <th>Rating</th>
+                    <th>Feedback</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<!--/ Complex Headers -->
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <!-- DataTables JavaScript -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <!-- DataTables Buttons JavaScript -->
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js"></script>
+
+    <!-- Your DataTable Initialization Script -->
+    <script src="~/js/Interview.js" asp-append-version="true"></script>
+
+}

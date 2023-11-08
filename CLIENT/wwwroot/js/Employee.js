@@ -166,7 +166,7 @@
                 render: function (data, type, row) {
                     return `
                      <div class="text-center">
-                        <button type="button" class="btn btn-danger btn-sm nonAktif" data-guid="${data.guid}" data-bs-toggle="modal" data-bs-target="#modalEditEmployee">NonAktif</button>
+                        <button type="button" class="btn btn-danger btn-sm nonAktif" data-guid="${data.guid}" >NonAktif</button>
                     </div> <br/> 
                     <div class="text-center">
                         <button type="button" class="btn btn-warning btn-sm edit-button" data-guid="${data.guid}" data-bs-toggle="modal" data-bs-target="#modalEditEmployee">Update</button>
@@ -439,7 +439,7 @@
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Pembaruan berhasil',
-                                text: 'Status akun klien telah diubah !',
+                                text: 'Status akun Idle telah diubah !',
                                 showCloseButton: false,
                                 focusConfirm: false,
                                 customClass: {
@@ -452,7 +452,7 @@
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Pembaruan Gagal',
-                                text: 'Terjadi kesalahan saat mencoba mengubah status akun klien !',
+                                text: 'Terjadi kesalahan saat mencoba mengubah status akun Idle !',
                                 showCloseButton: false,
                                 focusConfirm: false,
                                 customClass: {
