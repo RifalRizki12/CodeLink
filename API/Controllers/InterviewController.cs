@@ -95,14 +95,17 @@ public class InterviewController : ControllerBase
                 string emailTemplateSpecificEmployee = emailTemplate
                     .Replace("<td>Nama Peserta</td>", "")
                     .Replace("<td id=\"peserta\">:</td>", "")
-                    .Replace("<td>{SpecificEmployeeName}</td>", "");
+                    .Replace("<td>{SpecificEmployeeName}</td>", "")
+                    .Replace("{fullName}", specificEmployee.FirstName+ " " + specificEmployee.LastName);;
                 _emailHandler.Send("Interview Schedule Details", emailTemplateSpecificEmployee, specificEmployee.Email);
             }
 
 
             if (employeeOwner != null)
             {
-                string emailTemplateOwner = emailTemplate.Replace("{SpecificEmployeeName}", specificEmployee.FirstName + " " + specificEmployee.LastName);
+                string emailTemplateOwner = emailTemplate
+                    .Replace("{SpecificEmployeeName}", specificEmployee.FirstName + " " + specificEmployee.LastName)
+                    .Replace("{fullName}", employeeOwner.FirstName + " " + employeeOwner.LastName);
                 _emailHandler.Send("Interview Schedule Details", emailTemplateOwner, employeeOwner.Email);
             }
 
