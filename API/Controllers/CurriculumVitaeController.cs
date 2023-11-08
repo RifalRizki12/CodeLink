@@ -25,10 +25,8 @@ namespace API.Controllers
             // Memanggil metode GetAll dari _cvRepository untuk mendapatkan semua data experienceSkill.
             var result = _cvRepository.GetAll();
 
-            // Memeriksa apakah hasil query tidak mengandung data.
             if (!result.Any())
             {
-                // Mengembalikan respons Not Found jika tidak ada data experienceSkill.
                 return NotFound(new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status404NotFound,
@@ -51,10 +49,10 @@ namespace API.Controllers
             // Memanggil metode GetByGuid dari _cvRepository dengan parameter GUID.
             var result = _cvRepository.GetByGuid(guid);
 
-            // Memeriksa apakah hasil query tidak ditemukan (null).
+
             if (result is null)
             {
-                // Mengembalikan respons Not Found jika data ExperienceSkill dengan GUID tertentu tidak ditemukan.
+                
                 return NotFound(new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status404NotFound,
@@ -82,7 +80,7 @@ namespace API.Controllers
             }
             catch (ExceptionHandler ex)
             {
-                // Mengembalikan respons server error jika terjadi kesalahan dalam proses.
+                
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status500InternalServerError,
@@ -102,8 +100,7 @@ namespace API.Controllers
                 // Memeriksa apakah entitas ExperienceSkill yang akan diperbarui ada dalam database.
                 var entity = _cvRepository.GetByGuid(expDto.Guid);
                 if (entity is null)
-                {
-                    // Mengembalikan respons Not Found jika experienceSkill dengan GUID tertentu tidak ditemukan.
+                {                   
                     return NotFound(new ResponseErrorHandler
                     {
                         Code = StatusCodes.Status404NotFound,
@@ -124,8 +121,7 @@ namespace API.Controllers
                 return Ok(new ResponseOKHandler<string>("Data Has Been Updated"));
             }
             catch (ExceptionHandler ex)
-            {
-                // Mengembalikan respons server error jika terjadi kesalahan dalam proses.
+            {                
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status500InternalServerError,
@@ -165,8 +161,7 @@ namespace API.Controllers
                 return Ok(new ResponseOKHandler<string>("Data Has Been Deleted"));
             }
             catch (ExceptionHandler ex)
-            {
-                // Mengembalikan respons server error jika terjadi kesalahan dalam proses.
+            {               
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status500InternalServerError,

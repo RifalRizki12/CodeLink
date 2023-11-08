@@ -50,80 +50,7 @@ namespace API.Controllers
             });
         }
 
-        //Login
-        /*[HttpPost("login")]
-        public IActionResult Login([FromBody] LoginDto request)
-        {
-            try
-            {
-                // Validasi input data menggunakan ModelState
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(new ResponseErrorHandler
-                    {
-                        Code = StatusCodes.Status400BadRequest,
-                        Status = HttpStatusCode.BadRequest.ToString(),
-                        Message = "Invalid input!"
-                    });
-                }
-
-                // Cari pengguna (akun) berdasarkan alamat email
-                var user = _accountRepository.GetByEmployeeEmail(request.Email);
-                var employee = _employeeRepository.GetByEmployeeEmail(request.Email);
-
-                if (user == null || !HashHandler.VerifyPassword(request.Password, user.Password))
-                {
-                    return BadRequest(new ResponseErrorHandler
-                    {
-                        Code = StatusCodes.Status400BadRequest,
-                        Status = HttpStatusCode.BadRequest.ToString(),
-                        Message = "Account or Password is invalid!",
-                    });
-                }
-
-                var claims = new List<Claim>();
-                claims.Add(new Claim("Email", employee.Email));
-                claims.Add(new Claim("Fullname", string.Concat(employee.FirstName + " " + employee.LastName)));
-                claims.Add(new Claim("StatusEmployee", employee.StatusEmployee.ToString()));
-                claims.Add(new Claim("Foto", employee.Foto ?? ""));
-
-                // Mengambil rata-rata rating dari tabel Rating berdasarkan Guid Employee
-                double? averageRating = _ratingRepository.GetAverageRatingByEmployee(employee.Guid);
-
-                if (averageRating.HasValue)
-                {
-                    claims.Add(new Claim("AverageRating", averageRating.Value.ToString()));
-                }
-
-                // Menggunakan RoleRepository untuk mendapatkan peran yang sesuai dengan akun
-                var role = _roleRepository.GetByGuid(user.RoleGuid);
-
-                if (role != null)
-                {
-                    claims.Add(new Claim(ClaimTypes.Role, role.Name));
-                }
-
-                // Menambahkan klaim GUID karyawan ke dalam token
-                var employeeGuidClaim = new Claim("EmployeeGuid", employee.Guid.ToString());
-                claims.Add(employeeGuidClaim);
-                var generateToken = _tokenHandler.Generate(claims);
-
-                // Jika validasi berhasil, kirim respons OK dengan pesan login berhasil
-                return Ok(new ResponseOKHandler<object>("Login Success", new { Token = generateToken }));
-            }
-            catch (Exception ex)
-            {
-                // Tangani pengecualian dan kembalikan respons 500 Internal Server Error
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorHandler
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Status = HttpStatusCode.InternalServerError.ToString(),
-                    Message = "Error during login",
-                    Error = ex.Message
-                });
-            }
-        }*/
-
+       
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginDto request)
         {
@@ -274,7 +201,7 @@ namespace API.Controllers
             var employees = _employeeRepository.GetAll();
             var accounts = _accountRepository.GetAll();
 
-            // Memeriksa apakah ada data karyawan dan akun
+ 
             if (!(employees.Any() && accounts.Any()))
             {
                 return NotFound(new ResponseErrorHandler
@@ -404,7 +331,7 @@ namespace API.Controllers
                 // Memanggil metode GetByGuid dari _accountRepository dengan parameter GUID.
                 var result = _accountRepository.GetByGuid(guid);
 
-                // Memeriksa apakah hasil query tidak ditemukan (null).
+
                 if (result is null)
                 {
                     return NotFound(new ResponseErrorHandler
@@ -420,7 +347,6 @@ namespace API.Controllers
             }
             catch (ExceptionHandler ex)
             {
-                // Jika terjadi pengecualian saat mengambil data, akan mengembalikan respons kesalahan dengan pesan pengecualian.
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status500InternalServerError,
@@ -474,8 +400,7 @@ namespace API.Controllers
         }
 
         // PUT api/account
-        [HttpPut] //menangani request update ke endpoint /Account
-                  //parameter berupa objek menggunakan format DTO explicit agar crete data disesuaikan dengan format DTO
+        [HttpPut] 
         public IActionResult Update(AccountDto accountDto)
         {
             try
@@ -484,7 +409,7 @@ namespace API.Controllers
                 var entity = _accountRepository.GetByGuid(accountDto.Guid);
                 if (entity is null) //cek apakah data berdasarkan guid tersedia 
                 {
-                    //respons dengan kode status HTTP 404(Not Found) dengan pesan kesalahan yang dihasilkan.
+                   
                     return NotFound(new ResponseErrorHandler
                     {
                         Code = StatusCodes.Status404NotFound,

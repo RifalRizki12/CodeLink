@@ -28,7 +28,6 @@ namespace API.Repositories
                                         (interview, rating) => rating.Rate)
                                   .ToList();
 
-            // Jika tidak ada rating yang ditemukan, kembalikan null
             if (!ratings.Any()) return null;
 
             // Hitung rata-rata rating

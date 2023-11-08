@@ -26,10 +26,10 @@ namespace API.Controllers
             // Memanggil metode GetAll dari _skillRepository untuk mendapatkan semua data skill.
             var result = _skillRepository.GetAll();
 
-            // Memeriksa apakah hasil query tidak mengandung data.
+
             if (!result.Any())
             {
-                // Mengembalikan respons Not Found jika tidak ada data skill.
+
                 return NotFound(new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status404NotFound,
@@ -41,7 +41,7 @@ namespace API.Controllers
             // Mengonversi hasil query ke objek DTO (Data Transfer Object) menggunakan Select.
             var data = result.Select(x => (SkillDto)x);
 
-            // Mengembalikan data yang ditemukan dalam respons OK.
+
             return Ok(new ResponseOKHandler<IEnumerable<SkillDto>>(data));
         }
 
@@ -52,10 +52,9 @@ namespace API.Controllers
             // Memanggil metode GetByGuid dari _skillRepository dengan parameter GUID.
             var result = _skillRepository.GetByGuid(guid);
 
-            // Memeriksa apakah hasil query tidak ditemukan (null).
+
             if (result is null)
             {
-                // Mengembalikan respons Not Found jika data skill dengan GUID tertentu tidak ditemukan.
                 return NotFound(new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status404NotFound,
@@ -64,7 +63,6 @@ namespace API.Controllers
                 });
             }
 
-            // Mengonversi hasil query ke objek DTO (Data Transfer Object).
             return Ok(new ResponseOKHandler<SkillDto>((SkillDto)result));
         }
 
@@ -74,16 +72,13 @@ namespace API.Controllers
         {
             try
             {
-
                 // Memanggil metode Create dari _skillRepository untuk membuat data skill baru.
                 var result = _skillRepository.Create(skillDto);
 
-                // Mengembalikan data yang berhasil dibuat dalam respons OK.
                 return Ok(new ResponseOKHandler<SkillDto>((SkillDto)result));
             }
             catch (ExceptionHandler ex)
             {
-                // Mengembalikan respons server error jika terjadi kesalahan dalam proses.
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status500InternalServerError,
@@ -104,7 +99,6 @@ namespace API.Controllers
                 var entity = _skillRepository.GetByGuid(skillDto.Guid);
                 if (entity is null)
                 {
-                    // Mengembalikan respons Not Found jika skill dengan GUID tertentu tidak ditemukan.
                     return NotFound(new ResponseErrorHandler
                     {
                         Code = StatusCodes.Status404NotFound,
@@ -121,12 +115,10 @@ namespace API.Controllers
                _skillRepository.Update(toUpdate);
 
 
-                // Mengembalikan pesan sukses dalam respons OK.
                 return Ok(new ResponseOKHandler<string>("Data Has Been Updated"));
             }
             catch (ExceptionHandler ex)
             {
-                // Mengembalikan respons server error jika terjadi kesalahan dalam proses.
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status500InternalServerError,
@@ -146,10 +138,8 @@ namespace API.Controllers
                 // Memanggil metode GetByGuid dari _skillRepository untuk mendapatkan entitas yang akan dihapus.
                 var entity = _skillRepository.GetByGuid(guid);
 
-                // Memeriksa apakah entitas yang akan dihapus ada dalam database.
                 if (entity is null)
                 {
-                    // Mengembalikan respons Not Found jika skill tidak ditemukan.
                     return NotFound(new ResponseErrorHandler
                     {
                         Code = StatusCodes.Status404NotFound,
@@ -162,12 +152,10 @@ namespace API.Controllers
                _skillRepository.Delete(entity);
 
 
-                // Mengembalikan kode status 204 (No Content) untuk sukses penghapusan tanpa respons.
                 return Ok(new ResponseOKHandler<string>("Data Has Been Deleted"));
             }
             catch (ExceptionHandler ex)
             {
-                // Mengembalikan respons server error jika terjadi kesalahan dalam proses.
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status500InternalServerError,

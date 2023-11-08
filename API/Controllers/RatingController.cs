@@ -28,10 +28,8 @@ namespace API.Controllers
             // Memanggil metode GetAll dari _ratingRepository untuk mendapatkan semua data Rating.
             var result = _ratingRepository.GetAll();
 
-            // Memeriksa apakah hasil query tidak mengandung data.
             if (!result.Any())
-            {
-                // Mengembalikan respons Not Found jika tidak ada data Rating.
+            {         
                 return NotFound(new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status404NotFound,
@@ -54,10 +52,8 @@ namespace API.Controllers
             // Memanggil metode GetByGuid dari _ratingRepository dengan parameter GUID.
             var result = _ratingRepository.GetByGuid(guid);
 
-            // Memeriksa apakah hasil query tidak ditemukan (null).
             if (result is null)
             {
-                // Mengembalikan respons Not Found jika data Rating dengan GUID tertentu tidak ditemukan.
                 return NotFound(new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status404NotFound,
@@ -89,9 +85,6 @@ namespace API.Controllers
         }
 
 
-
-
-
         // POST api/rating
         [HttpPost]
         public IActionResult Create(CreateRatingDto ratingDto)
@@ -104,10 +97,8 @@ namespace API.Controllers
                 // Memanggil metode Create dari _ratingRepository untuk membuat data Rating baru.
                 var result = _ratingRepository.Create(toCreate);
 
-                // Memeriksa apakah penciptaan data berhasil atau gagal.
                 if (result is null)
                 {
-                    // Mengembalikan respons BadRequest jika gagal membuat data Rating.
                     return BadRequest("Failed to create data");
                 }
 
@@ -199,12 +190,11 @@ namespace API.Controllers
                 // Menghapus data rating dari repository
                 _ratingRepository.Delete(entity);
 
-                // Mengembalikan pesan bahwa data telah dihapus dengan kode 200
+
                 return Ok(new ResponseOKHandler<string>("Data Deleted"));
             }
             catch (ExceptionHandler ex)
             {
-                // Jika terjadi error saat penghapusan, mengembalikan respon error dengan kode 500
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status500InternalServerError,

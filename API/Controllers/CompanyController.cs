@@ -27,10 +27,8 @@ namespace API.Controllers
             // Memanggil metode GetAll dari _companyRepository untuk mendapatkan semua data company.
             var result = _companyRepository.GetAll();
 
-            // Memeriksa apakah hasil query tidak mengandung data.
             if (!result.Any())
             {
-                // Mengembalikan respons Not Found jika tidak ada data company.
                 return NotFound(new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status404NotFound,
@@ -53,10 +51,8 @@ namespace API.Controllers
             // Memanggil metode GetByGuid dari _companyRepository dengan parameter GUID.
             var result = _companyRepository.GetByGuid(guid);
 
-            // Memeriksa apakah hasil query tidak ditemukan (null).
             if (result is null)
             {
-                // Mengembalikan respons Not Found jika data company dengan GUID tertentu tidak ditemukan.
                 return NotFound(new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status404NotFound,
@@ -79,7 +75,6 @@ namespace API.Controllers
                 var entity = _companyRepository.GetByGuid(companyDto.Guid);
                 if (entity is null)
                 {
-                    // Mengembalikan respons Not Found jika company dengan GUID tertentu tidak ditemukan.
                     return NotFound(new ResponseErrorHandler
                     {
                         Code = StatusCodes.Status404NotFound,
@@ -101,7 +96,6 @@ namespace API.Controllers
             }
             catch (ExceptionHandler ex)
             {
-                // Mengembalikan respons server error jika terjadi kesalahan dalam proses.
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorHandler
                 {
                     Code = StatusCodes.Status500InternalServerError,

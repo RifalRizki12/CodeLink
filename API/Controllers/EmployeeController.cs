@@ -364,12 +364,12 @@ namespace API.Controllers
                         List<Skill> skills = registrationDto;
 
 
-                        // Handle pengunggahan foto (jika diperlukan)
+
                         if (registrationDto.ProfilePictureFile != null && registrationDto.ProfilePictureFile.Length > 0)
                         {
                             string originalFileName = Path.GetFileName(registrationDto.ProfilePictureFile.FileName);
                             string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}_{originalFileName}";
-                            string uploadPath = "Utilities/File/ProfilePictures/"; // Ganti dengan direktori yang sesuai
+                            string uploadPath = "Utilities/File/ProfilePictures/"; 
                             string filePath = Path.Combine(uploadPath, uniqueFileName);
 
                             using (var stream = new FileStream(filePath, FileMode.Create))
@@ -377,16 +377,14 @@ namespace API.Controllers
                                 await registrationDto.ProfilePictureFile.CopyToAsync(stream);
                             }
 
-                            // Simpan nama berkas unik ke atribut Foto pada objek Employee
                             employee.Foto = uniqueFileName;
                         }
 
-                        // Handle pengunggahan CV (jika diperlukan)
                         if (registrationDto.CvFile != null && registrationDto.CvFile.Length > 0)
                         {
                             string originalFileName = Path.GetFileName(registrationDto.CvFile.FileName);
                             string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}_{originalFileName}";
-                            string uploadPath = "Utilities/File/Cv/"; // Ganti dengan direktori yang sesuai
+                            string uploadPath = "Utilities/File/Cv/"; 
                             string filePath = Path.Combine(uploadPath, uniqueFileName);
 
                             using (var stream = new FileStream(filePath, FileMode.Create))
@@ -394,31 +392,30 @@ namespace API.Controllers
                                 await registrationDto.CvFile.CopyToAsync(stream);
                             }
 
-                            // Simpan nama berkas unik ke atribut CV pada objek CurriculumVitae
+
                             curriculumVitae.Cv = uniqueFileName;
                         }
 
-                        // Simpan Employee dalam repository
                         var resultEmp = _employeeRepository.Create(employee);
 
-                        // Simpan Account dalam repository
+                       
                         account.Guid = resultEmp.Guid;
                         account.Password = HashHandler.HashPassword(registrationDto.Password);
                         account.RoleGuid = _roleRepository.GetDefaultClient() ?? throw new Exception("Default role not found");
                         var resultAcc = _accountRepository.Create(account);
 
-                        // Simpan CurriculumVitae dalam repository
+
                         curriculumVitae.Guid = resultEmp.Guid;
                         var resultCv = _curriculumVitaeRepository.Create(curriculumVitae);
 
-                        // Simpan Skills dalam repository
+
                         foreach (var skill in skills)
                         {
-                            skill.CvGuid = resultCv.Guid; // Sesuaikan ini dengan hubungan yang benar
+                            skill.CvGuid = resultCv.Guid; 
                             var resultSkl = _skillRepository.Create(skill);
                         }
 
-                        string emailTemplatePath = "utilities/TemplateEmail/Register.html"; // Sesuaikan path tempat template.
+                        string emailTemplatePath = "utilities/TemplateEmail/Register.html";
                         string emailTemplate = System.IO.File.ReadAllText(emailTemplatePath);
 
                         if (resultAcc != null)
@@ -432,14 +429,14 @@ namespace API.Controllers
                             _emailHandler.Send("Schdule Interview", emailRegister, employee.Email);
 
                         }
-                        // Commit transaksi jika semua operasi berhasil
+
                         transactionScope.Complete();
 
                         return Ok(new ResponseOKHandler<string>("Registration successful!"));
                     }
                     catch (Exception ex)
                     {
-                        // Rollback transaksi jika terjadi kesalahan
+
                         transactionScope.Dispose();
 
                         return BadRequest(new ResponseErrorHandler
@@ -480,24 +477,21 @@ namespace API.Controllers
                             });
                         }
 
-                        // Update the existingEmployee object with data from the updateDto
+
                         existingEmployee.FirstName = updateDto.FirstName;
                         existingEmployee.LastName = updateDto.LastName;
                         existingEmployee.Email = updateDto.Email;
                         existingEmployee.PhoneNumber = updateDto.PhoneNumber;
                         existingEmployee.StatusEmployee = updateDto.StatusEmployee;
-/*                        existingEmployee.CompanyGuid = updateDto.CompanyGuid;*/
 
 
-                        // Update other properties as needed
 
-                        // Handle update gambar profil jika ada
                         if (updateDto.ProfilePictureFile != null && updateDto.ProfilePictureFile.Length > 0)
                         {
-                            // Path ke direktori penyimpanan gambar profil
-                            string uploadPath = "Utilities/File/ProfilePictures/"; // Update to the appropriate directory
 
-                            // Jika gambar profil lama ada, hapus gambar lama
+                            string uploadPath = "Utilities/File/ProfilePictures/"; 
+
+
                             if (!string.IsNullOrEmpty(existingEmployee.Foto))
                             {
                                 string oldFilePath = Path.Combine(uploadPath, existingEmployee.Foto);
@@ -507,7 +501,7 @@ namespace API.Controllers
                                 }
                             }
 
-                            // Generate nama unik untuk file gambar baru
+
                             string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}{Path.GetFileName(updateDto.ProfilePictureFile.FileName)}";
                             string filePath = Path.Combine(uploadPath, uniqueFileName);
 
@@ -516,27 +510,19 @@ namespace API.Controllers
                                 await updateDto.ProfilePictureFile.CopyToAsync(stream);
                             }
 
-                            // Update atribut Foto dalam objek existingEmployee
                             existingEmployee.Foto = uniqueFileName;
                         }
 
-                        // Update the Employee in the repository
                         _employeeRepository.Update(existingEmployee);
 
-                        // Update the Account in the repository (if needed)
-                       
 
-
-                        // Update CurriculumVitae (if needed)
                         CurriculumVitae existingCv = _curriculumVitaeRepository.GetByGuid(existingEmployee.Guid);
 
-                        // Handle update berkas CV jika ada
                         if (updateDto.CvFile != null && updateDto.CvFile.Length > 0)
                         {
-                            // Path ke direktori penyimpanan berkas CV
-                            string uploadPath = "Utilities/File/Cv/"; // Ganti dengan direktori yang sesuai
 
-                            // Jika berkas CV lama ada, hapus berkas lama
+                            string uploadPath = "Utilities/File/Cv/"; 
+
                             if (!string.IsNullOrEmpty(existingCv.Cv))
                             {
                                 string oldFilePath = Path.Combine(uploadPath, existingCv.Cv);
@@ -546,7 +532,6 @@ namespace API.Controllers
                                 }
                             }
 
-                            // Generate nama unik untuk file CV baru
                             string uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid()}{Path.GetFileName(updateDto.CvFile.FileName)}";
                             string filePath = Path.Combine(uploadPath, uniqueFileName);
 
@@ -555,7 +540,7 @@ namespace API.Controllers
                                 await updateDto.CvFile.CopyToAsync(stream);
                             }
 
-                            // Simpan nama berkas unik ke atribut CV dalam objek CurriculumVitae
+ 
                             existingCv.Cv = uniqueFileName;
                         }
 
@@ -568,7 +553,6 @@ namespace API.Controllers
                             _skillRepository.Delete(skill);
                         }
 
-                        // Kemudian tambahkan skill baru dari updateDto
                         if (updateDto.Skills != null && updateDto.Skills.Any())
                         {
                             foreach (var skillName in updateDto.Skills)
@@ -588,7 +572,6 @@ namespace API.Controllers
                     }
                     catch (Exception ex)
                     {
-                        // Rollback the transaction in case of an error
                         transactionScope.Dispose();
 
                         return BadRequest(new ResponseErrorHandler
@@ -660,7 +643,7 @@ namespace API.Controllers
                                       PhoneNumber = emp.PhoneNumber,
                                       Grade = emp.Grade.ToString(),
                                       StatusEmployee = emp.StatusEmployee.ToString(),
-                                      Foto = emp.Foto, // Memanggil fungsi GetPhotoUrl
+                                      Foto = emp.Foto, 
                                       AverageRating = avgRatingResult?.AvgRating ?? 0,
                                       Skill = skills
                                               .Where(skill => skill.CvGuid == cuVitResult?.Guid)
@@ -881,8 +864,7 @@ namespace API.Controllers
 
                 var result = _employeeRepository.Update(toUpdate);
 
-                // Kembalikan pesan sukses dengan respons 200 OK
-                // Menggunakan ResponseOKHandler untuk memberikan respons sukses
+          
                 var response = new ResponseOKHandler<EmployeeDto>("Employee Data Has Been Updated");
 
                 return Ok(response);
@@ -921,7 +903,6 @@ namespace API.Controllers
                     });
                 }
 
-                // Periksa apakah ada referensi ke karyawan di entitas lain
                 bool isReferenced = accountGuid != null && accountGuid.Guid == employeeGuid.Guid;
 
                 if (isReferenced)

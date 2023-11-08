@@ -40,9 +40,6 @@ public class InterviewController : ControllerBase
     {
         try
         {
-            // Dapatkan data interview berdasarkan Guid.
-            // var existInterview = _interviewRepository.GetByGuid(announcment.Guid);
-
             var company = _companyRepository.GetCompany(schedule.OwnerGuid);
 
             var entity = _interviewRepository.GetByGuid(schedule.Guid);
@@ -297,7 +294,7 @@ public class InterviewController : ControllerBase
                 Message = "Data Interview Not Found"
             });
         }
-        // Gabungkan data dari tabel sesuai dengan hubungannya
+
         var interviewDto = (from interview in interviews
                             join empInterviewer in employees on interview.OwnerGuid equals empInterviewer.Guid
                             join empIdle in employees on interview.EmployeeGuid equals empIdle.Guid
@@ -332,10 +329,9 @@ public class InterviewController : ControllerBase
         // Memanggil metode GetByGuid dari _interviewRepository dengan parameter GUID.
         var result = _interviewRepository.GetByGuid(guid);
 
-        // Memeriksa apakah hasil query tidak ditemukan (null).
+
         if (result is null)
         {
-            // Mengembalikan respons Not Found jika data Interview dengan GUID tertentu tidak ditemukan.
             return NotFound(new ResponseErrorHandler
             {
                 Code = StatusCodes.Status404NotFound,
@@ -371,10 +367,10 @@ public class InterviewController : ControllerBase
 
             // Get employee dengan role "admin"
             var adminEmployee = _employeeRepository.GetAdminEmployee();
-            var specificEmployee = _employeeRepository.GetByGuid(interviewDto.EmployeeGuid); // Ganti dengan metode yang sesuai
+            var specificEmployee = _employeeRepository.GetByGuid(interviewDto.EmployeeGuid);
 
 
-            string emailTemplatePath = "utilities/TemplateEmail/Schedule.html"; // Sesuaikan path tempat template.
+            string emailTemplatePath = "utilities/TemplateEmail/Schedule.html";
             string emailTemplate = System.IO.File.ReadAllText(emailTemplatePath); 
 
             if (adminEmployee != null)
@@ -485,7 +481,7 @@ public class InterviewController : ControllerBase
             });
         }
 
-        var currentDate = DateTime.Now; // Ambil tanggal saat ini
+        var currentDate = DateTime.Now;
 
 
         var getinterviewDto = (from interview in interviews
