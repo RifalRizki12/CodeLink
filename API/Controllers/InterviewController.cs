@@ -216,7 +216,7 @@ public class InterviewController : ControllerBase
 
                     if (announcment.StatusIntervew == StatusIntervew.TidakLolos)
                     {
-                        string emailTidakLolos = emailTemplate
+                        string emailTidakLolos = Regex.Replace(emailTemplate, "<div id=\"contractTermination\"[^>]*>.*?</div>", "", RegexOptions.Singleline)
                                     .Replace("<tr>\r\n                <td>Start Contract</td>\r\n                <td>:</td>\r\n                <td>{StartContract}</td>\r\n            </tr>", "")
                                     .Replace("<tr>\r\n                <td>End Contract</td>\r\n                <td>:</td>\r\n                <td>{EndContract}</td>\r\n            </tr>", "")
                                     .Replace("{feedback}", announcment.FeedBack);
