@@ -601,10 +601,6 @@ public class InterviewController : ControllerBase
         return Ok(new ResponseOKHandler<IEnumerable<GetIdleHistoryDto>>(idleHistoryDto));
     }
 
-
-
-
-
     // DELETE api/interview/{guid}
     [HttpDelete("{guid}")]
     public IActionResult Delete(Guid guid)
@@ -612,6 +608,7 @@ public class InterviewController : ControllerBase
         try
         {
             // Mengambil data interview berdasarkan GUID
+            var rating = _ratingRepository.GetByGuid(guid);
             var entity = _interviewRepository.GetByGuid(guid);
             // Jika data interview tidak ditemukan
             if (entity is null)
@@ -626,6 +623,7 @@ public class InterviewController : ControllerBase
             }
 
             // Menghapus data interview dari repository
+            _ratingRepository.Delete(rating);
             _interviewRepository.Delete(entity);
 
             // Mengembalikan pesan bahwa data telah dihapus dengan kode 200

@@ -70,9 +70,8 @@ namespace API.Controllers
                 // Cari pengguna (akun) berdasarkan alamat email
                 var user = _accountRepository.GetByEmployeeEmail(request.Email);
                 var employee = _employeeRepository.GetByEmployeeEmail(request.Email);
-                var account = _accountRepository.GetByGuid(employee.Guid);
 
-                if (user == null || !HashHandler.VerifyPassword(request.Password, user.Password))
+                if (user == null || employee == null || !HashHandler.VerifyPassword(request.Password, user.Password))
                 {
                     return BadRequest(new ResponseErrorHandler
                     {
@@ -81,6 +80,9 @@ namespace API.Controllers
                         Message = "Account or Password is invalid!",
                     });
                 }
+
+                var account = _accountRepository.GetByGuid(employee.Guid);
+
 
                 var claims = new List<Claim>();
                 claims.Add(new Claim("Email", employee.Email));

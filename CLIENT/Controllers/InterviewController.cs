@@ -76,6 +76,7 @@ namespace CLIENT.Controllers
             }
         }
 
+        [Authorize(Roles = "client")]
         public IActionResult ListHireIdle()
         {
             return View();
@@ -97,6 +98,7 @@ namespace CLIENT.Controllers
 
         }
 
+        [Authorize(Roles = "client")]
         public IActionResult ListOnsite()
         {
             return View();
@@ -118,6 +120,7 @@ namespace CLIENT.Controllers
 
         }
 
+        [Authorize(Roles = "client")]
         public IActionResult GetIdleHistory()
         {
             return View();
@@ -163,6 +166,28 @@ namespace CLIENT.Controllers
         public async Task<JsonResult> Announcement(Guid guid, [FromBody] AnnouncmentDto announcment)
         {
             var response = await _repository.UpdateAnnouncement(guid, announcment);
+
+            if (response != null)
+            {
+                if (response.Code == 200)
+                {
+                    return Json(new { data = response.Data });
+                }
+                else
+                {
+                    return Json(new { error = response.Message });
+                }
+            }
+            else
+            {
+                return Json(new { error = "An error occurred while updating the employee." });
+            }
+        }
+
+        [HttpDelete("Interview/deleteInterview/{guid}")]
+        public async Task<JsonResult> deleteInterview(Guid guid)
+        {
+            var response = await _repository.Delete(guid);
 
             if (response != null)
             {
