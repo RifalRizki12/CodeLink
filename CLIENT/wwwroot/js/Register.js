@@ -3,6 +3,22 @@
         e.preventDefault();
 
         var profilePictureFile = $('#profilePictureInput').prop('files')[0];
+
+        // Validasi gambar profil
+        if (profilePictureFile && !isValidImageFormat(profilePictureFile.name)) {
+            Swal.fire({
+                title: 'Format Gambar Profil Salah!',
+                icon: 'info',
+                html: 'Hanya format JPEG, JPG, PNG, dan GIF yang diperbolehkan.',
+                showCloseButton: false,
+                focusConfirm: false,
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false,
+            });
+            return; // Berhenti jika format gambar salah
+        }
         
         var formData = new FormData();
 
@@ -67,4 +83,11 @@
             }
         });
     });
+
+    function isValidImageFormat(fileName) {
+        var allowedExtensions = ["jpg", "jpeg", "png", "gif"];
+        var fileExtension = fileName.split('.').pop().toLowerCase();
+
+        return allowedExtensions.includes(fileExtension);
+    }
 });

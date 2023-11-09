@@ -124,7 +124,9 @@
                 data: null,
                 render: function (data, type, row, meta) {
 
-                    return `<button type="button" class="btn btn-primary btn-schedule" data-guid="${data.guid}" data-bs-toggle="modal" data-bs-target="#updateInterview">Schedule</button> `;
+                    return `<button type="button" class="btn btn-primary btn-schedule" data-guid="${data.guid}" data-bs-toggle="modal" data-bs-target="#updateInterview">Schedule</button>
+                    <button type="button" class="btn btn-danger btn-delete" data-guid="${data.guid}">Delete</button>
+                    `;
                 }
             },
         ]
@@ -457,4 +459,66 @@
             }
         })
     }
+
+    //Delete
+/*    $('#tableInterview').on('click', '.btn-delete', function () {
+        guidDelete = $(this).data('guid');
+        console.log(guidUpdate);
+        deleteInterview(guidUpdate);
+    });*/
+
+    $(document).on("click", ".btn-delete", function () {
+        var guidDelete = $(this).data("guid");
+        $('#modalCenter').modal('hide');
+        // Tampilkan SweetAlert konfirmasi
+        Swal.fire({
+            title: 'Konfirmasi',
+            text: 'Anda yakin ingin menghapus data ini?',
+            icon: 'question',
+            showCloseButton: true,
+            focusConfirm: true,
+            customClass: {
+                confirmButton: 'btn btn-danger'
+            },
+            buttonsStyling: false,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Jika pengguna mengonfirmasi penghapusan
+                $.ajax({
+                    url: "/Interview/deleteInterview/" + guidDelete,
+                    type: "DELETE",
+                    success: function (data) {
+                        // Refresh tabel data employee setelah penghapusan
+                        $('#tableInterview').DataTable().ajax.reload();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'Data berhasil dihapus!',
+                            showCloseButton: true,
+                            focusConfirm: false,
+                            customClass: {
+                                confirmButton: 'btn btn-primary'
+                            },
+                            buttonsStyling: false,
+                        });
+                    },
+                    error: function (xhr) {
+                        var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : 'Gagal menghapus data.';
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorMessage,
+                            showCloseButton: true,
+                            focusConfirm: true,
+                            customClass: {
+                                confirmButton: 'btn btn-danger'
+                            },
+                            buttonsStyling: false,
+                        });
+                    }
+                });
+            }
+        });
+    });
+
 });

@@ -97,7 +97,6 @@
         dataType: 'json',
         dataSrc: 'data',
     }).done(function (result) {
-        console.log("Data dari server:", result);
         allData = result.data; // Simpan semua data dalam variabel allData
         displayAllData(allData); // Tampilkan semua data
 
@@ -122,64 +121,57 @@
     var guid
     $('#employeeGrid').on('click', '.btn-detail', function () {
         guid = $(this).data('guid');// Mengambil GUID dari tombol "Update" yang diklik
-        console.log('ini tombol yang atas', guid);
         getIdleByGuid(guid);
     });
 
     $('#modalDetail').on('click', '.btn-hire', function () {
         var guidHire = guid; // Mengambil GUID dari tombol "Update" yang diklik
-        console.log('ini tombol yang hire', guidHire);
         $('#modalInterview').modal('show');
 
     });
 
     function getIdleByGuid(guid) {
-        console.log("ini guid di paramter getby guid", guid);
         $.ajax({
             url: "/Employee/GetGuidEmployee/" + guid,
             method: "GET",
             dataType: 'json',
             dataSrc: 'data',
         }).done((result) => {
-            console.log("Data dari server:", result);
             const baseURL = "https://localhost:7051/"; // Gantilah URL dasar sesuai dengan kebutuhan Anda
             const photoURL = `${baseURL}ProfilePictures/${result.foto}`;
             // var employeeModal = $("#employeeModal");
             var employeeValue = ` 
-<div style="max-width: 600px; margin: 20px auto; border: 1px solid #eaeaea; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-    <div style="text-align: center; padding: 20px;">
-        <img src="${photoURL}" alt="Employee Photo" style="width: 100%; height: 300px; object-fit: cover; border-radius: 4px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);" />
-    </div>
-    </div>
-    <h2 style="font-size: 24px; color: #333; margin-top: 0; text-align: center; padding: 0 20px;">${result.fullName}</h2>
-    <div style="padding: 10px 20px; background-color: #f9f9f9; text-align: center;">
-        <span style="font-weight: bold; color: #666;">Rating Kinerja:</span>
-        <div style="display: inline-block; margin-left: 10px;">
-            <div style="position: relative; display: inline-block;">
-                <div style="position: absolute; top: 0; left: 0; white-space: nowrap; overflow: hidden; width: ${result.averageRating * 20}%; color: #ffc107; font-family: 'Font Awesome 5 Free'; font-weight: 900;">★★★★★</div>
-                <div style="color: #ccc; font-family: 'Font Awesome 5 Free'; font-weight: 900;">★★★★★</div>
-            </div>
-        </div>
-    </div>
-    <div style="padding: 20px; border-top: 1px solid #eaeaea;">
-        <div style="font-weight: bold; color: #333; font-size: 22px;">Grade: <span style="color: #007bff;">${result.grade}</span></div>
-        <h4 style="font-weight: bold; margin-top: 16px;">Skills:</h4>
-        <p style="color: #666; line-height: 1.6;">${result.skill.join(', ')}</p>
-        <h4 style="font-weight: bold; margin-top: 16px;">Description:</h4>
-        <p style="color: #666; line-height: 1.6;">
-            Calon partner yang akan bergabung dengan perusahaan Anda gendernya ${result.gender}. 
-            No Handphone yang dapat dihubungi adalah ${result.phoneNumber}. Kontak email yang tersedia adalah 
-            <a href="mailto:${result.email}" style="color: #007bff; text-decoration: none;">${result.email}</a>. CV dapat diakses melalui 
-            <a href="${result.cv}" target="_blank" style="color: #007bff; text-decoration: none;">lihat CV</a>.
-        </p>
-    </div>
-</div>
-
-
+                <div style="max-width: 600px; margin: 20px auto; border: 1px solid #eaeaea; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                    <div style="text-align: center; padding: 20px;">
+                        <img src="${photoURL}" alt="Employee Photo" style="width: 100%; height: 300px; object-fit: cover; border-radius: 4px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);" />
+                    </div>
+                    </div>
+                    <h2 style="font-size: 24px; color: #333; margin-top: 0; text-align: center; padding: 0 20px;">${result.fullName}</h2>
+                    <div style="padding: 10px 20px; background-color: #f9f9f9; text-align: center;">
+                        <span style="font-weight: bold; color: #666;">Rating Kinerja:</span>
+                        <div style="display: inline-block; margin-left: 10px;">
+                            <div style="position: relative; display: inline-block;">
+                                <div style="position: absolute; top: 0; left: 0; white-space: nowrap; overflow: hidden; width: ${result.averageRating * 20}%; color: #ffc107; font-family: 'Font Awesome 5 Free'; font-weight: 900;">★★★★★</div>
+                                <div style="color: #ccc; font-family: 'Font Awesome 5 Free'; font-weight: 900;">★★★★★</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding: 20px; border-top: 1px solid #eaeaea;">
+                        <div style="font-weight: bold; color: #333; font-size: 22px;">Grade: <span style="color: #007bff;">${result.grade}</span></div>
+                        <h4 style="font-weight: bold; margin-top: 16px;">Skills:</h4>
+                        <p style="color: #666; line-height: 1.6;">${result.skill.join(', ')}</p>
+                        <h4 style="font-weight: bold; margin-top: 16px;">Description:</h4>
+                        <p style="color: #666; line-height: 1.6;">
+                            Calon partner yang akan bergabung dengan perusahaan Anda gendernya ${result.gender}. 
+                            No Handphone yang dapat dihubungi adalah ${result.phoneNumber}. Kontak email yang tersedia adalah 
+                            <a href="mailto:${result.email}" style="color: #007bff; text-decoration: none;">${result.email}</a>. CV dapat diakses melalui 
+                            <a href="${result.cv}" target="_blank" style="color: #007bff; text-decoration: none;">lihat CV</a>.
+                        </p>
+                    </div>
+                </div>
                 `;
             $(".modalBodyDetail").html(employeeValue)
         }).fail((error) => {
-            console.log(error);
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
@@ -192,7 +184,6 @@
     $(document).on('click', '.btn-detail', function () {
         var guid = $(this).data('guid');
         $('#modalDetail').data('employee-guid', guid);
-        console.log("Data modal setelah tombol detail ditekan:", $('#modalDetail').data());
     });
 
     // Handler ketika form disubmit
@@ -201,10 +192,6 @@
 
         var guid = $('#modalDetail').data('employee-guid');
         var cmpGuid = sessionStorage.getItem('employeeGuid'); // Mengambil company GUID dari sessionStorage
-
-        console.log("Data modal saat form disubmit:", $('#modalDetail').data());
-        console.log("GUID saat form disubmit:", guid);
-        console.log("Company GUID saat form disubmit:", cmpGuid);
 
         $('.btn-save').attr('disabled', true);
         $('.btn-save').text('Create...');
@@ -284,7 +271,6 @@
                 data: JSON.stringify(obj),
                 contentType: 'application/json',
                 success: function (response) {
-                    console.log(response);
                     $('#modalInterview').modal('hide');
                     Swal.fire({
                         icon: 'success',
@@ -320,13 +306,9 @@
 $(document).ready(function () {
 
     var guid = sessionStorage.getItem('employeeGuid');
-    console.log(guid);
 
     var sesRole = sessionStorage.getItem('role');
-    var avarangeRating = sessionStorage.getItem('averageRating');
-    console.log("rating : ", avarangeRating);
 
-    console.log("Role : ", sesRole);
     const baseURL = "https://localhost:7051/";
     var companyGuid;
 
@@ -337,7 +319,6 @@ $(document).ready(function () {
             dataType: 'json',
             dataSrc: 'data',
             success: function (data) {
-                console.log(data);
                 if (data) {
 
                     const imageUrl1 = `${baseURL}ProfilePictures/${data.foto}`;
@@ -452,8 +433,6 @@ $(document).ready(function () {
         if (sesRole == "idle") {
 
             updateEmployeeDetails(employeeGuid);
-        } if (sesRole == "idle") {
-
         }
     });
 
@@ -474,6 +453,20 @@ $(document).ready(function () {
 
         var cvInput = document.getElementById('cvInput');
         var cvFile = cvInput.files[0];
+
+        // Validasi gambar profil
+        if (profilePictureFile && !isValidImageFormat(profilePictureFile.name)) {
+            Swal.fire({
+                title: 'Format Gambar Profil Salah!',
+                icon: 'info',
+                html: 'Hanya format JPEG, JPG, PNG, dan GIF yang diperbolehkan.',
+                showCloseButton: true,
+                focusConfirm: false,
+                confirmButtonText: '<i class="fa fa-thumbs-up"></i> OK!',
+                confirmButtonAriaLabel: 'OK!',
+            });
+            return; // Berhenti jika format gambar salah
+        }
 
         // Buat objek FormData dan tambahkan data
         var dataToUpdate = new FormData();
@@ -536,6 +529,14 @@ $(document).ready(function () {
                 });
             }
         });
+    }
+
+    // Fungsi untuk validasi format gambar
+    function isValidImageFormat(fileName) {
+        var allowedExtensions = ["jpg", "jpeg", "png", "gif"];
+        var fileExtension = fileName.split('.').pop().toLowerCase();
+
+        return allowedExtensions.includes(fileExtension);
     }
 
 });

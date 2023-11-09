@@ -260,17 +260,4 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script src="~/js/HomeClient.js" asp-append-version="true"></script>
-
-    <script>
-        // Ambil nilai rating dari JWT atau sumber data lainnya
-        var ratingString = '@rating'; // Sertakan tanda kutip di sekitar @rating
-        var ratingValue = parseFloat(ratingString); // Konversi ke tipe data float
-
-        // Pastikan nilai rating berada dalam rentang 0-5, jika diperlukan
-        ratingValue = Math.min(5, Math.max(0, ratingValue));
-
-        // Set lebar elemen rating sesuai dengan nilai rating
-        var ratingContainer = document.getElementById('ratingContainer');
-        ratingContainer.style.width = ratingValue * 20 + '%';
-    </script>
 }
