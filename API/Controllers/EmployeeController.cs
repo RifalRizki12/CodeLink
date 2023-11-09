@@ -164,7 +164,7 @@ namespace API.Controllers
 
                             string emailRegister = Regex.Replace(emailTemplate, "<div id=\"resigterIdle\"[^>]*>.*?</div>", "", RegexOptions.Singleline);
 
-                            _emailHandler.Send("Schdule Interview", emailRegister, adminEmployee.Email);
+                            _emailHandler.Send("Approve Needed", emailRegister, adminEmployee.Email);
 
 
                         }
@@ -426,7 +426,7 @@ namespace API.Controllers
 
                             string emailRegister = Regex.Replace(emailTemplate, "<div id=\"registerClient\"[^>]*>.*?</div>", "", RegexOptions.Singleline);
 
-                            _emailHandler.Send("Schdule Interview", emailRegister, employee.Email);
+                            _emailHandler.Send("Registration Information", emailRegister, employee.Email);
 
                         }
 
