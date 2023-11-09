@@ -40,7 +40,6 @@
                         },
                         buttonsStyling: false,
                     }).then(function () {
-                        // Ganti dengan URL yang diinginkan
                         window.location.href = '/Account/Logins';
                     });
                 }

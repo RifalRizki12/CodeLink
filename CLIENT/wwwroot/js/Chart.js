@@ -42,10 +42,5 @@ function updateCards(data) {
     $(".user-progress13 h6").text(data.contarctTerminationInterviewCount);
     $(".user-progress14 h6").text(data.endContractInterviewCount);
 
-
-
-    
-    // $(".card-border-shadow-danger h4").text(data.someOtherDataCount);
-    // $(".card-border-shadow-info h4").text(data.anotherDataCount);
 }
 

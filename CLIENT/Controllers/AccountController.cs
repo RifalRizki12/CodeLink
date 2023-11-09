@@ -86,7 +86,6 @@ namespace CLIENT.Controllers
                 else if (result is ResponseErrorHandler errorResult)
                 {
                     // Respons error
-                    // Tangani respons error di sini, misalnya dengan menampilkan pesan kesalahan ke pengguna
                     return Json(new { status = "Error", message = errorResult });
                 }
             }
@@ -101,7 +100,6 @@ namespace CLIENT.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Logins", "Account");
         }
-
 
         [HttpGet("Account/GuidAccount/{guid}")]
         public async Task<JsonResult> GuidAccount(Guid guid)
@@ -118,8 +116,6 @@ namespace CLIENT.Controllers
                 return Json(employee);
             }
         }
-
-
 
         [HttpPut("Account/UpdateAccount/{guid}")]
         public async Task<JsonResult> UpdateAccount(Guid guid, [FromBody] AccountDto accountDto)
@@ -143,14 +139,11 @@ namespace CLIENT.Controllers
             }
         }
 
-
-
         [HttpGet]
         public IActionResult ForgotPassword()
         {
             return View();
         }
-
 
         [HttpPut("Account/ForgotPassword/{email}")]
         public async Task<IActionResult> ForgotPassword(string email, [FromBody] ForgotPasswordDto forgotDto)
