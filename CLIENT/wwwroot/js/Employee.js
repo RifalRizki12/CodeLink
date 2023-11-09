@@ -126,6 +126,20 @@
                 }
             },
             {
+                data: 'averageRating',
+                render: function (data) {
+                    if (data !== null && data !== undefined) {
+                        var stars = '';
+                        for (var i = 0; i < data; i++) {
+                            stars += '<i class="fa-solid fa-star" style="color: #ffea00;"></i>';
+                        }
+                        return stars;
+                    } else {
+                        return '<span class="badge bg-glow bg-secondary /">No Rating';
+                    }
+                }
+            },
+            {
                 data: 'statusEmployee',
                 render: function (data, type, row) {
                     var statusText = data;
@@ -523,6 +537,9 @@ $(document).ready(function () {
     $('#createEmployeeForm').on('submit', function (event) {
         event.preventDefault();
 
+        $('.btn-save').attr('disabled', true);
+        $('.btn-save').text('Loading...');
+
         var profilePictureFile = $('#profilePictureInput').prop('files')[0];
         var cvFile = $('#cvInput').prop('files')[0];
 
@@ -594,6 +611,11 @@ $(document).ready(function () {
                         },
                         buttonsStyling: false,
                     });
+                    setTimeout(function () {
+                        $('.btn-save').attr('disabled', false);
+                        $('.btn-save').text('Save');
+                        $('.spinner-border').hide();
+                    }, 5000);
                 }
                 else if (response.status === "Error") {
                     Swal.fire({
@@ -608,6 +630,11 @@ $(document).ready(function () {
                         buttonsStyling: false,
                     });
                 }
+                setTimeout(function () {
+                    $('.btn-save').attr('disabled', false);
+                    $('.btn-save').text('Save');
+                    $('.spinner-border').hide();
+                }, 5000);
             },
             error: function () {
                 $('#modalCenter').modal('hide');

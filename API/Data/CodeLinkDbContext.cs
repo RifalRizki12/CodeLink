@@ -1,4 +1,6 @@
 ﻿using API.Models;
+using API.Utilities.Enums;
+using API.Utilities.Handler;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
@@ -81,6 +83,72 @@ namespace API.Data
                 .WithOne(c => c.Company)
                 .HasForeignKey(e => e.CompanyGuid)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            SeedEmployeeAndAccount(modelBuilder);
+            SeedRole(modelBuilder);
         }
+
+        private void SeedRole(ModelBuilder modelBuilder)
+        {
+            var roleId = Guid.NewGuid();
+            var roleId2 = Guid.NewGuid();
+
+            var role = new Role
+            {
+                Guid = roleId,
+                Name = "client",
+                // Set properti untuk role
+            };
+
+            var role2 = new Role
+            {
+                Guid = roleId2,
+                Name = "idle",
+                // Set properti untuk role
+            };
+
+            modelBuilder.Entity<Role>().HasData(role);
+            modelBuilder.Entity<Role>().HasData(role2);
+        }
+
+        private void SeedEmployeeAndAccount(ModelBuilder modelBuilder)
+        {
+            // ... (kode sebelumnya)
+            var roleId = Guid.NewGuid(); // ID peran yang sesuai
+            var accountId = Guid.NewGuid();
+
+            var role = new Role
+            {
+                Guid = roleId,
+                Name = "admin",
+                // Set properti untuk role
+            };
+
+            var account = new Account
+            {
+                Guid = accountId,
+                Password = HashHandler.HashPassword("Admin12345"),
+                RoleGuid = roleId,
+                Status = StatusLevel.Approved,
+                // Set properti untuk account
+            };
+
+            var employee = new Employee
+            {
+                Guid = accountId,
+                FirstName = "Admin",
+                LastName = "One",
+                Gender = GenderLevel.Male,
+                Email = "admin@mail.com",
+                PhoneNumber = "00000000000",
+                StatusEmployee = StatusEmployee.admin,
+                // Set properti untuk employee
+            };
+
+            modelBuilder.Entity<Role>().HasData(role);
+            modelBuilder.Entity<Account>().HasData(account);
+            modelBuilder.Entity<Employee>().HasData(employee);
+        }
+
     }
 }

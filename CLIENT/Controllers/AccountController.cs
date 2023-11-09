@@ -51,10 +51,11 @@ namespace CLIENT.Controllers
                         HttpContext.Session.SetString("StatusAccount", claims.Data.StatusAccount.ToString());
                         HttpContext.Session.SetString("Email", claims.Data.Email);
                         HttpContext.Session.SetString("Foto", claims.Data.Foto ?? "");
+                        HttpContext.Session.SetString("AverageRating", claims.Data.AverageRating ?? "");
                         HttpContext.Session.SetString("Role", claims.Data.Role.FirstOrDefault() ?? "");
 
                         string role = HttpContext.Session.GetString("Role"); // Ambil peran dari session
-                        string statusAccount = HttpContext.Session.GetString("StatusAccount"); // Ambil peran dari session
+                        string statusAccount = HttpContext.Session.GetString("StatusAccount");
 
                         // Lakukan pengalihan berdasarkan peran
                         if (role == "admin")

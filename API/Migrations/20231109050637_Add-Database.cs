@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Migrations
 {
-    public partial class UpdateDatabse : Migration
+    public partial class AddDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -183,6 +183,26 @@ namespace API.Migrations
                         principalColumn: "guid",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.InsertData(
+                table: "tb_m_employees",
+                columns: new[] { "guid", "company_id", "created_date", "email", "first_name", "foto", "gender", "grade", "last_name", "modified_date", "phone_number", "status" },
+                values: new object[] { new Guid("d29cb2be-6c0e-4c9b-b12c-6c2b95aca1d0"), null, null, "admin@mail.com", "Admin", null, 1, null, "One", null, "00000000000", 3 });
+
+            migrationBuilder.InsertData(
+                table: "tb_m_roles",
+                columns: new[] { "guid", "created_date", "modified_date", "name" },
+                values: new object[,]
+                {
+                    { new Guid("0111002e-1a28-4dea-880e-0b5333128804"), null, null, "idle" },
+                    { new Guid("776e06de-3098-4b97-ac8c-59654f6103fd"), null, null, "client" },
+                    { new Guid("e468ce6f-5348-415f-b98b-cfb6e7adcc7a"), null, null, "admin" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "tb_m_accounts",
+                columns: new[] { "guid", "created_date", "expired_time", "is_used", "modified_date", "otp", "password", "role_guid", "status" },
+                values: new object[] { new Guid("d29cb2be-6c0e-4c9b-b12c-6c2b95aca1d0"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, 0, "$2a$12$HPqiEAputH12BYl8dpoPAOBVt5YmXF5x0dQi7JrLH.wJ8hEg5qp0G", new Guid("e468ce6f-5348-415f-b98b-cfb6e7adcc7a"), 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_tb_m_accounts_role_guid",

@@ -91,11 +91,7 @@ namespace API.Controllers
 
                 // Mengambil rata-rata rating dari tabel Rating berdasarkan Guid Employee
                 double? averageRating = _ratingRepository.GetAverageRatingByEmployee(employee.Guid);
-
-                if (averageRating.HasValue)
-                {
-                    claims.Add(new Claim("AverageRating", averageRating.Value.ToString()));
-                }
+                claims.Add(new Claim("AverageRating", (averageRating ?? 0).ToString()));
 
                 // Menggunakan RoleRepository untuk mendapatkan peran yang sesuai dengan akun
                 var role = _roleRepository.GetByGuid(user.RoleGuid);

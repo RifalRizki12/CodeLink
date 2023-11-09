@@ -152,7 +152,6 @@ $(document).ready(function () {
             data: JSON.stringify(obj),
             contentType: 'application/json',
             success: function (response) {
-                console.log(response);
                 $('#lolosInterview').modal('hide');
                 Swal.fire({
                     icon: 'success',
@@ -224,7 +223,6 @@ $(document).ready(function () {
             data: JSON.stringify(obj),
             contentType: 'application/json',
             success: function (response) {
-                console.log(response);
                 $('#tdkLolosInterview').modal('hide');
                 //$('#tableListHire').DataTable().ajax.reload();
                 Swal.fire({

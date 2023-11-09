@@ -34,7 +34,7 @@
         });
 
         $.each(data, function (key, val) {
-            if (val.statusEmployee === "idle") {
+            if (val.statusEmployee === "idle" && val.foto != null && val.cv != null) {
                 const baseURL = "https://localhost:7051/";
                 const photoURL = `${baseURL}ProfilePictures/${val.foto}`;
                 const cvURL = `${baseURL}Cv/${val.cv}`;
@@ -104,19 +104,6 @@
     }).fail(function (error) {
         console.log(error);
     });
-
-    employeeGrid.on('click', '.read-more', function () {
-    var textContainer = $(this).closest('.text-container');
-    var fullText = textContainer.data('fulltext');
-    textContainer.html(fullText + ' <span class="read-less">Hide</span>');
-});
-
-employeeGrid.on('click', '.read-less', function () {
-    var textContainer = $(this).closest('.text-container');
-    var maxLength = textContainer.data('maxlength');
-    var truncatedText = textContainer.data('truncatedtext');
-    textContainer.html(truncatedText + '... <span class="read-more">Read More</span>');
-});
 
 
     // Logika pencarian
@@ -336,6 +323,8 @@ $(document).ready(function () {
     console.log(guid);
 
     var sesRole = sessionStorage.getItem('role');
+    var avarangeRating = sessionStorage.getItem('averageRating');
+    console.log("rating : ", avarangeRating);
 
     console.log("Role : ", sesRole);
     const baseURL = "https://localhost:7051/";
@@ -535,6 +524,8 @@ $(document).ready(function () {
                     icon: 'success',
                     title: 'Pembaruan berhasil',
                     text: 'Data Idle berhasil diperbarui.'
+                }).then(function () {
+                    location.reload();
                 });
             },
             error: function (response) {

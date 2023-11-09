@@ -60,6 +60,7 @@ namespace API.Utilities.Handler
                         Email = identity.FindFirst("Email")?.Value,
                         Foto = identity.FindFirst("Foto")?.Value,
                         StatusAccount = identity.FindFirst("StatusAccount")?.Value,
+                        AverageRating = identity.FindFirst("AverageRating")?.Value,
                     };
 
                     var roles = identity.Claims.Where(c => c.Type == ClaimTypes.Role).Select(claim => claim.Value).ToList();

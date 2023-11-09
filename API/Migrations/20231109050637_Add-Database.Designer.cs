@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(CodeLinkDbContext))]
-    [Migration("20231026135529_UpdateDatabse")]
-    partial class UpdateDatabse
+    [Migration("20231109050637_Add-Database")]
+    partial class AddDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -68,6 +68,18 @@ namespace API.Migrations
                     b.HasIndex("RoleGuid");
 
                     b.ToTable("tb_m_accounts");
+
+                    b.HasData(
+                        new
+                        {
+                            Guid = new Guid("d29cb2be-6c0e-4c9b-b12c-6c2b95aca1d0"),
+                            ExpiredTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsUsed = false,
+                            Otp = 0,
+                            Password = "$2a$12$HPqiEAputH12BYl8dpoPAOBVt5YmXF5x0dQi7JrLH.wJ8hEg5qp0G",
+                            RoleGuid = new Guid("e468ce6f-5348-415f-b98b-cfb6e7adcc7a"),
+                            Status = 1
+                        });
                 });
 
             modelBuilder.Entity("API.Models.Company", b =>
@@ -198,6 +210,18 @@ namespace API.Migrations
                         .IsUnique();
 
                     b.ToTable("tb_m_employees");
+
+                    b.HasData(
+                        new
+                        {
+                            Guid = new Guid("d29cb2be-6c0e-4c9b-b12c-6c2b95aca1d0"),
+                            Email = "admin@mail.com",
+                            FirstName = "Admin",
+                            Gender = 1,
+                            LastName = "One",
+                            PhoneNumber = "00000000000",
+                            StatusEmployee = 3
+                        });
                 });
 
             modelBuilder.Entity("API.Models.Interview", b =>
@@ -313,6 +337,23 @@ namespace API.Migrations
                     b.HasKey("Guid");
 
                     b.ToTable("tb_m_roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Guid = new Guid("e468ce6f-5348-415f-b98b-cfb6e7adcc7a"),
+                            Name = "admin"
+                        },
+                        new
+                        {
+                            Guid = new Guid("776e06de-3098-4b97-ac8c-59654f6103fd"),
+                            Name = "client"
+                        },
+                        new
+                        {
+                            Guid = new Guid("0111002e-1a28-4dea-880e-0b5333128804"),
+                            Name = "idle"
+                        });
                 });
 
             modelBuilder.Entity("API.Models.Skill", b =>
