@@ -118,7 +118,6 @@ namespace CLIENT.Controllers
 
         }
 
-
         public IActionResult GetIdleHistory()
         {
             return View();
@@ -158,10 +157,7 @@ namespace CLIENT.Controllers
             {
                 return Json(new { error = "An error occurred while updating the employee." });
             }
-
-
         }
-
 
         [HttpPut("Interview/Announcement/{guid}")]
         public async Task<JsonResult> Announcement(Guid guid, [FromBody] AnnouncmentDto announcment)

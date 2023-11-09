@@ -1,4 +1,20 @@
 ﻿$(document).ready(function () {
+
+    //digunakan untuk clik readmore ketika teks skill panjang
+    $(document).on('click', '.read-more', function () {
+        var textContainer = $(this).closest('.text-container');
+        var fullText = textContainer.data('fulltext');
+        textContainer.html(fullText + ' <span class="read-less">Hide</span>');
+    });
+
+    $(document).on('click', '.read-less', function () {
+        var textContainer = $(this).closest('.text-container');
+        var maxLength = textContainer.data('maxlength');
+        var truncatedText = textContainer.data('truncatedtext');
+        textContainer.html(truncatedText + '... <span class="read-more">Read More</span>');
+    });
+
+    //menampilkan data table idle
     $('#tableEmployee').DataTable({
         dom: 'Bfrtip',
         buttons: [
@@ -92,13 +108,34 @@
             { data: 'email' },
             { data: 'phoneNumber' },
             {
-                data: 'skill', // Menggunakan atribut 'skill'
+                data: 'skill',
                 render: function (data, type, row) {
-                    // 'data' sekarang berisi array 'Skill'
                     if (Array.isArray(data) && data.length > 0) {
-                        return data.join(', '); // Menggabungkan elemen dalam array dengan koma
+                        var maxLength = 10;
+                        var truncatedText = data.join(', ').substring(0, maxLength);
+                        var fullText = data.join(', ');
+
+                        if (truncatedText.length < fullText.length) {
+                            return `<div class="text-container" data-fulltext="${fullText}" data-truncatedtext="${truncatedText}" data-maxlength="${maxLength}">${truncatedText}... <span class="read-more">Read More</span></div>`;
+                        } else {
+                            return `<div class="text-container">${fullText} </div>`;
+                        }
                     } else {
-                        return 'N/A'; // Pesan jika tidak ada 'Skill'
+                        return 'N/A';
+                    }
+                }
+            },
+            {
+                data: 'averageRating',
+                render: function (data) {
+                    if (data !== null && data !== undefined) {
+                        var stars = '';
+                        for (var i = 0; i < data; i++) {
+                            stars += '<i class="fa-solid fa-star" style="color: #ffea00;"></i>';
+                        }
+                        return stars;
+                    } else {
+                        return '<span class="badge bg-glow bg-secondary /">No Rating';
                     }
                 }
             },
@@ -184,19 +221,20 @@
     var updateIdleGuid; //menyimpan guid di tombol save
     var employeeGuid;
 
+    //trigger untuk ketika edit di clik
     $('#tableEmployee').on('click', '.edit-button', function () {
         updateIdleGuid = $(this).data('guid'); // Mengambil GUID dari tombol "Update" yang diklik
         console.log('Employee Guid update', updateIdleGuid);
         getIdleByGuid(updateIdleGuid);
     });
 
+    //triger ketika tombol nonaktif di click
     $('#tableEmployee').on('click', '.nonAktif', function () {
         var guid = $(this).data('guid');
         updateAccountStatus(guid);
     });
 
-    // Tambahkan event listener untuk tombol "Edit"
-
+    //fungsi untuk get by guid idle
     function getIdleByGuid(guid) {
         $.ajax({
             url: '/Employee/GetGuidEmployee/' + guid,
@@ -280,6 +318,7 @@
     $('.spinner-border').hide();
     $('.btn-save').show();
 
+    //ketika tombol submit ditekan update idle
     $('#updateIdleForm').submit(function (event) {
         event.preventDefault();
         // Pastikan employeeGuid dan companyGuid telah di-set
@@ -409,7 +448,6 @@
         });
     }
 
-
     function updateAccountStatus(guid) {
         $.ajax({
             url: '/Account/GuidAccount/' + guid,
@@ -491,13 +529,16 @@
             }
         });
     }
-
 });
+
 $(document).ready(function () {
 
     //MEMBUAT REGISTER IDLE
     $('#createEmployeeForm').on('submit', function (event) {
         event.preventDefault();
+
+        $('.btn-save').attr('disabled', true);
+        $('.btn-save').text('Loading...');
 
         var profilePictureFile = $('#profilePictureInput').prop('files')[0];
         var cvFile = $('#cvInput').prop('files')[0];
@@ -570,6 +611,11 @@ $(document).ready(function () {
                         },
                         buttonsStyling: false,
                     });
+                    setTimeout(function () {
+                        $('.btn-save').attr('disabled', false);
+                        $('.btn-save').text('Save');
+                        $('.spinner-border').hide();
+                    }, 5000);
                 }
                 else if (response.status === "Error") {
                     Swal.fire({
@@ -584,6 +630,11 @@ $(document).ready(function () {
                         buttonsStyling: false,
                     });
                 }
+                setTimeout(function () {
+                    $('.btn-save').attr('disabled', false);
+                    $('.btn-save').text('Save');
+                    $('.spinner-border').hide();
+                }, 5000);
             },
             error: function () {
                 $('#modalCenter').modal('hide');
@@ -598,6 +649,7 @@ $(document).ready(function () {
 
 });
 
+//menampilkan table client
 $(document).ready(function () {
     $('#tableClient').DataTable({
         dom: 'Bfrtip',

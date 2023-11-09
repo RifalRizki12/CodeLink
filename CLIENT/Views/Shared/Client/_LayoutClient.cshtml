@@ -3,6 +3,7 @@
     var role = Context.Session.GetString("Role");
     var employeeGuid = Context.Session.GetString("EmployeeGuid");
     var statusEmployee = Context.Session.GetString("StatusEmployee");
+    var averageRating = Context.Session.GetString("AverageRating");
 
     var fotoProfile = Context.Session.GetString("Foto");
     var baseURL = "https://localhost:7051/"; // Gantilah URL dasar sesuai dengan kebutuhan Anda
@@ -102,16 +103,23 @@
                                     }
                                     <div class="header-action-icon-2">
                                         <span>
-                                            @if(isAuthenticated && photoURL != null)
+                                            @if (isAuthenticated && photoURL != null)
                                             {
-                                                <img style="max-width:50px; max-height:50px;border-radius: 50%;" class="svgInject" alt="Nest" src="@photoURL" />
+                                                <img style="max-width: 50px; max-height: 50px; border-radius: 50%;" class="svgInject" alt="Nest" src="@photoURL" />
                                                 <span class="lable ml-0">@fullName</span>
-                                            }else{
-                                                <img class="svgInject" alt="Nest" src="../../TClient/assets/imgs/theme/icons/icon-user.svg">
+                                            }
+                                            else if (photoURL == null)
+                                            {
+                                                <img style="max-width: 50px; max-height: 50px; border-radius: 50%;" class="svgInject" alt="Nest" src="../../TClient/assets/imgs/theme/icons/icon-user.svg">
+                                                <span class="lable ml-0">@fullName</span>
+                                            }
+                                            else
+                                            {
+                                                <img style="max-width: 50px; max-height: 50px; border-radius: 50%;" class="svgInject" alt="Nest" src="../../TClient/assets/imgs/theme/icons/icon-user.svg">
                                                 <span class="lable ml-0">My Account</span>
                                             }
-
                                         </span>
+
                                         <div class="cart-dropdown-wrap cart-dropdown-hm2 account-dropdown">
                                             <ul>
                                                 @if (isAuthenticated)
@@ -449,6 +457,10 @@
 
         var getRole = '@role';
         sessionStorage.setItem('role', getRole);
+
+        var getRating = '@averageRating';
+        console.log("avarage rating: ",getRating);
+        sessionStorage.setItem('averageRating', getRating);
 
         var getStatusEmp = '@statusEmployee';
         sessionStorage.setItem('statusEmployee', getStatusEmp);

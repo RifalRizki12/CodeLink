@@ -64,7 +64,12 @@
             url: '/Interview/InterviewData',
             type: 'GET',
             dataType: 'json',
-            dataSrc: 'data',
+            dataSrc: function (data) {
+                // Filter data berdasarkan statusInterview yang tidak sama dengan 2 (Contract Terminated)
+                return data.data.filter(function (row) {
+                    return row.statusInterview === null;
+                });
+            }
         },
         columns: [
             {
@@ -109,27 +114,7 @@
                     if (row.statusInterview === null) {
                         return `
                             <div class="text-center">
-                                <span class="badge bg-glow bg-secondary">N/A</span>
-                            </div>`;
-                    } else if (row.statusInterview === 0) {
-                        return `
-                            <div class="text-center">
-                                <span class="badge bg-glow bg-success">Lolos</span>
-                            </div>`;
-                    } else if (row.statusInterview === 1) {
-                        return `
-                            <div class="text-center">
-                                <span class="badge bg-glow bg-danger">Tidak Lolos</span>
-                            </div>`;
-                    } else if (row.statusInterview === 2) {
-                        return `
-                            <div class="text-center">
-                                <span class="badge bg-glow bg-danger">Contract Terminated</span>
-                            </div>`;
-                    } else {
-                        return `
-                            <div class="text-center">
-                                <span class="badge bg-glow bg-success">Contract Finish</span>
+                                <span class="badge bg-glow bg-secondary">Proses</span>
                             </div>`;
                     }
                 }
@@ -330,7 +315,6 @@
         ]
     });
 
-
     // Menambahkan event listener untuk menangani klik "Read More"
     $(document).on('click', '.read-more', function () {
         var feedbackContent = $(this).next('.feedback-content');
@@ -472,7 +456,5 @@
                 });
             }
         })
-
     }
-
 });

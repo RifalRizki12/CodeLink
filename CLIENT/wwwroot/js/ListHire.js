@@ -152,7 +152,6 @@ $(document).ready(function () {
             data: JSON.stringify(obj),
             contentType: 'application/json',
             success: function (response) {
-                console.log(response);
                 $('#lolosInterview').modal('hide');
                 Swal.fire({
                     icon: 'success',
@@ -224,7 +223,6 @@ $(document).ready(function () {
             data: JSON.stringify(obj),
             contentType: 'application/json',
             success: function (response) {
-                console.log(response);
                 $('#tdkLolosInterview').modal('hide');
                 //$('#tableListHire').DataTable().ajax.reload();
                 Swal.fire({
@@ -411,18 +409,13 @@ $(document).ready(function () {
         if (item.statusInterview !== undefined) {
             // Memastikan bahwa properti statusInterview ada
             item.statusInterview = parseInt(item.statusInterview);
-
-            // Sekarang Anda dapat menggunakan item.statusInterview dengan aman
         } else {
             // Menangani kasus jika properti statusInterview tidak ada
             console.log("Properti statusInterview tidak ada dalam data.");
         }
 
-
-
-        const btnGuid = item.employeeGuid; // Asumsikan employeeGuid adalah unik
-        const interviewGuid = item.interviewGuid; // Asumsikan interviewGuid juga tersedia
-        // Buat unique key untuk setiap kombinasi employee dan interview
+        const btnGuid = item.employeeGuid;
+        const interviewGuid = item.interviewGuid;
         const uniqueRatingKey = `rated_${interviewGuid}_${btnGuid}`;
         const isRated = item.hasRated || localStorage.getItem(uniqueRatingKey) === 'true';
         const ratedStyle = isRated ? 'background-color: grey; border-color: grey; color: white; cursor: not-allowed;' : '';
@@ -505,10 +498,6 @@ $(document).ready(function () {
         }
     });
 
-
-
-
-    // Mengambil data dari server
     // Mengambil data dari server
     $.ajax({
         url: '/Interview/GetIdleHistory/' + guid,
@@ -531,8 +520,7 @@ $(document).ready(function () {
         }
     }).fail(function (xhr, status, error) {
         console.error("Gagal mengambil data: " + error);
-    });
-    
+    });    
 
     $("#tableGetIdleHistory").find("tbody").on('click', '.btn-rating', function () {
         var btn = $(this); // Tombol yang diklik
@@ -547,9 +535,6 @@ $(document).ready(function () {
         console.log("End Contract Date:", endContractDate)
         console.log("Start Contract Date:", startContractDate)
 
-
-
-        console.log("guid emp:", guidEmp)
     });
 
     $("#ratingForm").submit(function (event) {
@@ -600,11 +585,8 @@ $(document).ready(function () {
             startContract: startContractDate,
             statusIntervew: statusInterviews,
             remarks: remaks
-            
-
         };
 
-        console.log("Obj :",obj);
         // lnjut disini, belum bikin controller dan repo
         $.ajax({
             url: '/Interview/Announcement/' + guidInterview,

@@ -25,11 +25,6 @@ namespace CLIENT.Repository
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", contextAccessor.HttpContext?.Session.GetString("JWToken"));
         }
 
-        /*public async Task<ResponseOKHandler<Entity>> Delete(TId id)
-        {
-            throw new NotImplementedException();
-        }*/
-
         public async Task<ResponseOKHandler<Entity>> Delete(TId id)
         {
             ResponseOKHandler<Entity> entityVM = null;
