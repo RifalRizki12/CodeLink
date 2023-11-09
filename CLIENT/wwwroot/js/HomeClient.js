@@ -6,11 +6,44 @@
         var employeeGrid = $("#employeeGrid");
         employeeGrid.empty();
 
+        // Fungsi untuk memotong teks
+        function truncateText(text, maxLength) {
+            if (text.length > maxLength) {
+                return text.substring(0, maxLength);
+            } else {
+                return text;
+            }
+        }
+
+        // Fungsi untuk menangani klik "Read More" dan "Hide"
+        $(document).on('click', '.read-more', function () {
+            var textContainer = $(this).closest('.text-container');
+            var fullText = textContainer.attr('data-fulltext');
+            var truncatedText = textContainer.attr('data-truncatedtext');
+            var maxLength = parseInt(textContainer.attr('data-maxlength'));
+
+            if (textContainer.hasClass('truncated')) {
+                // Jika teks sudah dipotong, tampilkan seluruh teks
+                textContainer.text(fullText + ' ').append('<span class="read-more">Read Less</span>');
+                textContainer.removeClass('truncated');
+            } else {
+                // Jika teks belum dipotong, potong sesuai panjang maksimum
+                textContainer.text(truncatedText + '... ').append('<span class="read-more">Read More</span>');
+                textContainer.addClass('truncated');
+            }
+        });
+
         $.each(data, function (key, val) {
             if (val.statusEmployee === "idle") {
                 const baseURL = "https://localhost:7051/";
                 const photoURL = `${baseURL}ProfilePictures/${val.foto}`;
                 const cvURL = `${baseURL}Cv/${val.cv}`;
+
+                var maxLength = 10; // Sesuaikan sesuai kebutuhan
+                var skillText = val.skill.join(', ');
+                var truncatedSkill = truncateText(skillText, maxLength);
+
+                var showReadMore = skillText.length > maxLength;
 
                 const employeeItem = `
                     <div class="col-lg-1-5 col-md-4 col-12 col-sm-6">
@@ -34,7 +67,11 @@
                             <span class="font-small ml-5 text-muted"> (${val.averageRating})</span>
                           </div>
                           <div>
-                            <span class="font-small text-muted">${val.skill.join(', ')}</span>
+                            <span class="font-small text-muted">
+                                <div class="text-container" data-fulltext="${skillText}" data-truncatedtext="${truncatedSkill}" data-maxlength="${maxLength}">
+                                    ${showReadMore ? truncatedSkill + '... <span class="read-more">Read More</span>' : truncatedSkill}
+                                </div>
+                            </span>
                           </div>
                           <div class="product-card-bottom" style="margin-top: 12px;">
                             <div class="add-cart">
@@ -55,7 +92,7 @@
     }
 
     $.ajax({
-        url: "/Employee/GetEmployeeData", // Ganti dengan URL yang sesuai
+        url: "/Employee/GetEmployeeData",
         method: "GET",
         dataType: 'json',
         dataSrc: 'data',
@@ -67,6 +104,20 @@
     }).fail(function (error) {
         console.log(error);
     });
+
+    employeeGrid.on('click', '.read-more', function () {
+    var textContainer = $(this).closest('.text-container');
+    var fullText = textContainer.data('fulltext');
+    textContainer.html(fullText + ' <span class="read-less">Hide</span>');
+});
+
+employeeGrid.on('click', '.read-less', function () {
+    var textContainer = $(this).closest('.text-container');
+    var maxLength = textContainer.data('maxlength');
+    var truncatedText = textContainer.data('truncatedtext');
+    textContainer.html(truncatedText + '... <span class="read-more">Read More</span>');
+});
+
 
     // Logika pencarian
     $("#search-input").on("input", function () {
@@ -98,7 +149,7 @@
     function getIdleByGuid(guid) {
         console.log("ini guid di paramter getby guid", guid);
         $.ajax({
-            url: "/Employee/GetGuidEmployee/" + guid, // Ganti dengan URL yang sesuai
+            url: "/Employee/GetGuidEmployee/" + guid,
             method: "GET",
             dataType: 'json',
             dataSrc: 'data',
@@ -154,7 +205,7 @@
     $(document).on('click', '.btn-detail', function () {
         var guid = $(this).data('guid');
         $('#modalDetail').data('employee-guid', guid);
-        console.log("Data modal setelah tombol detail ditekan:", $('#modalDetail').data()); // Tambahkan baris ini
+        console.log("Data modal setelah tombol detail ditekan:", $('#modalDetail').data());
     });
 
     // Handler ketika form disubmit
@@ -241,7 +292,7 @@
             };
 
             $.ajax({
-                url: "/Interview/AddSchedule", // Ganti dengan URL yang sesuai
+                url: "/Interview/AddSchedule",
                 method: "POST",
                 data: JSON.stringify(obj),
                 contentType: 'application/json',
@@ -336,7 +387,7 @@ $(document).ready(function () {
                         skillSelect.val(selectedSkills).trigger('change'); // Set skill yang telah dipilih
                     }
 
-                    // Jika Anda ingin menandai beberapa skill tertentu sebagai dipilih (misalnya dari data lain), Anda dapat menggunakan bagian kode ini
+                    // Jika ingin menandai beberapa skill tertentu sebagai dipilih (misalnya dari data lain)
                     if (data && data.selectedSkills) {
                         skillSelect.val(data.selectedSkills).trigger('change');
                     }

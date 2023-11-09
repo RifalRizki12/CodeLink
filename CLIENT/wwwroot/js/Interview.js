@@ -330,7 +330,6 @@
         ]
     });
 
-
     // Menambahkan event listener untuk menangani klik "Read More"
     $(document).on('click', '.read-more', function () {
         var feedbackContent = $(this).next('.feedback-content');
@@ -472,7 +471,5 @@
                 });
             }
         })
-
     }
-
 });
