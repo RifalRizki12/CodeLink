@@ -202,6 +202,8 @@
                 }
             },
             { data: 'idle' },
+            { data: 'emailIdle' },
+
             { data: 'interviewer' },
             { data: 'name' },
             {

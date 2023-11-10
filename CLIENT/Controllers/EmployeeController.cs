@@ -145,22 +145,19 @@ namespace CLIENT.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateClient([FromForm] UpdateClientDto updateDto)
         {
-            if (ModelState.IsValid)
+            // Anda sekarang bisa mengakses updateDto.Skills sebagai List<string>
+
+            var result = await repository.UpdateClient(updateDto);
+
+            if (result is ResponseOKHandler<Company> successResult)
             {
-                // Anda sekarang bisa mengakses updateDto.Skills sebagai List<string>
-
-                var result = await repository.UpdateClient(updateDto);
-
-                if (result is ResponseOKHandler<Company> successResult)
-                {
-                    // Pembaruan berhasil
-                    return Json(new { status = "OK", message = successResult });
-                }
-                else if (result is ResponseErrorHandler errorResult)
-                {
-                    // Pembaruan gagal atau ada kesalahan
-                    return Json(new { status = "Error", message = errorResult });
-                }
+                // Pembaruan berhasil
+                return Json(new { status = "OK", message = successResult });
+            }
+            else if (result is ResponseErrorHandler errorResult)
+            {
+                // Pembaruan gagal atau ada kesalahan
+                return Json(new { status = "Error", message = errorResult });
             }
             return Json(new { success = false, message = "Data tidak valid." });
         }

@@ -65,7 +65,7 @@ $(document).ready(function () {
 //Forgot Password
 $(document).ready(function () {
     $('#forgotPsswd').click(function () {
-        var email = $('#emailInput').val();
+        var email = $('#emailInput').val().trim();
 
         if (email === "") {
             Swal.fire({
@@ -85,6 +85,12 @@ $(document).ready(function () {
         var data = {
             Email: email,
         };
+        $('.btn-save').attr('disabled', true);
+        $('.btn-save').text('Send Otp...');
+        setTimeout(function () {
+            $('.btn-save').attr('disabled', false);
+            $('.btn-save').text('Save');
+        }, 5000);
 
         $.ajax({
             url: '/Account/ForgotPassword/' + email,
@@ -96,7 +102,13 @@ $(document).ready(function () {
                 Swal.fire({
                     icon: 'success',
                     title: 'Forgot Password Berhasil!',
-                    text: 'Silahkan Cek Email Anda!!!.',
+                    text: 'Silahkan Cek Email Anda !!!',
+                    showCloseButton: false,
+                    focusConfirm: false,
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false
                 }).then(function () {
                     window.location.href = response.redirectTo;
                 });
@@ -107,6 +119,12 @@ $(document).ready(function () {
                         icon: 'error',
                         title: 'Forgot Password Gagal!',
                         text: 'Pastikan email  Anda benar.',
+                        showCloseButton: false,
+                        focusConfirm: false,
+                        customClass: {
+                            confirmButton: 'btn btn-primary'
+                        },
+                        buttonsStyling: false
                     });
 
                 }

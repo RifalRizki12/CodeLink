@@ -7,6 +7,7 @@ public class InterviewDto //untuk update interview yang biasa
 {
     public Guid Guid { get; set; }
     public string Name { get; set; }
+    public string EmailIdle { get; set; }
     public DateTime Date { get; set; }
     public string Remarks { get; set; }
     public DateTime? StartContract { get; set; }

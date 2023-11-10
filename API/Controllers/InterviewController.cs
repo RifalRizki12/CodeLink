@@ -329,6 +329,7 @@ public class InterviewController : ControllerBase
                                 Guid = interview.Guid,
                                 EmployeeGuid = interview.EmployeeGuid,
                                 Name = interview.Name,
+                                EmailIdle = empIdle.Email,
                                 Date = interview.Date,
                                 EndContract = interview.EndContract,
                                 StartContract = interview.StartContract,

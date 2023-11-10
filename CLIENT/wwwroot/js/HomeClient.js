@@ -197,7 +197,7 @@
         $('.btn-save').text('Create...');
 
         addScheduleInterview(guid, cmpGuid);
-        
+
         setTimeout(function () {
             $('.btn-save').attr('disabled', false);
             $('.btn-save').text('Save');
@@ -319,6 +319,7 @@ $(document).ready(function () {
             dataType: 'json',
             dataSrc: 'data',
             success: function (data) {
+
                 if (data) {
 
                     const imageUrl1 = `${baseURL}ProfilePictures/${data.foto}`;
@@ -394,8 +395,9 @@ $(document).ready(function () {
             dataSrc: 'data',
             success: function (response) {
                 const imageUrl = `${baseURL}ProfilePictures/${response.fotoEmployee}`;
-                employeeGuid = response.guid;
+                employeeGuid = response.employeeGuid;
                 companyGuid = response.companyGuid;
+
                 $("#editFirstName").val(response.firstName);
                 $("#editLastName").val(response.lastName);
                 $("#editGender").val(response.gender);
@@ -433,6 +435,10 @@ $(document).ready(function () {
         if (sesRole == "idle") {
 
             updateEmployeeDetails(employeeGuid);
+        }
+        if (sesRole == "client") {
+
+            updateClientDetails(employeeGuid, companyGuid);
         }
     });
 
@@ -513,13 +519,27 @@ $(document).ready(function () {
             contentType: false,
             processData: false, // Diperlukan untuk FormData
             success: function (response) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Pembaruan berhasil',
-                    text: 'Data Idle berhasil diperbarui.'
-                }).then(function () {
-                    location.reload();
-                });
+                if (response.status === "OK") {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Pembaruan berhasil',
+                        text: 'Data Idle berhasil diperbarui.'
+                    }).then(function () {
+                        location.reload();
+                    });
+                } else if (response.status === "Error") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Update!',
+                        text: response.message.error || response.message.message,
+                        showCloseButton: false,
+                        focusConfirm: false,
+                        customClass: {
+                            confirmButton: 'btn btn-primary'
+                        },
+                        buttonsStyling: false,
+                    });
+                }
             },
             error: function (response) {
                 Swal.fire({
@@ -529,6 +549,100 @@ $(document).ready(function () {
                 });
             }
         });
+    }
+
+    // Function untuk Update Client
+    function updateClientDetails(employeeGuid, companyGuid) {
+
+        // Ambil semua data dari elemen-elemen formulir
+        var firstName = $('#editFirstName').val();
+        var lastName = $('#editLastName').val();
+        var phoneNumber = $('#editPhoneNumber').val();
+        var email = $('#editEmail').val();
+        var gender = ($('#editGender').val() === 'Male') ? 1 : 0;
+        var nameCompany = $('#companyName').val();
+        var addressCompany = $('#addressCompany').val();
+        var description = $('#description').val();
+
+        var profilePictureFile = $('#profilePictureInput').prop('files')[0];
+
+        var profilePictureInput = document.getElementById('profilePictureInput');  // Ambil file gambar dari input
+        var profilePictureFile = profilePictureInput.files[0];
+
+        // Validasi gambar profil
+        if (profilePictureFile && !isValidImageFormat(profilePictureFile.name)) {
+            Swal.fire({
+                title: 'Format Gambar Profil Salah!',
+                icon: 'info',
+                html: 'Hanya format JPEG, JPG, PNG, dan GIF yang diperbolehkan.',
+                showCloseButton: true,
+                focusConfirm: false,
+                confirmButtonText: '<i class="fa fa-thumbs-up"></i> OK!',
+                confirmButtonAriaLabel: 'OK!',
+            });
+            return; // Berhenti jika format gambar salah
+        }
+
+        // Buat objek FormData dan tambahkan data
+        var dataToUpdate = new FormData();
+        dataToUpdate.append('employeeGuid', employeeGuid);
+        dataToUpdate.append('companyGuid', companyGuid);
+        dataToUpdate.append('firstName', firstName);
+        dataToUpdate.append('lastName', lastName);
+        dataToUpdate.append('phoneNumber', phoneNumber);
+        dataToUpdate.append('email', email);
+        dataToUpdate.append('gender', gender);
+        dataToUpdate.append('nameCompany', nameCompany);
+        dataToUpdate.append('addressCompany', addressCompany);
+        dataToUpdate.append('description', description);
+        dataToUpdate.append('ProfilePictureFile', profilePictureFile);
+
+        $.ajax({
+            url: '/Employee/UpdateClient',
+            type: 'PUT',
+            data: dataToUpdate,
+            contentType: false,
+            processData: false, // Diperlukan untuk FormData
+            success: function (response) {
+                if (response.status == "OK") {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Pembaruan berhasil',
+                        text: 'Data client berhasil diperbarui.',
+                        showCloseButton: false,
+                        focusConfirm: false,
+                        customClass: {
+                            confirmButton: 'btn btn-primary'
+                        },
+                        buttonsStyling: false,
+                    }).then(function () {
+                        location.reload();
+                    });
+                }
+                else if (response.status === "Error") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Update!',
+                        text: response.message.error || response.message.message,
+                        showCloseButton: false,
+                        focusConfirm: false,
+                        customClass: {
+                            confirmButton: 'btn btn-primary'
+                        },
+                        buttonsStyling: false,
+                    });
+                }
+
+            },
+            error: function (xhr, status, error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while updating employee data.'
+                });
+            }
+        });
+
     }
 
     // Fungsi untuk validasi format gambar
